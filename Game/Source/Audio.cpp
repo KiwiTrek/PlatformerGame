@@ -36,7 +36,7 @@ bool Audio::Awake(pugi::xml_node& config)
 		ret = true;
 	}
 
-	// Load support for the JPG and PNG image formats
+	// Load support for the OGG image formats
 	int flags = MIX_INIT_OGG;
 	int init = Mix_Init(flags);
 
@@ -53,6 +53,11 @@ bool Audio::Awake(pugi::xml_node& config)
 		LOG("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
 		active = false;
 		ret = true;
+	}
+	else
+	{
+		Mix_VolumeMusic(config.child("music").attribute("volume").as_int(128));
+		LOG("Set volume to: %d\n", Mix_VolumeMusic(-1));
 	}
 
 	return ret;
