@@ -7,8 +7,8 @@
 #include "SDL/include/SDL.h"
 
 // NOTE: Library linkage is configured in Linker Options
-//#pragma comment(lib, "../Game/Source/External/SDL/libx86/SDL2.lib")
-//#pragma comment(lib, "../Game/Source/External/SDL/libx86/SDL2main.lib")
+//#pragma comment(lib, "../game/source/external/sdl/libx86/sdl2.lib")
+//#pragma comment(lib, "../game/source/external/sdl/libx86/sdl2main.lib")
 
 #include <stdlib.h>
 
