@@ -2,8 +2,8 @@
 
 <config>
   <app>
-    <title>Game Development Testbed</title>
-    <organization>UPC</organization>
+    <title>God Hand Platformer Game (V.0.1)</title>
+    <organization>UPC CITM</organization>
   </app>
 	
   <renderer>
