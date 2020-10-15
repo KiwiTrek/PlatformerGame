@@ -62,10 +62,8 @@ void App::AddModule(Module* module)
 // Called before render is available
 bool App::Awake()
 {
-	// TODO 3: Load config.xml file using load_file() method from the xml_document class.
 	bool ret = LoadConfig();
 
-	// TODO 4: Read the title from the config file
 	title.create(configApp.child("title").child_value());
 	win->SetTitle(title.GetString());
 
@@ -76,10 +74,6 @@ bool App::Awake()
 
 		while(item != NULL && ret == true)
 		{
-			// TODO 5: Add a new argument to the Awake method to receive a pointer to an xml node.
-			// If the section with the module name exists in config.xml, fill the pointer with the valid xml_node
-			// that can be used to read all variables for that module.
-			// Send nullptr if the node does not exist in config.xml
 			ret = item->data->Awake(config.child(item->data->name.GetString()));
 			item = item->next;
 		}
@@ -126,7 +120,6 @@ bool App::Update()
 	return ret;
 }
 
-// TODO 3: Load config from XML file
 bool App::LoadConfig()
 {
 	bool ret = true;
@@ -155,7 +148,16 @@ void App::PrepareUpdate()
 // ---------------------------------------------
 void App::FinishUpdate()
 {
-	// This is a good place to call Load / Save functions
+	if (loadRequest)
+	{
+		loadRequest = !loadRequest;
+		LoadGame();
+	}
+	else if (saveRequest)
+	{
+		saveRequest = !saveRequest;
+		SaveGame();
+	}
 }
 
 // Call modules before each loop iteration
@@ -266,4 +268,63 @@ const char* App::GetOrganization() const
 	return organization.GetString();
 }
 
+// ---------------------------------------
+void App::LoadRequest()
+{
+	loadRequest = true;
+}
 
+// ---------------------------------------
+void App::SaveRequest()
+{
+	saveRequest = true;
+}
+
+bool App::LoadGame()
+{
+	bool ret = true;
+
+	pugi::xml_parse_result result = saveFile.load_file("savegame.xml");
+	if (result == NULL)
+	{
+		LOG("Could not load map xml file savegame.xml. pugi error: %s", result.description());
+		ret = false;
+	}
+	else
+	{
+		save = saveFile.child("save_state");
+
+		ListItem<Module*>* item;
+		item = modules.start;
+
+		while (item != NULL && ret == true)
+		{
+			ret = item->data->Load(save.child(item->data->name.GetString()));
+			item = item->next;
+		}
+	}
+
+	return ret;
+
+}
+
+bool App::SaveGame()
+{
+	bool ret = true;
+
+	pugi::xml_document newSaveFile;
+	pugi::xml_node saveState = newSaveFile.append_child("save_state");
+
+	ListItem<Module*>* item;
+	item = modules.start;
+
+	while (item != NULL && ret == true)
+	{
+		ret = item->data->Save(saveState.append_child(item->data->name.GetString()));
+		item = item->next;
+	}
+
+	newSaveFile.save_file("savegame.xml");
+
+	return ret;
+}

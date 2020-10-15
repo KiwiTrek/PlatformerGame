@@ -89,6 +89,27 @@ bool Audio::CleanUp()
 	return true;
 }
 
+bool Audio::Load(pugi::xml_node& save)
+{
+	LOG("Loading SDL rendering info");
+	bool ret = true;
+
+	Mix_VolumeMusic(save.child("volume").attribute("value").as_int());
+
+	return ret;
+}
+
+bool Audio::Save(pugi::xml_node& save)
+{
+	LOG("Saving SDL rendering info");
+	bool ret = true;
+
+	pugi::xml_node volume = save.append_child("volume");
+	volume.append_attribute("value").set_value(Mix_VolumeMusic(-1));
+
+	return ret;
+}
+
 // Play a music file
 bool Audio::PlayMusic(const char* path, float fade_time)
 {
@@ -180,4 +201,17 @@ bool Audio::PlayFx(unsigned int id, int repeat)
 	}
 
 	return ret;
+}
+
+// Set volume to 0
+void Audio::MuteVolume()
+{
+	if (Mix_VolumeMusic(-1) == 0)
+	{
+		Mix_VolumeMusic(MIX_MAX_VOLUME);
+	}
+	else
+	{
+		Mix_VolumeMusic(0);
+	}
 }
