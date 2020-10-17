@@ -16,6 +16,7 @@
       <Filter>External\PuguiXml</Filter>
     </ClCompile>
     <ClCompile Include="Source\Transition.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Window.h" />
@@ -54,6 +55,7 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\Transition.h" />
+    <ClInclude Include="Source\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">
