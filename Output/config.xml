@@ -22,4 +22,8 @@
     <music volume="64"/>
     <fx volume="64"/>
   </audio>
+
+    <map>
+        <folder>Assets/maps/</folder>
+    </map>
 </config>

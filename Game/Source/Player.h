@@ -12,7 +12,7 @@ public:
 	virtual ~Player();
 
 	// Called before player is available
-	//bool Awake(pugi::xml_node&);			<- do we need this? i think not
+	bool Awake(pugi::xml_node&);
 
 	// Called before the first frame
 	bool Start();

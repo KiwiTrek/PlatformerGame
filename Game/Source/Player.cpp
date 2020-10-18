@@ -9,43 +9,46 @@
 #include "Scene.h"
 
 
-Player::Player() {
-
-}
+Player::Player() {}
 
 Player::~Player() {}
 
-bool Player::Start() {
-
+bool Player::Start()
+{
     return true;
 }
 
-bool Player::PreUpdate() {
-
+bool Player::Awake(pugi::xml_node&)
+{
     return true;
 }
 
-bool Player::Update(float dt) {
-
+bool Player::PreUpdate()
+{
     return true;
 }
 
-bool Player::PostUpdate() {
-
+bool Player::Update(float dt)
+{
     return true;
 }
 
-bool Player::CleanUp() {
-
+bool Player::PostUpdate()
+{
     return true;
 }
 
-bool Player::Load(pugi::xml_node&) {
-
+bool Player::CleanUp()
+{
     return true;
 }
 
-bool Player::Save(pugi::xml_node&) {
+bool Player::Load(pugi::xml_node&)
+{
+    return true;
+}
 
+bool Player::Save(pugi::xml_node&)
+{
     return true;
 }

@@ -5,13 +5,14 @@
 #include "Render.h"
 #include "Window.h"
 #include "Scene.h"
+#include "Map.h"
 
 #include "Defs.h"
 #include "Log.h"
 
 Scene::Scene() : Module()
 {
-	name.create("scene");
+	name.Create("scene");
 }
 
 // Destructor
@@ -32,6 +33,7 @@ bool Scene::Start()
 {
 	img = app->tex->Load("Assets/textures/test.png");
 	app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
+	app->map->Load("temp.tmx");
 	return true;
 }
 
@@ -66,8 +68,11 @@ bool Scene::Update(float dt)
 	if(app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		app->render->camera.x -= 1;
 
-	app->render->DrawTexture(img, 380, 100, NULL, 0.5f);
-	app->render->DrawTexture(img, 680, 100, NULL, 0.85f);
+	app->map->Draw();
+
+	SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d", app->map->map.w, app->map->map.h, app->map->map.tileW, app->map->map.tileH, app->map->tilesets.count());
+
+	app->win->SetTitle(title.GetString());
 
 	return true;
 }
