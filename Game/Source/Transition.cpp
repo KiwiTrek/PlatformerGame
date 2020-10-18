@@ -42,10 +42,7 @@ bool Transition::Update(float dt)
 		++frameCount;
 		if (frameCount >= maxFadeFrames)
 		{
-			if (moduleToDisable != nullptr)
-			{
-				moduleToDisable->Disable();
-			}
+			moduleToDisable->Disable();
 			moduleToEnable->Enable();
 			currentStep = Transition_Step::FROM_BLACK;
 		}
@@ -78,19 +75,30 @@ bool Transition::PostUpdate()
 	return true;
 }
 
-bool Transition::FadeEffect(Module* moduleToDisable, Module* moduleToEnable, float frames)
+bool Transition::FadeEffect(Module* moduleToDisable, Module* moduleToEnable, bool fadeInOnly, float frames)
 {
 	// If we are already in a fade process, ignore this call
 	if (currentStep == Transition_Step::NONE)
 	{
-		currentStep = Transition_Step::TO_BLACK;
-		frameCount = 0;
-		maxFadeFrames = frames;
+		if (fadeInOnly == false)
+		{
+			currentStep = Transition_Step::TO_BLACK;
+			frameCount = 0;
+			maxFadeFrames = frames;
 
-		this->moduleToDisable = moduleToDisable;
-		this->moduleToEnable = moduleToEnable;
+			this->moduleToDisable = moduleToDisable;
+			this->moduleToEnable = moduleToEnable;
 
-		return true;
+			return true;
+		}
+		else
+		{
+			currentStep = Transition_Step::FROM_BLACK;
+			frameCount = frames;
+			maxFadeFrames = frames;
+
+			return true;
+		}
 	}
 
 	return false;

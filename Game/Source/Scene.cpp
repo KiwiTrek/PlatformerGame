@@ -73,8 +73,6 @@ bool Scene::Update(float dt)
 	if(app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		app->render->camera.x -= 1;
 
-	app->map->Draw();
-
 	SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d", app->map->map.w, app->map->map.h, app->map->map.tileW, app->map->map.tileH, app->map->tilesets.count());
 
 	app->win->SetTitle(title.GetString());
@@ -89,6 +87,8 @@ bool Scene::PostUpdate()
 
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
+
+	app->map->Draw();
 
 	return ret;
 }

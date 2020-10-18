@@ -29,7 +29,6 @@ bool LogoScene::Awake()
 {
 	LOG("Loading Scene");
 	bool ret = true;
-	app->transition->FadeEffect(nullptr, this, 120.0f);
 
 	return ret;
 }
@@ -37,6 +36,7 @@ bool LogoScene::Awake()
 // Called before the first frame
 bool LogoScene::Start()
 {
+	app->transition->FadeEffect(nullptr, this, true, 120.0f);
 	logo = app->tex->Load("Assets/textures/logoScreen.jpg");
 	return true;
 }
@@ -50,14 +50,13 @@ bool LogoScene::PreUpdate()
 // Called each loop iteration
 bool LogoScene::Update(float dt)
 {
-	app->render->DrawTexture(logo, NULL, NULL, true);
 	if (timer < 100)
 	{
 		timer++;
 	}
 	else
 	{
-		app->transition->FadeEffect(this, (Module*)app->titleScene);
+		app->transition->FadeEffect(this, (Module*)app->titleScene, false, 45);
 	}
 	return true;
 }
@@ -69,6 +68,8 @@ bool LogoScene::PostUpdate()
 
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
+
+	app->render->DrawTexture(logo, NULL, NULL, true);
 
 	return ret;
 }

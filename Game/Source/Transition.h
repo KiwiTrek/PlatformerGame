@@ -24,7 +24,7 @@ public:
     // Called from another module
     // Starts the fade process which has two steps, fade_out and fade_in
     // After the first step, the modules should be switched
-    bool FadeEffect(Module* toDisable, Module* toEnable, float frames = 60);
+    bool FadeEffect(Module* toDisable, Module* toEnable, bool fadeInOnly, float frames = 60);
 
 private:
 

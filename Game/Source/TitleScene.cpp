@@ -50,10 +50,9 @@ bool TitleScene::PreUpdate()
 // Called each loop iteration
 bool TitleScene::Update(float dt)
 {
-	app->render->DrawTexture(titleScreen, NULL, NULL, true);
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 	{
-		app->transition->FadeEffect(this, (Module*)app->scene);
+		app->transition->FadeEffect(this, (Module*)app->scene, false, 45);
 	}
 	return true;
 }
@@ -65,6 +64,8 @@ bool TitleScene::PostUpdate()
 
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
+
+	app->render->DrawTexture(titleScreen, NULL, NULL, true);
 
 	return ret;
 }
