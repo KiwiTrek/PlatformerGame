@@ -52,10 +52,10 @@ bool Scene::PreUpdate()
 bool Scene::Update(float dt)
 {
 
-	if (app->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 		app->LoadRequest();
 
-	if (app->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		app->SaveRequest();
 
 	if (app->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
