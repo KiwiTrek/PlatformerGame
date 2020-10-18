@@ -18,6 +18,7 @@
     <ClCompile Include="Source\Transition.cpp" />
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\Map.cpp" />
+    <ClCompile Include="Source\LogoScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Window.h" />
@@ -58,6 +59,7 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\Map.h" />
+    <ClInclude Include="Source\LogoScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">
