@@ -19,6 +19,11 @@ Scene::Scene() : Module()
 Scene::~Scene()
 {}
 
+void Scene::Init()
+{
+	active = false;
+}
+
 // Called before render is available
 bool Scene::Awake()
 {

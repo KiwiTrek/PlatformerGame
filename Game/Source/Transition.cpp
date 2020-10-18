@@ -8,7 +8,7 @@
 
 Transition::Transition() : Module()
 {
-	screenRect = { 0, 0, app->win->screenSurface->w * (int)app->win->GetScale(), app->win->screenSurface->h * (int)app->win->GetScale() };
+	name.Create("transition");
 }
 
 Transition::~Transition()
@@ -18,6 +18,7 @@ bool Transition::Start()
 {
 	LOG("Preparing Fade Screen");
 
+	screenRect = { 0, 0, app->win->screenSurface->w * (int)app->win->GetScale(), app->win->screenSurface->h * (int)app->win->GetScale() };
 	// Enable blending mode for transparency
 	SDL_SetRenderDrawBlendMode(app->render->renderer, SDL_BLENDMODE_BLEND);
 	return true;
@@ -41,8 +42,11 @@ bool Transition::Update(float dt)
 		++frameCount;
 		if (frameCount >= maxFadeFrames)
 		{
-			moduleToDisable->active = false;
-			moduleToEnable->active = true;
+			if (moduleToDisable != nullptr)
+			{
+				moduleToDisable->Disable();
+			}
+			moduleToEnable->Enable();
 			currentStep = Transition_Step::FROM_BLACK;
 		}
 	}

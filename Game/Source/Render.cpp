@@ -128,7 +128,7 @@ void Render::ResetViewPort()
 }
 
 // Blit to screen
-bool Render::DrawTexture(SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed, double angle, int pivotX, int pivotY) const
+bool Render::DrawTexture(SDL_Texture* texture, int x, int y, bool fullscreen, const SDL_Rect* section, float speed, double angle, int pivotX, int pivotY) const
 {
 	bool ret = true;
 	uint scale = app->win->GetScale();
@@ -137,14 +137,24 @@ bool Render::DrawTexture(SDL_Texture* texture, int x, int y, const SDL_Rect* sec
 	rect.x = (int)(camera.x * speed) + x * scale;
 	rect.y = (int)(camera.y * speed) + y * scale;
 
-	if(section != NULL)
+	if (fullscreen == true)
 	{
-		rect.w = section->w;
-		rect.h = section->h;
+		uint w, h;
+		app->win->GetWindowSize(w, h);
+		rect.w = (int)w;
+		rect.h = (int)h;
 	}
 	else
 	{
-		SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
+		if (section != NULL)
+		{
+			rect.w = section->w;
+			rect.h = section->h;
+		}
+		else
+		{
+			SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
+		}
 	}
 
 	rect.w *= scale;

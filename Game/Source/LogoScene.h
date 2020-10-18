@@ -14,6 +14,8 @@ public:
 	// Destructor
 	virtual ~LogoScene();
 
+	void Init();
+
 	// Called before render is available
 	bool Awake();
 
@@ -34,6 +36,7 @@ public:
 
 private:
 	SDL_Texture* logo;
+	int timer = 0;
 };
 
 #endif // __LOGO_SCENE_H__

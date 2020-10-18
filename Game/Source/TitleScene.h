@@ -1,20 +1,20 @@
-#ifndef __SCENE_H__
-#define __SCENE_H__
+#ifndef __TITLE_SCENE_H__
+#define __TITLE_SCENE_H__
 
 #include "Module.h"
 
 struct SDL_Texture;
 
-class Scene : public Module
+class TitleScene : public Module
 {
 public:
 
-	Scene();
-
-	void Init();
+	TitleScene();
 
 	// Destructor
-	virtual ~Scene();
+	virtual ~TitleScene();
+
+	void Init();
 
 	// Called before render is available
 	bool Awake();
@@ -35,7 +35,7 @@ public:
 	bool CleanUp();
 
 private:
-	SDL_Texture* img;
+	SDL_Texture* titleScreen;
 };
 
-#endif // __SCENE_H__
+#endif // __TITLE_SCENE_H__

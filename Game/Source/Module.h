@@ -14,7 +14,7 @@ public:
 	Module() : active(false)
 	{}
 
-	void Init()
+	virtual void Init()
 	{
 		active = true;
 	}
@@ -63,6 +63,20 @@ public:
 	virtual bool Save(pugi::xml_node&)
 	{
 		return true;
+	}
+
+	virtual void Module::Enable() {
+		if (!active) {
+			active = true;
+			Start();
+		}
+	}
+
+	virtual void Module::Disable() {
+		if (active) {
+			active = false;
+			CleanUp();
+		}
 	}
 
 public:

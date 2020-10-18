@@ -15,9 +15,13 @@ class Input;
 class Render;
 class Textures;
 class Audio;
-class Scene;
 class Player;
 class Map;
+class Transition;
+
+class Scene;
+class LogoScene;
+class TitleScene;
 
 class App
 {
@@ -86,9 +90,13 @@ public:
 	Render* render;
 	Textures* tex;
 	Audio* audio;
-	Scene* scene;
 	Player* player;
 	Map* map;
+	Transition* transition;
+
+	Scene* scene;
+	LogoScene* logoScene;
+	TitleScene* titleScene;
 
 private:
 

@@ -4,9 +4,13 @@
 #include "Render.h"
 #include "Textures.h"
 #include "Audio.h"
-#include "Scene.h"
 #include "Player.h"
 #include "Map.h"
+#include "Transition.h"
+
+#include "Scene.h"
+#include "LogoScene.h"
+#include "TitleScene.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -24,9 +28,13 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	render = new Render();
 	tex = new Textures();
 	audio = new Audio();
-	scene = new Scene();
 	player = new Player();
 	map = new Map();
+	transition = new Transition();
+
+	scene = new Scene();
+	logoScene = new LogoScene();
+	titleScene = new TitleScene();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -34,9 +42,12 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(win);
 	AddModule(tex);
 	AddModule(audio);
+	AddModule(map);
+	AddModule(logoScene);
+	AddModule(titleScene);
 	AddModule(scene);
 	AddModule(player);
-	AddModule(map);
+	AddModule(transition);
 
 	// render last to swap buffer
 	AddModule(render);
@@ -107,7 +118,10 @@ bool App::Start()
 
 	while(item != NULL && ret == true)
 	{
-		ret = item->data->Start();
+		if (item->data->active == true)
+		{
+			ret = item->data->Start();
+		}
 		item = item->next;
 	}
 

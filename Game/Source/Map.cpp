@@ -47,7 +47,7 @@ void Map::Draw()
                 source.Create("Assets/maps/%s", t->data->imageSource.GetString());
                 SDL_Texture* tilesetTexture = app->tex->Load(source.GetString());
                 SDL_Rect section = { t->data->tileW * i + t->data->margin,t->data->tileH * j + t->data->margin,t->data->tileW,t->data->tileH };
-                app->render->DrawTexture(tilesetTexture, t->data->tileW * i - t->data->spacing, t->data->tileH * j - t->data->spacing, &section);
+                app->render->DrawTexture(tilesetTexture, t->data->tileW * i - t->data->spacing, t->data->tileH * j - t->data->spacing, false, &section);
             }
         }
         t = t->next;

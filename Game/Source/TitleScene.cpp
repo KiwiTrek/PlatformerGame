@@ -4,66 +4,62 @@
 #include "Audio.h"
 #include "Render.h"
 #include "Window.h"
-#include "LogoScene.h"
+#include "TitleScene.h"
 #include "Transition.h"
+#include "Scene.h"
 
 #include "Defs.h"
 #include "Log.h"
 
-LogoScene::LogoScene() : Module()
+TitleScene::TitleScene() : Module()
 {
-	name.Create("logoScene");
+	name.Create("titleScene");
 }
 
 // Destructor
-LogoScene::~LogoScene()
+TitleScene::~TitleScene()
 {}
 
-void LogoScene::Init()
+void TitleScene::Init()
 {
-	active = true;
+	active = false;
 }
 
 // Called before render is available
-bool LogoScene::Awake()
+bool TitleScene::Awake()
 {
 	LOG("Loading Scene");
 	bool ret = true;
-	app->transition->FadeEffect(nullptr, this, 120.0f);
 
 	return ret;
 }
 
 // Called before the first frame
-bool LogoScene::Start()
+bool TitleScene::Start()
 {
-	logo = app->tex->Load("Assets/textures/logoScreen.jpg");
+	titleScreen = app->tex->Load("Assets/textures/titleScreen.png");
 	return true;
 }
 
 // Called each loop iteration
-bool LogoScene::PreUpdate()
+bool TitleScene::PreUpdate()
 {
 	return true;
 }
 
 // Called each loop iteration
-bool LogoScene::Update(float dt)
+bool TitleScene::Update(float dt)
 {
-	app->render->DrawTexture(logo, NULL, NULL, true);
-	if (timer < 100)
+	app->render->DrawTexture(titleScreen, NULL, NULL, true);
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 	{
-		timer++;
-	}
-	else
-	{
-		app->transition->FadeEffect(this, (Module*)app->titleScene);
+		app->transition->FadeEffect(this, (Module*)app->scene);
 	}
 	return true;
 }
 
 // Called each loop iteration
-bool LogoScene::PostUpdate()
+bool TitleScene::PostUpdate()
 {
 	bool ret = true;
 
@@ -74,7 +70,7 @@ bool LogoScene::PostUpdate()
 }
 
 // Called before quitting
-bool LogoScene::CleanUp()
+bool TitleScene::CleanUp()
 {
 	LOG("Freeing scene");
 
