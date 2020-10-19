@@ -52,7 +52,7 @@ bool TitleScene::Update(float dt)
 {
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 	{
-		app->transition->FadeEffect(this, (Module*)app->scene, false, 45);
+		app->transition->FadeEffect(this, (Module*)app->scene, false, 60);
 	}
 	return true;
 }
@@ -74,6 +74,8 @@ bool TitleScene::PostUpdate()
 bool TitleScene::CleanUp()
 {
 	LOG("Freeing scene");
+
+	app->tex->UnLoad(titleScreen);
 
 	return true;
 }
