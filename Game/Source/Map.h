@@ -7,6 +7,14 @@
 
 #include "PugiXml\src\pugixml.hpp"
 
+enum MapTypes
+{
+    MAPTYPE_UNKNOWN = 0,
+    MAPTYPE_ORTHOGONAL,
+    MAPTYPE_ISOMETRIC,
+    MAPTYPE_STAGGERED
+};
+
 struct Tileset
 {
     int firstgId;
@@ -15,18 +23,49 @@ struct Tileset
     int spacing;
     int margin;
 
-    SString imageSource;
-    int imageW, imageH;
+    SDL_Texture* texture;
+    int	texWidth;
+    int	texHeight;
+    int	numTilesWidth;
+    int	numTilesHeight;
+    int	offsetX;
+    int	offsetY;
+
+    // Receives a tile id and returns it's Rect position on the tileset
+    SDL_Rect GetTileRect(int id) const;
 };
 
-struct MapNode
+struct MapLayer
 {
-    float version;
-    SString orientation;
-    SString renderOrder;
+    SString	name;
+    int width;
+    int height;
+    uint* data;
+
+    MapLayer() : data(NULL)
+    {}
+
+    ~MapLayer()
+    {
+        RELEASE(data);
+    }
+
+    // Function to get the value of x and y
+    inline uint Get(int x, int y) const
+    {
+        uint result = data[y * width + x];
+        return result;
+    }
+};
+
+struct MapData
+{
     int w, h;
     int tileW, tileH;
-    int nextObjectId;
+    SDL_Color backgroundColor;
+    MapTypes type;
+    List<Tileset*> tilesets;
+    List<MapLayer*> mapLayer;
 };
 
 class Map : public Module
@@ -50,13 +89,20 @@ public:
     // Load new map
     bool Load(const char* path);
 
-    MapNode map;
-    List<Tileset*> tilesets;
+    // Translates map position to world position
+    iPoint MapToWorld(int x, int y) const;
 
+    MapData data;
+    MapTypes StrToMapType(SString str);
 private:
 
-    void LoadMap(pugi::xml_node& mapData);
-    Tileset* LoadTileset(pugi::xml_node& tileSetData);
+    bool LoadMap();
+    bool LoadTilesetDetails(pugi::xml_node& tilesetNode, Tileset* set);
+    bool LoadTilesetImage(pugi::xml_node& tilesetNode, Tileset* set);
+    bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
+
+    bool StoreId(pugi::xml_node& node, MapLayer* layer, int index);
+    void LogInfo();
 
     pugi::xml_document mapFile;
     SString folder;
