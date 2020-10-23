@@ -99,10 +99,21 @@ bool Scene::PostUpdate()
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
 
-	//app->render->DrawTexture(sky, 0, 0, true, nullptr, 0.3f);
-	//app->render->DrawTexture(mountainsBack, 0, 0, true, nullptr, 0.5f);
-	//app->render->DrawTexture(clouds, 0, 0, true, nullptr, 0.6f);
-	//app->render->DrawTexture(mountainsFront, 0, 0, true, nullptr, 0.85f);
+	app->render->camera.y = app->map->data.tileH*-2;
+	app->render->DrawTexture(sky, 0, 0, true, nullptr, 0.0f);
+
+	uint w, h;
+	app->win->GetWindowSize(w, h);
+	uint wmb, hmb;
+	app->tex->GetSize(mountainsBack, wmb, hmb);
+	//for (int i = 0; (wmb * i) <= (w - app->render->camera.x); i++)
+	//{
+	//	app->render->DrawTexture(mountainsBack, wmb*i, app->map->data.tileH * 6, false, nullptr, 0.5f);
+	//	LOG("%d, %d", i, -app->render->camera.x);
+	//}
+	app->render->DrawTexture(mountainsBack, 0, app->map->data.tileH * 6, false, nullptr, 0.5f);
+	app->render->DrawTexture(clouds, 0, app->map->data.tileH * 2, false, nullptr, 0.6f);
+	app->render->DrawTexture(mountainsFront, 0, app->map->data.tileH * 8, false, nullptr, 0.85f);
 	app->map->Draw();
 
 	return ret;
