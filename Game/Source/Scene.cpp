@@ -36,9 +36,12 @@ bool Scene::Awake()
 // Called before the first frame
 bool Scene::Start()
 {
-	img = app->tex->Load("Assets/textures/test.png");
+	sky = app->tex->Load("Assets/textures/Background/sky_solid_color.png");
+	clouds = app->tex->Load("Assets/textures/Background/clouds.png");
+	mountainsBack = app->tex->Load("Assets/textures/Background/mountain_depth_z_1.png");
+	mountainsFront = app->tex->Load("Assets/textures/Background/mountain_depth_z_2.png");
 	app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
-	app->map->Load("temp.tmx");
+	app->map->Load("level1.tmx");
 	return true;
 }
 
@@ -81,8 +84,6 @@ bool Scene::Update(float dt)
 		app->render->camera.x -= 1;
 	}
 
-	app->map->Draw();
-
 	SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d", app->map->data.w, app->map->data.h, app->map->data.tileW, app->map->data.tileH, app->map->data.tilesets.count());
 
 	app->win->SetTitle(title.GetString());
@@ -98,6 +99,10 @@ bool Scene::PostUpdate()
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
 
+	//app->render->DrawTexture(sky, 0, 0, true, nullptr, 0.3f);
+	//app->render->DrawTexture(mountainsBack, 0, 0, true, nullptr, 0.5f);
+	//app->render->DrawTexture(clouds, 0, 0, true, nullptr, 0.6f);
+	//app->render->DrawTexture(mountainsFront, 0, 0, true, nullptr, 0.85f);
 	app->map->Draw();
 
 	return ret;

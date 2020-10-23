@@ -35,7 +35,10 @@ public:
 	bool CleanUp();
 
 private:
-	SDL_Texture* img;
+	SDL_Texture* sky;
+	SDL_Texture* clouds;
+	SDL_Texture* mountainsBack;
+	SDL_Texture* mountainsFront;
 };
 
 #endif // __SCENE_H__
