@@ -3,10 +3,14 @@
 
 #include "Module.h"
 
+#include "SDL/include/SDL.h"
+
 class Player : public Module {
 public:
 
 	Player();
+
+	void Init();
 
 	// Destructor
 	virtual ~Player();
@@ -28,6 +32,9 @@ public:
 	bool Load(pugi::xml_node&);
 	bool Save(pugi::xml_node&);
 
+	SDL_Texture* playerTex;
+	SDL_Rect playerRect;
+	SDL_Rect playerIdle;
 private:
 };
 
