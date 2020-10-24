@@ -44,7 +44,6 @@ void Map::Draw()
             for (int i = 0; i < L->data->width; ++i) // Iterate for all collumns
             {
                 uint u = L->data->Get(i, j);
-                LOG("%u", u);
                 SDL_Rect n = data.tilesets.start->data->GetTileRect(u);
                 iPoint pos = MapToWorld(i, j);
                 app->render->DrawTexture(data.tilesets.start->data->texture, pos.x, pos.y, false, &n);
@@ -68,6 +67,11 @@ iPoint Map::MapToWorld(int x, int y) const
 SDL_Rect Tileset::GetTileRect(int id) const
 {
     SDL_Rect rect = { 0 };
+
+    if (id == 0)
+    {
+        return rect;
+    }
 
     iPoint p = { 0,this->margin };
     int targetId = this->firstgId;

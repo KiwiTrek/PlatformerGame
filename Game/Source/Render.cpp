@@ -1,6 +1,7 @@
 #include "App.h"
 #include "Window.h"
 #include "Render.h"
+#include "Map.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -10,10 +11,10 @@
 Render::Render() : Module()
 {
 	name.Create("renderer");
-	background.r = 0;
-	background.g = 0;
-	background.b = 0;
-	background.a = 0;
+	background.r = 63;
+	background.g = 192;
+	background.b = 239;
+	background.a = 255;
 }
 
 // Destructor

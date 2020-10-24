@@ -36,12 +36,15 @@ bool Scene::Awake()
 // Called before the first frame
 bool Scene::Start()
 {
-	sky = app->tex->Load("Assets/textures/Background/sky_solid_color.png");
 	clouds = app->tex->Load("Assets/textures/Background/clouds.png");
 	mountainsBack = app->tex->Load("Assets/textures/Background/mountain_depth_z_1.png");
 	mountainsFront = app->tex->Load("Assets/textures/Background/mountain_depth_z_2.png");
 	app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
 	app->map->Load("level1.tmx");
+
+	app->render->camera.x = 0;
+	app->render->camera.y = app->map->data.tileH * -2;
+
 	return true;
 }
 
@@ -99,21 +102,35 @@ bool Scene::PostUpdate()
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
 
-	app->render->camera.y = app->map->data.tileH*-2;
-	app->render->DrawTexture(sky, 0, 0, true, nullptr, 0.0f);
+	if (app->render->camera.x >= 0)
+	{
+		app->render->camera.x = 0;
+	}
+	/*if (app->render->camera.x - app->render->camera.w > app->map->data.w * app->map->data.tileW)
+	{
+		++app->render->camera.x;
+	}*/
+
+	if (app->render->camera.y >= 0)
+	{
+		app->render->camera.y = 0;
+	}
+	/*if (app->render->camera.y - app->render->camera.h > app->map->data.h * app->map->data.tileH)
+	{
+		++app->render->camera.y;
+	}*/
 
 	uint w, h;
 	app->win->GetWindowSize(w, h);
 	uint wmb, hmb;
 	app->tex->GetSize(mountainsBack, wmb, hmb);
-	//for (int i = 0; (wmb * i) <= (w - app->render->camera.x); i++)
-	//{
-	//	app->render->DrawTexture(mountainsBack, wmb*i, app->map->data.tileH * 6, false, nullptr, 0.5f);
-	//	LOG("%d, %d", i, -app->render->camera.x);
-	//}
-	app->render->DrawTexture(mountainsBack, 0, app->map->data.tileH * 6, false, nullptr, 0.5f);
-	app->render->DrawTexture(clouds, 0, app->map->data.tileH * 2, false, nullptr, 0.6f);
-	app->render->DrawTexture(mountainsFront, 0, app->map->data.tileH * 8, false, nullptr, 0.85f);
+	for (int i = 0; (wmb * i) <= (w - app->render->camera.x); i++)
+	{
+		app->render->DrawTexture(mountainsBack, wmb * i, app->map->data.tileH * 6, false, nullptr, 0.4f);
+		app->render->DrawTexture(clouds, wmb * i, app->map->data.tileH * 2.5, false, nullptr, 0.5f);
+		app->render->DrawTexture(mountainsFront, wmb * i, app->map->data.tileH * 8, false, nullptr, 0.85f);
+	}
+
 	app->map->Draw();
 
 	return ret;
