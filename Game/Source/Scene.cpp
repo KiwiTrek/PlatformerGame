@@ -105,13 +105,33 @@ bool Scene::PostUpdate()
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
 
-	// Map borders
+
 	LOG("%d,%d", app->render->camera.x, app->render->camera.y);
+
+	//Player restraint
+	if ((app->render->camera.x + app->player->playerRect.x) < (app->map->data.tileW * 6))
+	{
+		++app->render->camera.x;
+	}
+	if ((app->player->playerRect.w + app->render->camera.x + app->player->playerRect.x) > (app->render->camera.w - app->map->data.tileW * 10))
+	{
+		--app->render->camera.x;
+	}
+	if ((app->render->camera.y + app->player->playerRect.y) < (app->map->data.tileH * 6))
+	{
+		++app->render->camera.y;
+	}
+	if ((app->player->playerRect.h + app->render->camera.y + app->player->playerRect.y) > (app->render->camera.h - app->map->data.tileH * 6))
+	{
+		--app->render->camera.y;
+	}
+
+	// Map borders
 	if (app->render->camera.x >= 0)
 	{
 		--app->render->camera.x;
 	}
-	if ((app->render->camera.w - app->render->camera.x) > (app->map->data.w * app->map->data.tileW)) //remember to -1 when done
+	if ((app->render->camera.w - app->render->camera.x) > (app->map->data.w * app->map->data.tileW))
 	{
 		++app->render->camera.x;
 	}
@@ -119,39 +139,9 @@ bool Scene::PostUpdate()
 	{
 		--app->render->camera.y;
 	}
-	if ((app->render->camera.h - app->render->camera.y) > (app->map->data.h * app->map->data.tileH)) //remember to -1 when done
+	if ((app->render->camera.h - app->render->camera.y) > (app->map->data.h * app->map->data.tileH))
 	{
 		++app->render->camera.y;
-	}
-
-	//Player restraint
-	if ((app->render->camera.x + app->player->playerRect.x) < (app->map->data.tileW * 6))
-	{
-		if (app->render->camera.x != -1)
-		{
-			++app->render->camera.x;
-		}
-	}
-	if (( app->player->playerRect.w + app->render->camera.x + app->player->playerRect.x) > (app->render->camera.w - app->map->data.tileW * 10))
-	{
-		if (app->render->camera.y != -6400)
-		{
-			--app->render->camera.x;
-		}
-	}
-	if ((app->render->camera.y + app->player->playerRect.y) < (app->map->data.tileH * 6))
-	{
-		if (app->render->camera.y != 0)
-		{
-			++app->render->camera.y;
-		}
-	}
-	if ((app->player->playerRect.h + app->render->camera.y + app->player->playerRect.y) > (app->render->camera.h - app->map->data.tileH * 6))
-	{
-		if (app->render->camera.y != -240)
-		{
-			--app->render->camera.y;
-		}
 	}
 
 	uint w, h;
