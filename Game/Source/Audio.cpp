@@ -56,7 +56,7 @@ bool Audio::Awake(pugi::xml_node& config)
 	}
 	else
 	{
-		Mix_VolumeMusic(config.child("music").attribute("volume").as_int(128));
+		Mix_VolumeMusic(config.child("music").attribute("volume").as_int(64));
 		LOG("Set volume to: %d\n", Mix_VolumeMusic(-1));
 	}
 
@@ -152,7 +152,7 @@ bool Audio::PlayMusic(const char* path, float fade_time)
 		}
 		else
 		{
-			if(Mix_PlayMusic(music, -1) < 0)
+			if (Mix_PlayMusic(music, -1) < 0)
 			{
 				LOG("Cannot play in music %s. Mix_GetError(): %s", path, Mix_GetError());
 				ret = false;
@@ -185,6 +185,19 @@ unsigned int Audio::LoadFx(const char* path)
 	}
 
 	return ret;
+}
+
+bool Audio::UnloadFx(unsigned int index)
+{
+	ListItem<Mix_Chunk*>* s = fx.At(index - 1);
+	if (s != nullptr)
+	{
+		Mix_FreeChunk(s->data);
+		fx.del(s);
+		return true;
+	}
+
+	return false;
 }
 
 // Play WAV

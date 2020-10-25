@@ -8,19 +8,32 @@
 class Animation
 {
 public:
-	void PushBack(const SDL_Rect& rect) { frames[totalFrames++] = rect; }
+	void PushBack(const SDL_Rect& rect)
+	{
+		frames[totalFrames++] = rect;
+	}
 	void Reset()
 	{
 		currentFrame = 0;
 		loopCount = 0;
 	}
-	bool HasFinished() { return !loop && loopCount > 0; }
+	bool HasFinished()
+	{
+		return !loop && loopCount > 0;
+	}
 	void Update()
 	{
 		currentFrame += speed;
-		if (currentFrame >= totalFrames) {
-			if (loop) { currentFrame = 0.0f; }
-			else { currentFrame = totalFrames - 1; }
+		if (currentFrame >= totalFrames)
+		{
+			if (loop)
+			{
+				currentFrame = 0.0f;
+			}
+			else
+			{
+				currentFrame = totalFrames - 1;
+			}
 			++loopCount;
 		}
 	}

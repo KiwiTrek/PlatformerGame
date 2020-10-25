@@ -11,10 +11,10 @@
 Render::Render() : Module()
 {
 	name.Create("renderer");
-	background.r = 63;
-	background.g = 192;
-	background.b = 239;
-	background.a = 255;
+	background.r = 0;
+	background.g = 0;
+	background.b = 0;
+	background.a = 0;
 }
 
 // Destructor
@@ -129,7 +129,7 @@ void Render::ResetViewPort()
 }
 
 // Blit to screen
-bool Render::DrawTexture(SDL_Texture* texture, int x, int y, bool fullscreen, const SDL_Rect* section, float speed, double angle, int pivotX, int pivotY) const
+bool Render::DrawTexture(SDL_Texture* texture, int x, int y, bool fullscreen, const SDL_Rect* section, bool invert, float speed, double angle, int pivotX, int pivotY) const
 {
 	bool ret = true;
 	uint scale = app->win->GetScale();
@@ -171,7 +171,13 @@ bool Render::DrawTexture(SDL_Texture* texture, int x, int y, bool fullscreen, co
 		p = &pivot;
 	}
 
-	if(SDL_RenderCopyEx(renderer, texture, section, &rect, angle, p, SDL_FLIP_NONE) != 0)
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	if (invert)
+	{
+		flip = SDL_FLIP_HORIZONTAL;
+	}
+
+	if(SDL_RenderCopyEx(renderer, texture, section, &rect, angle, p, flip) != 0)
 	{
 		LOG("Cannot blit to screen. SDL_RenderCopy error: %s", SDL_GetError());
 		ret = false;

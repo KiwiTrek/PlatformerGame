@@ -77,6 +77,8 @@ public:
     // Destructor
     virtual ~Map();
 
+    void Init();
+
     // Called before render is available
     bool Awake(pugi::xml_node& conf);
 

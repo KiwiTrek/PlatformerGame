@@ -35,6 +35,7 @@ public:
 	bool CleanUp();
 
 private:
+	SDL_Color sky;
 	SDL_Texture* clouds;
 	SDL_Texture* mountainsBack;
 	SDL_Texture* mountainsFront;

@@ -11,6 +11,7 @@
 #include "Scene.h"
 #include "LogoScene.h"
 #include "TitleScene.h"
+#include "DeathScene.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -35,6 +36,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	scene = new Scene();
 	logoScene = new LogoScene();
 	titleScene = new TitleScene();
+	deathScene = new DeathScene();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -45,6 +47,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(map);
 	AddModule(logoScene);
 	AddModule(titleScene);
+	AddModule(deathScene);
 	AddModule(scene);
 	AddModule(player);
 	AddModule(transition);
@@ -83,7 +86,6 @@ bool App::Awake()
 
 	bool ret = false;
 
-	// L01: DONE 3: Load config from XML
 	config = LoadConfig(configFile);
 
 	if (config.empty() == false)

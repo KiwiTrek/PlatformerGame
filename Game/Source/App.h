@@ -22,6 +22,7 @@ class Transition;
 class Scene;
 class LogoScene;
 class TitleScene;
+class DeathScene;
 
 class App
 {
@@ -97,6 +98,7 @@ public:
 	Scene* scene;
 	LogoScene* logoScene;
 	TitleScene* titleScene;
+	DeathScene* deathScene;
 
 private:
 

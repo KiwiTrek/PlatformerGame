@@ -1,18 +1,18 @@
-#ifndef __LOGO_SCENE_H__
-#define __LOGO_SCENE_H__
+#ifndef __DEATH_SCENE_H__
+#define __DEATH_SCENE_H__
 
 #include "Module.h"
 
 struct SDL_Texture;
 
-class LogoScene : public Module
+class DeathScene : public Module
 {
 public:
 
-	LogoScene();
+	DeathScene();
 
 	// Destructor
-	virtual ~LogoScene();
+	virtual ~DeathScene();
 
 	void Init();
 
@@ -35,9 +35,7 @@ public:
 	bool CleanUp();
 
 private:
-	SDL_Texture* logo;
-	int timer = 0;
-	unsigned int logoFx = 0;
+	SDL_Texture* deathScreen;
 };
 
-#endif // __LOGO_SCENE_H__
+#endif // __DEATH_SCENE_H__

@@ -17,6 +17,11 @@ Map::Map() : Module(), mapLoaded(false)
 Map::~Map()
 {}
 
+void Map::Init()
+{
+    active = false;
+}
+
 // Called before render is available
 bool Map::Awake(pugi::xml_node& config)
 {
@@ -195,6 +200,10 @@ bool Map::LoadMap()
         data.tileW = map.attribute("tilewidth").as_int();
         data.tileH = map.attribute("tileheight").as_int();
         //data.nextObjectId = map.attribute("nextobjectid").as_int();
+        SString color(map.attribute("backgroundcolor").as_string());
+        color.Trim();
+        sscanf_s(color.GetString(), "%02x%02x%02x", (uint)&data.backgroundColor.r, (uint)&data.backgroundColor.g, (uint)&data.backgroundColor.b);
+        data.backgroundColor.a = 255;
     }
     return ret;
 }

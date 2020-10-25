@@ -7,6 +7,8 @@
 #include "Scene.h"
 #include "Map.h"
 #include "Player.h"
+#include "Transition.h"
+#include "DeathScene.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -40,13 +42,17 @@ bool Scene::Start()
 	clouds = app->tex->Load("Assets/textures/Background/clouds.png");
 	mountainsBack = app->tex->Load("Assets/textures/Background/mountain_depth_z_1.png");
 	mountainsFront = app->tex->Load("Assets/textures/Background/mountain_depth_z_2.png");
-	app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
+
+	app->map->Enable();
 	app->map->Load("level1.tmx");
+	app->render->SetBackgroundColor(app->map->data.backgroundColor);
 
 	app->render->camera.x = 0;
 	app->render->camera.y = app->map->data.tileH * -2;
 
 	app->player->Enable();
+
+	app->audio->PlayMusic("Assets/audio/music/Level1.ogg", 0.0f);
 
 	return true;
 }
@@ -60,34 +66,27 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
-
-	if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
 	{
-		app->LoadRequest();
+		app->audio->MuteVolume();
+	}
+
+	//DEBUG
+	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+		app->transition->FadeEffect(this, (Module*)app->scene, false);
+	}
+	if (app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	{
+		app->transition->FadeEffect(this, this, false);
 	}
 	if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 	{
 		app->SaveRequest();
 	}
-	if (app->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 	{
-		app->audio->MuteVolume();
-	}
-	if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-	{
-		app->render->camera.y += 1;
-	}
-	if (app->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-	{
-		app->render->camera.y -= 1;
-	}
-	if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-	{
-		app->render->camera.x += 1;
-	}
-	if (app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-	{
-		app->render->camera.x -= 1;
+		app->LoadRequest();
 	}
 
 	SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d", app->map->data.w, app->map->data.h, app->map->data.tileW, app->map->data.tileH, app->map->data.tilesets.count());
@@ -111,37 +110,37 @@ bool Scene::PostUpdate()
 	//Player restraint
 	if ((app->render->camera.x + app->player->playerRect.x) < (app->map->data.tileW * 6))
 	{
-		++app->render->camera.x;
+		app->render->camera.x += 1;
 	}
 	if ((app->player->playerRect.w + app->render->camera.x + app->player->playerRect.x) > (app->render->camera.w - app->map->data.tileW * 10))
 	{
-		--app->render->camera.x;
+		app->render->camera.x -= 1;
 	}
 	if ((app->render->camera.y + app->player->playerRect.y) < (app->map->data.tileH * 6))
 	{
-		++app->render->camera.y;
+		app->render->camera.y += 1;
 	}
 	if ((app->player->playerRect.h + app->render->camera.y + app->player->playerRect.y) > (app->render->camera.h - app->map->data.tileH * 6))
 	{
-		--app->render->camera.y;
+		app->render->camera.y -= 1;
 	}
 
 	// Map borders
 	if (app->render->camera.x >= 0)
 	{
-		--app->render->camera.x;
+		app->render->camera.x -= 1;
 	}
 	if ((app->render->camera.w - app->render->camera.x) > (app->map->data.w * app->map->data.tileW))
 	{
-		++app->render->camera.x;
+		app->render->camera.x += 1;
 	}
 	if (app->render->camera.y >= 0)
 	{
-		--app->render->camera.y;
+		app->render->camera.y -= 1;
 	}
 	if ((app->render->camera.h - app->render->camera.y) > (app->map->data.h * app->map->data.tileH))
 	{
-		++app->render->camera.y;
+		app->render->camera.y += 1;
 	}
 
 	uint w, h;
@@ -150,9 +149,9 @@ bool Scene::PostUpdate()
 	app->tex->GetSize(mountainsBack, wmb, hmb);
 	for (int i = 0; (wmb * i) <= (w - app->render->camera.x); i++)
 	{
-		app->render->DrawTexture(mountainsBack, wmb * i, app->map->data.tileH * 6, false, nullptr, 0.4f);
-		app->render->DrawTexture(clouds, wmb * i, app->map->data.tileH * 2.5, false, nullptr, 0.5f);
-		app->render->DrawTexture(mountainsFront, wmb * i, app->map->data.tileH * 8, false, nullptr, 0.85f);
+		app->render->DrawTexture(mountainsBack, wmb * i, app->map->data.tileH * 6, false, nullptr, false, 0.4f);
+		app->render->DrawTexture(clouds, wmb * i, app->map->data.tileH * 2.5, false, nullptr, false, 0.5f);
+		app->render->DrawTexture(mountainsFront, wmb * i, app->map->data.tileH * 8, false, nullptr, false, 0.85f);
 	}
 
 	app->map->Draw();
@@ -164,6 +163,15 @@ bool Scene::PostUpdate()
 bool Scene::CleanUp()
 {
 	LOG("Freeing scene");
+	app->render->camera.x = 0;
+	app->render->camera.y = 0;
+
+	app->tex->UnLoad(clouds);
+	app->tex->UnLoad(mountainsBack);
+	app->tex->UnLoad(mountainsFront);
+
+	app->player->Disable();
+	app->map->Disable();
 
 	return true;
 }
