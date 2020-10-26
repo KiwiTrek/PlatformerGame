@@ -137,6 +137,26 @@ bool Player::Update(float dt)
 		}
 	}
 
+	//Collisions
+	//ListItem <MapLayer*>* ML = app->map->data.mapLayer.start;
+	//while (ML != NULL) {
+	//	if (ML->data->name.GetString() == "Collisions") {
+	//		break;
+	//	}
+	//	ML = ML->next;
+	//}
+	//ListItem <Tileset*>* T = app->map->data.tilesets.start;
+	//while (T != NULL) {
+	//	if (T->data->name.GetString() == "MetaData") {
+	//		break;
+	//	}
+	//	T = T->next;
+	//}
+
+	//if(T->data-> ML->data->Get(0,0))
+
+
+
 	if (isDead)
 	{
 		if (currentAnimation->HasFinished())

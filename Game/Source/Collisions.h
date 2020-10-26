@@ -16,6 +16,8 @@ public:
         WATER,
         SPIKE,
         FRUIT,
+        SPAWN,
+        GOAL,
         MAX
     };
 

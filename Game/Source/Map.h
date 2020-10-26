@@ -46,7 +46,6 @@ struct Properties
 
 struct Tile
 {
-    int x, y;
     Properties properties;
 };
 
@@ -68,6 +67,7 @@ struct Tileset
 
     // Receives a tile id and returns it's Rect position on the tileset
     SDL_Rect GetTileRect(int id) const;
+    // Create a function that gives Id and returns properties
 };
 
 struct MapLayer
