@@ -24,6 +24,9 @@
   <image source="MetaData.png" width="192" height="64"/>
  </tileset>
  <layer id="1" name="Ground" width="120" height="15" locked="1">
+  <properties>
+   <property name="NoDraw" type="int" value="0"/>
+  </properties>
   <data>
    <tile/>
    <tile/>
@@ -1828,6 +1831,9 @@
   </data>
  </layer>
  <layer id="4" name="Decoration" width="120" height="15">
+  <properties>
+   <property name="NoDraw" type="int" value="0"/>
+  </properties>
   <data>
    <tile/>
    <tile/>
@@ -3632,6 +3638,10 @@
   </data>
  </layer>
  <layer id="6" name="Collisions" width="120" height="15">
+  <properties>
+   <property name="Navigation" type="int" value="1"/>
+   <property name="NoDraw" type="int" value="1"/>
+  </properties>
   <data>
    <tile/>
    <tile/>
@@ -5436,6 +5446,9 @@
   </data>
  </layer>
  <layer id="3" name="Objects" width="120" height="15">
+  <properties>
+   <property name="NoDraw" type="int" value="0"/>
+  </properties>
   <data>
    <tile/>
    <tile/>

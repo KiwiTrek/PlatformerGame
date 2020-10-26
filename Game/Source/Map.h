@@ -15,6 +15,36 @@ enum MapTypes
     MAPTYPE_STAGGERED
 };
 
+struct Properties
+{
+    struct Property
+    {
+        //...
+        SString name;
+        int value;
+    };
+
+    ~Properties()
+    {
+        //...
+        ListItem<Property*>* item;
+        item = list.start;
+
+        while (item != NULL)
+        {
+            RELEASE(item->data);
+            item = item->next;
+        }
+        list.clear();
+    }
+
+    // L06: TODO 7: Method to ask for the value of a custom property
+    int GetProperty(const char* name, int default_value = 0) const;
+
+    List<Property*> list;
+};
+
+
 struct Tileset
 {
     int firstgId;
@@ -41,6 +71,8 @@ struct MapLayer
     int width;
     int height;
     uint* data;
+
+    Properties properties;
 
     MapLayer() : data(NULL)
     {}
@@ -95,13 +127,15 @@ public:
     iPoint MapToWorld(int x, int y) const;
 
     MapData data;
-    MapTypes StrToMapType(SString str);
+
 private:
 
     bool LoadMap();
     bool LoadTilesetDetails(pugi::xml_node& tilesetNode, Tileset* set);
     bool LoadTilesetImage(pugi::xml_node& tilesetNode, Tileset* set);
     bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
+    bool LoadProperties(pugi::xml_node& node, Properties& properties);
+    MapTypes StrToMapType(SString str);
 
     Tileset* Map::GetTilesetFromTileId(int id) const;
 

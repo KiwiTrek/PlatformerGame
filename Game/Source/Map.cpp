@@ -44,17 +44,20 @@ void Map::Draw()
     Tileset* T;
     while (L != NULL) // Iterate for all layers
     {
-        for (int y = 0; y < data.h; ++y)
+        if (L->data->properties.GetProperty("NoDraw") == 0)
         {
-            for (int x = 0; x < data.w; ++x)
+            for (int y = 0; y < data.h; ++y)
             {
-                int tileId = L->data->Get(x, y);
-                if (tileId > 0)
+                for (int x = 0; x < data.w; ++x)
                 {
-                    T = GetTilesetFromTileId(tileId);
-                    SDL_Rect n = T->GetTileRect(tileId);
-                    iPoint pos = MapToWorld(x, y);
-                    app->render->DrawTexture(T->texture, pos.x, pos.y, false, &n);
+                    int tileId = L->data->Get(x, y);
+                    if (tileId > 0)
+                    {
+                        T = GetTilesetFromTileId(tileId);
+                        SDL_Rect n = T->GetTileRect(tileId);
+                        iPoint pos = MapToWorld(x, y);
+                        app->render->DrawTexture(T->texture, pos.x, pos.y, false, &n);
+                    }
                 }
             }
         }
@@ -72,32 +75,11 @@ iPoint Map::MapToWorld(int x, int y) const
     return ret;
 }
 
+
 // Get relative Tile rectangle
 SDL_Rect Tileset::GetTileRect(int id) const
 {
     SDL_Rect rect = { 0 };
-
-    //if (id == 0)
-    //{
-    //    return rect;
-    //}
-
-    //iPoint p = { 0,this->margin };
-    //int targetId = this->firstgId;
-    //for (int j = 0; j < this->numTilesHeight; ++j)
-    //{
-    //    p.x = this->spacing;
-    //    for (int i = 0; i < this->numTilesWidth; ++i)
-    //    {
-    //        if (id == targetId)
-    //        {
-    //            return SDL_Rect({ p.x,p.y,this->tileW,this->tileH });
-    //        }
-    //        p.x += this->tileW + this->spacing;
-    //        ++targetId;
-    //    }
-    //    p.y += this->tileH + this->spacing;
-    //}
 
     int relativeId = id - firstgId;
     rect.w = tileW;
@@ -289,6 +271,28 @@ bool Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
     }
 
     LOG("Layer <<%s>> has loaded %d tiles", layer->name.GetString(), i);
+    
+    ret = LoadProperties(node.child("properties"), layer->properties);
+    
+    return ret;
+}
+
+bool Map::LoadProperties(pugi::xml_node& node, Properties& properties)
+{
+    bool ret = true;
+
+    pugi::xml_node property;
+    for (property = node.child("property"); property; property = property.next_sibling("property"))
+    {
+        Properties::Property* prop = new Properties::Property();
+
+        prop->name = property.attribute("name").as_string();
+        prop->value = property.attribute("value").as_int();
+
+        properties.list.add(prop);
+    }
+
+
     return ret;
 }
 
@@ -368,14 +372,47 @@ void Map::LogInfo()
     // LOG the info for each loaded layer
     ListItem<MapLayer*>* layerList;
     layerList = data.mapLayer.start;
+
+    ListItem<Properties::Property*>* propertyList;
+    propertyList = data.mapLayer.start->data->properties.list.start;
     while (layerList != NULL)
     {
         LOG("<< LAYER >>");
         LOG("Name=%s", layerList->data->name.GetString());
         LOG("Width=%d", layerList->data->width);
         LOG("Height=%d", layerList->data->height);
+
+        while (propertyList != NULL) {
+            LOG("<< PROPERTY >>");
+            LOG("Name=%s", propertyList->data->name.GetString());
+            LOG("Value=%d", propertyList->data->value);
+            propertyList = propertyList->next;
+        }
+
         LOG("<< END LAYER >>\n");
         layerList = layerList->next;
     }
     LOG("--------------------------------------------------------------------------");
+}
+
+int Properties::GetProperty(const char* value, int defaultValue) const
+{
+    //...
+    ListItem<Property*>* P;
+    P = list.start;
+
+    SString prop;
+    prop.Create(value);
+
+    while (P != NULL)
+    {
+        LOG("Checking property: %s", P->data->name.GetString());
+        if (P->data->name == prop)
+        {
+            return P->data->value;
+        }
+        P = P->next;
+    }
+
+    return defaultValue;
 }
