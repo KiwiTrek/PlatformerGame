@@ -1,5 +1,5 @@
-#ifndef __MODULE_PLAYER_H__
-#define __MODULE_PLAYER_H__
+#ifndef __PLAYER_H__
+#define __PLAYER_H__
 
 #include "Module.h"
 #include "Animation.h"
@@ -54,5 +54,4 @@ private:
 	bool invert;
 };
 
-#endif // !__MODULE_PLAYER_H__
-
+#endif // !__PLAYER_H__

@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Map.h"
 #include "Transition.h"
+#include "Collisions.h"
 
 #include "Scene.h"
 #include "LogoScene.h"
@@ -32,6 +33,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	player = new Player();
 	map = new Map();
 	transition = new Transition();
+	collisions = new Collisions();
 
 	scene = new Scene();
 	logoScene = new LogoScene();
@@ -50,6 +52,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(deathScene);
 	AddModule(scene);
 	AddModule(player);
+	AddModule(collisions);
 	AddModule(transition);
 
 	// render last to swap buffer

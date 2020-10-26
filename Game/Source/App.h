@@ -18,6 +18,7 @@ class Audio;
 class Player;
 class Map;
 class Transition;
+class Collisions;
 
 class Scene;
 class LogoScene;
@@ -94,6 +95,7 @@ public:
 	Player* player;
 	Map* map;
 	Transition* transition;
+	Collisions* collisions;
 
 	Scene* scene;
 	LogoScene* logoScene;
