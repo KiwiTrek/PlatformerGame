@@ -39,19 +39,23 @@ void Map::Draw()
     {
         return;
     }
-
-    ListItem <MapLayer*>* L;
+    ListItem<MapLayer*>* L;
     L = data.mapLayer.start;
+    Tileset* T;
     while (L != NULL) // Iterate for all layers
     {
-        for (int j = 0; j < L->data->height; ++j) // Iterate for all rows
+        for (int y = 0; y < data.h; ++y)
         {
-            for (int i = 0; i < L->data->width; ++i) // Iterate for all collumns
+            for (int x = 0; x < data.w; ++x)
             {
-                uint u = L->data->Get(i, j);
-                SDL_Rect n = data.tilesets.start->data->GetTileRect(u);
-                iPoint pos = MapToWorld(i, j);
-                app->render->DrawTexture(data.tilesets.start->data->texture, pos.x, pos.y, false, &n);
+                int tileId = L->data->Get(x, y);
+                if (tileId > 0)
+                {
+                    T = GetTilesetFromTileId(tileId);
+                    SDL_Rect n = T->GetTileRect(tileId);
+                    iPoint pos = MapToWorld(x, y);
+                    app->render->DrawTexture(T->texture, pos.x, pos.y, false, &n);
+                }
             }
         }
         L = L->next; // Next layer
@@ -73,27 +77,34 @@ SDL_Rect Tileset::GetTileRect(int id) const
 {
     SDL_Rect rect = { 0 };
 
-    if (id == 0)
-    {
-        return rect;
-    }
+    //if (id == 0)
+    //{
+    //    return rect;
+    //}
 
-    iPoint p = { 0,this->margin };
-    int targetId = this->firstgId;
-    for (int j = 0; j < this->numTilesHeight; ++j)
-    {
-        p.x = this->spacing;
-        for (int i = 0; i < this->numTilesWidth; ++i)
-        {
-            if (id == targetId)
-            {
-                return SDL_Rect({ p.x,p.y,this->tileW,this->tileH });
-            }
-            p.x += this->tileW + this->spacing;
-            ++targetId;
-        }
-        p.y += this->tileH + this->spacing;
-    }
+    //iPoint p = { 0,this->margin };
+    //int targetId = this->firstgId;
+    //for (int j = 0; j < this->numTilesHeight; ++j)
+    //{
+    //    p.x = this->spacing;
+    //    for (int i = 0; i < this->numTilesWidth; ++i)
+    //    {
+    //        if (id == targetId)
+    //        {
+    //            return SDL_Rect({ p.x,p.y,this->tileW,this->tileH });
+    //        }
+    //        p.x += this->tileW + this->spacing;
+    //        ++targetId;
+    //    }
+    //    p.y += this->tileH + this->spacing;
+    //}
+
+    int relativeId = id - firstgId;
+    rect.w = tileW;
+    rect.h = tileH;
+    rect.x = margin + ((rect.w + spacing) * (relativeId % numTilesWidth));
+    rect.y = margin + ((rect.h + spacing) * (relativeId / numTilesWidth));
+
     return rect;
 }
 
@@ -301,6 +312,25 @@ MapTypes Map::StrToMapType(SString s)
         ++type;
     }
     return MAPTYPE_UNKNOWN;
+}
+
+Tileset* Map::GetTilesetFromTileId(int id) const
+{
+    ListItem<Tileset*>* item = data.tilesets.end;
+    Tileset* set = item->data;
+
+    //...
+    while (item != NULL)
+    {
+        if (set->firstgId <= id)
+        {
+            return set;
+        }
+        item = item->prev;
+        set = item->data;
+    }
+
+    return set;
 }
 
 void Map::LogInfo()
