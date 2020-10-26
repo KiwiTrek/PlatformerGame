@@ -296,8 +296,9 @@ MapTypes Map::StrToMapType(SString s)
     {
         if (s == StrType[i])
         {
-            return ++type;
+            return type;
         }
+        ++type;
     }
     return MAPTYPE_UNKNOWN;
 }
