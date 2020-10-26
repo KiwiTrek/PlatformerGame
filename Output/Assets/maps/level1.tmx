@@ -14,6 +14,11 @@
   <tile id="38" terrain="0,0,0,0" probability="0.01"/>
   <tile id="39" terrain="0,0,0,0" probability="0.01"/>
   <tile id="41" probability="0.01"/>
+  <tile id="54">
+   <properties>
+    <property name="CollisionId" type="int" value="4"/>
+   </properties>
+  </tile>
   <tile id="90" terrain="1,1,1,1" probability="0.01"/>
   <tile id="91" terrain="1,1,1,1" probability="0.01"/>
   <tile id="92" terrain="1,1,1,1" probability="0.01"/>
@@ -22,6 +27,21 @@
  </tileset>
  <tileset firstgid="129" name="MetaData" tilewidth="64" tileheight="64" tilecount="3" columns="3">
   <image source="MetaData.png" width="192" height="64"/>
+  <tile id="0">
+   <properties>
+    <property name="CollisionId" type="int" value="0"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="CollisionId" type="int" value="2"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="CollisionId" type="int" value="3"/>
+   </properties>
+  </tile>
  </tileset>
  <layer id="1" name="Ground" width="120" height="15" locked="1">
   <properties>

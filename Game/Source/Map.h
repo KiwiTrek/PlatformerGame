@@ -44,6 +44,11 @@ struct Properties
     List<Property*> list;
 };
 
+struct Tile
+{
+    int x, y;
+    Properties properties;
+};
 
 struct Tileset
 {
