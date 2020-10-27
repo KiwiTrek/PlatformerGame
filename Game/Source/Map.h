@@ -142,7 +142,7 @@ private:
     bool LoadProperties(pugi::xml_node& node, Properties& properties);
     MapTypes StrToMapType(SString str);
 
-    Tileset* Map::GetTilesetFromTileId(int id) const;
+    Tileset* GetTilesetFromTileId(int id) const;
 
     bool StoreId(pugi::xml_node& node, MapLayer* layer, int index);
     void LogInfo();
