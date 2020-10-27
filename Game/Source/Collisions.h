@@ -11,10 +11,11 @@ class Collider {
 public:
     enum TYPE {
         NONE = -1,
+        AIR,
         SOLID,
-        PLAYER,
         WATER,
         SPIKE,
+        PLAYER,
         FRUIT,
         SPAWN,
         GOAL,

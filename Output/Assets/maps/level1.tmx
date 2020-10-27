@@ -29,7 +29,7 @@
   <image source="MetaData.png" width="192" height="64"/>
   <tile id="0">
    <properties>
-    <property name="CollisionId" type="int" value="0"/>
+    <property name="CollisionId" type="int" value="1"/>
    </properties>
   </tile>
   <tile id="1">

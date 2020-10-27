@@ -104,8 +104,8 @@ bool Scene::PostUpdate()
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
 
-
-	LOG("%d,%d", app->render->camera.x, app->render->camera.y);
+	// to see the camera x and y position each frame
+	//LOG("%d,%d", app->render->camera.x, app->render->camera.y);
 
 	//Player restraint
 	if ((app->render->camera.x + app->player->playerRect.x) < (app->map->data.tileW * 6))

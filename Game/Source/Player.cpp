@@ -10,6 +10,7 @@
 #include "DeathScene.h"
 #include "Transition.h"
 #include "Map.h"
+#include "Collisions.h"
 
 #include "Log.h"
 
@@ -28,6 +29,9 @@ bool Player::Start()
 	keyPressed = false;
 	isDead = false;
 	invert = false;
+
+	playerPhysics.axisX = false;
+	playerPhysics.axisY = true;
 
 	playerTex = app->tex->Load("Assets/textures/characterSpritesheet.png");
 	deadFx = app->audio->LoadFx("Assets/audio/fx/lose.wav");
@@ -50,30 +54,30 @@ bool Player::Awake(pugi::xml_node&)
 	run.SetSpeed(0.05f);
 	run.SetLoop(true);
 
-	/*for (int i = 0; i != 7; ++i)
-	{
-		jump.PushBack({ 22 + (playerSize * i),820,49,80 });
-	}
-	jump.SetSpeed(0.1f);
-	jump.SetLoop(false);*/
+/*for (int i = 0; i != 7; ++i)
+{
+	jump.PushBack({ 22 + (playerSize * i),820,49,80 });
+}
+jump.SetSpeed(0.1f);
+jump.SetLoop(false);*/
 
-	for (int i = 0; i != 5; ++i)
-	{
-		death.PushBack({ 22 + (playerSize * i),184,76,66 });
-	}
-	death.SetSpeed(0.03f);
-	death.SetLoop(false);
+for (int i = 0; i != 5; ++i)
+{
+	death.PushBack({ 22 + (playerSize * i),184,76,66 });
+}
+death.SetSpeed(0.03f);
+death.SetLoop(false);
 
-	wallJump.PushBack({ 648,170,55,79 });
-	wallJump.SetSpeed(0.0f);
-	wallJump.SetLoop(false);
+wallJump.PushBack({ 648,170,55,79 });
+wallJump.SetSpeed(0.0f);
+wallJump.SetLoop(false);
 
-    return true;
+return true;
 }
 
 bool Player::PreUpdate()
 {
-    return true;
+	return true;
 }
 
 bool Player::Update(float dt)
@@ -137,26 +141,88 @@ bool Player::Update(float dt)
 		}
 	}
 
+	//Physics
+	playerPhysics.UpdatePhysics(playerRect.x, playerRect.y, speed.x, speed.y);
+
 	//Collisions
-	//ListItem <MapLayer*>* ML = app->map->data.mapLayer.start;
-	//while (ML != NULL) {
-	//	if (ML->data->name.GetString() == "Collisions") {
-	//		break;
-	//	}
-	//	ML = ML->next;
+	int x = playerRect.x / 64;
+	int y = playerRect.y / 64;
+
+	if (y == 11) { // to enter the GetColliderId on its first iteration with the floor thanks to a breakpoint
+		LOG("b");
+	}
+	//Floor
+	//if (GetColliderId(x,y + 1) == Collider::TYPE::SOLID
+	//	&& (GetColliderId(x - 1,y + 1) == Collider::TYPE::SOLID
+	//	|| GetColliderId(x + 1, y + 1) == Collider::TYPE::SOLID)
+	//	&& GetColliderId(x,y) == Collider::TYPE::AIR)
+	if(GetColliderId(x,y + 1) == Collider::TYPE::SOLID)			// on second iteration it should work but it doesnt
+	{
+		//reset jump
+		playerRect.y = y* 64;
+		speed.y = 0;
+		//LOG("FLOOR!");
+	}
+	else
+	{
+		//LOG("NOT FLOOR!");
+	}
+	/*
+	//Left Wall
+	if (GetColliderId(x - 1, y) == Collider::TYPE::SOLID
+		&& (GetColliderId(x - 1, y + 1) == Collider::TYPE::SOLID
+		|| GetColliderId(x - 1, y - 1) == Collider::TYPE::SOLID)
+		&& GetColliderId(x, y) == Collider::TYPE::AIR)
+	{
+		//reset jump
+		//playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
+		LOG("LEFT WALL!");
+	}
+	else
+	{
+		LOG("NOT LEFT WALL!");
+	}
+
+	//Right Wall
+	if (GetColliderId(x + 1, y) == Collider::TYPE::SOLID
+		&& (GetColliderId(x + 1, y + 1) == Collider::TYPE::SOLID
+		|| GetColliderId(x + 1, y - 1) == Collider::TYPE::SOLID)
+		&& GetColliderId(x, y) == Collider::TYPE::AIR)
+	{
+		//reset jump
+		//playerRect.x = 2 * 64 * (x + 2) - 64 * 2 - playerRect.x;
+		LOG("RIGHT WALL!");
+	}
+	else
+	{
+		LOG("NOT RIGHT WALL!");
+	}
+
+	//Ceiling
+	if (GetColliderId(x, y - 1) == Collider::TYPE::SOLID
+		&& (GetColliderId(x - 1, y - 1) == Collider::TYPE::SOLID
+		|| GetColliderId(x + 1, y - 1) == Collider::TYPE::SOLID)
+		&& GetColliderId(x, y) == Collider::TYPE::AIR)
+	{
+		speed.y = 0;
+		LOG("CEILING!");
+	}
+	else
+	{
+		LOG("NOT CEILING!");
+	}
+	*/
+
+	// Spawns
+	//if (GetColliderId(x, y) == Collider::TYPE::SPAWN)
+	//{
+	//	spawnPoint = { x, y };
 	//}
-	//ListItem <Tileset*>* T = app->map->data.tilesets.start;
-	//while (T != NULL) {
-	//	if (T->data->name.GetString() == "MetaData") {
-	//		break;
-	//	}
-	//	T = T->next;
+
+	// Dead
+	//if (GetColliderId(x, y) == Collider::TYPE::SPIKE) {
+	//	isDead = true;
 	//}
-
-	//if(T->data-> ML->data->Get(0,0))
-
-
-
 	if (isDead)
 	{
 		if (currentAnimation->HasFinished())
@@ -164,6 +230,12 @@ bool Player::Update(float dt)
 			app->transition->FadeEffect((Module*)app->scene, (Module*)app->deathScene, false, 600.0f);
 		}
 	}
+
+	// Win condition
+	//if (GetColliderId(x, y) == Collider::TYPE::GOAL)
+	//{
+	//	LOG("YOU WIN, YAY!\n");
+	//}
 
     return true;
 }
@@ -179,6 +251,7 @@ bool Player::PostUpdate()
 		--playerRect.x;
 	}
 
+	app->render->DrawRectangle({ playerRect.x, playerRect.y + 64, 64, 64 }, 255, 0, 0, 255); // temp
 	app->render->DrawTexture(playerTex, playerRect.x, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
     return true;
 }
@@ -200,4 +273,41 @@ bool Player::Load(pugi::xml_node&)
 bool Player::Save(pugi::xml_node&)
 {
     return true;
+}
+
+int Player::GetColliderId(int x, int y, bool isFruit) const
+{
+	int ret;
+	// MapLayer		<- this works
+	ListItem <MapLayer*>* ML = app->map->data.mapLayer.start;
+	SString collisions = "Collisions";
+	while (ML != NULL) {
+		if (ML->data->name == collisions) {
+			break;
+		}
+		ML = ML->next;
+	}
+
+	// Tileset		<- this works
+	ListItem <Tileset*>* T = app->map->data.tilesets.start;
+	SString name;
+	if (isFruit) {
+		name = "Level1Tileset(64x64)";
+	}
+	else {
+		name = "MetaData";
+	}
+	while (T != NULL) {
+		if (T->data->name == name) {
+			break;
+		}
+		T = T->next;
+	}
+
+	// Gets CollisionId
+	int id = (int)(ML->data->Get(x, y) - T->data->firstgId);	//returns id of the tile
+	Properties p = T->data->GetPropList(id);					//on second iteration there is no properties list (we think it gets destroyed)
+	ret = p.GetProperty("CollisionId",0);						//since there is no getpropList it triggers breakpoint and explodes
+	//LOG("%d - %d", id, ret);
+	return ret;
 }

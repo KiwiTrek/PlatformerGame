@@ -151,6 +151,10 @@ bool Map::Load(const char* filename)
             {
                 ret = LoadTilesetImage(tileset, set);
             }
+            if (ret == true)
+            {
+                ret = LoadTilesetProperties(tileset, set);
+            }
             data.tilesets.add(set);
         }
 
@@ -240,6 +244,19 @@ bool Map::LoadTilesetImage(pugi::xml_node& tileset_node, Tileset* set)
         set->offsetY = 0;
     }
 
+    return ret;
+}
+
+bool Map::LoadTilesetProperties(pugi::xml_node& node, Tileset* set)
+{
+    bool ret = true;
+    for (pugi::xml_node tileNode = node.child("tile"); tileNode && ret; tileNode = tileNode.next_sibling("tile"))
+    {
+        Tile* tileProperties = new Tile;
+        tileProperties->id = tileNode.attribute("id").as_int();
+        ret = LoadProperties(tileNode.child("properties"),tileProperties->properties);
+        set->tilesetPropList.add(tileProperties);
+    }
     return ret;
 }
 
@@ -337,6 +354,20 @@ Tileset* Map::GetTilesetFromTileId(int id) const
     return set;
 }
 
+Properties Tileset::GetPropList(int id) const {
+    Properties ret;
+    ListItem<Tile*>* tile = tilesetPropList.start;
+    Tile* t;
+    while (tile != NULL) {
+        t = tile->data;
+        if (t->id == id) {
+            return t->properties;
+        }
+        tile = tile->next;
+    }
+    return ret;
+}
+
 void Map::LogInfo()
 {
     // LOG all the data loaded
@@ -401,12 +432,11 @@ int Properties::GetProperty(const char* value, int defaultValue) const
     ListItem<Property*>* P;
     P = list.start;
 
-    SString prop;
-    prop.Create(value);
+    SString prop = value;
 
     while (P != NULL)
     {
-        LOG("Checking property: %s", P->data->name.GetString());
+        //LOG("Checking property: %s", P->data->name.GetString());         //<- checks the property
         if (P->data->name == prop)
         {
             return P->data->value;

@@ -3,9 +3,11 @@
 
 #include "Module.h"
 #include "Animation.h"
+#include "Physics.h"
 
 #include "SDL/include/SDL.h"
 
+struct Collider;
 class Player : public Module {
 public:
 
@@ -45,6 +47,14 @@ private:
 	Animation wallJump;
 
 	Animation* currentAnimation = &idle;
+
+	int GetColliderId(int x, int y, bool isFruit = false) const;
+	Collider* playerCollider = nullptr;
+
+	iPoint spawnPoint;
+
+	Physics playerPhysics;
+	fPoint speed;
 
 	unsigned int deadFx;
 

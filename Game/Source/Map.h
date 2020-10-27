@@ -46,6 +46,7 @@ struct Properties
 
 struct Tile
 {
+    int id;
     Properties properties;
 };
 
@@ -65,9 +66,13 @@ struct Tileset
     int	offsetX;
     int	offsetY;
 
+    List<Tile*> tilesetPropList;
+
     // Receives a tile id and returns it's Rect position on the tileset
     SDL_Rect GetTileRect(int id) const;
+
     // Create a function that gives Id and returns properties
+    Properties GetPropList(int id) const;
 };
 
 struct MapLayer
@@ -138,6 +143,7 @@ private:
     bool LoadMap();
     bool LoadTilesetDetails(pugi::xml_node& tilesetNode, Tileset* set);
     bool LoadTilesetImage(pugi::xml_node& tilesetNode, Tileset* set);
+    bool LoadTilesetProperties(pugi::xml_node& node, Tileset* set);
     bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
     bool LoadProperties(pugi::xml_node& node, Properties& properties);
     MapTypes StrToMapType(SString str);

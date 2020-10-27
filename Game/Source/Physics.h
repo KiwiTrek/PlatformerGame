@@ -10,7 +10,12 @@ public:
     void UpdatePhysics(int& _x, int& _y, float& _sx, float& _sy) {
         if (axisX) { _x = _x + _sx * deltaTime; }
         if (axisY) {
-            _y = _y + _sy * deltaTime + gravity * deltaTime * deltaTime / 2;
+            // Verlet
+            //_y = _y + _sy * deltaTime + gravity * deltaTime * deltaTime / 2;
+            //Euler
+            _y = _y + _sy * deltaTime;
+
+
             _sy = _sy + gravity * deltaTime;
         }
     }
@@ -47,7 +52,7 @@ public:
 
     bool axisX;
     bool axisY;
-    float gravity = 600.0f;
+    float gravity = 6.0f; // 600.0f
     float deltaTime = 1.0f / 60.0f;
 };
 
