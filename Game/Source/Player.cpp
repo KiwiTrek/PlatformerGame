@@ -31,7 +31,7 @@ bool Player::Start()
 	invert = false;
 
 	playerPhysics.axisX = false;
-	playerPhysics.axisY = false;
+	playerPhysics.axisY = true;
 
 	playerTex = app->tex->Load("Assets/textures/characterSpritesheet.png");
 	deadFx = app->audio->LoadFx("Assets/audio/fx/lose.wav");
@@ -42,37 +42,37 @@ bool Player::Awake(pugi::xml_node&)
 {
 	for (int i = 0; i != 9; ++i)
 	{
-		idle.PushBack({ 22 + (playerSize * i),1330,44,72 });
+		idle.PushBack({ 10 + (playerSize * i),1338,56,72 });
 	}
 	idle.SetSpeed(0.05f);
 	idle.SetLoop(true);
 
 	for (int i = 0; i != 8; ++i)
 	{
-		run.PushBack({ 22 + (playerSize * i),1202,50,75 });
+		run.PushBack({ 10 + (playerSize * i),1210,62,75 });
 	}
 	run.SetSpeed(0.05f);
 	run.SetLoop(true);
 
-/*for (int i = 0; i != 7; ++i)
-{
-	jump.PushBack({ 22 + (playerSize * i),820,49,80 });
-}
-jump.SetSpeed(0.1f);
-jump.SetLoop(false);*/
+	/*for (int i = 0; i != 7; ++i)
+	{
+		jump.PushBack({ 22 + (playerSize * i),820,49,80 });
+	}
+	jump.SetSpeed(0.1f);
+	jump.SetLoop(false);*/
 
-for (int i = 0; i != 5; ++i)
-{
-	death.PushBack({ 22 + (playerSize * i),184,76,66 });
-}
-death.SetSpeed(0.03f);
-death.SetLoop(false);
+	for (int i = 0; i != 5; ++i)
+	{
+		death.PushBack({ 10 + (playerSize * i),192,88,66 });
+	}
+	death.SetSpeed(0.03f);
+	death.SetLoop(false);
 
-wallJump.PushBack({ 648,170,55,79 });
-wallJump.SetSpeed(0.0f);
-wallJump.SetLoop(false);
+	wallJump.PushBack({ 648,170,55,79 });
+	wallJump.SetSpeed(0.0f);
+	wallJump.SetLoop(false);
 
-return true;
+	return true;
 }
 
 bool Player::PreUpdate()
