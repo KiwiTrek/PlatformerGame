@@ -7,35 +7,24 @@ Collisions::Collisions() {
     matrix[Collider::TYPE::SOLID][Collider::TYPE::NONE] = false;
     matrix[Collider::TYPE::SOLID][Collider::TYPE::SOLID] = false;
     matrix[Collider::TYPE::SOLID][Collider::TYPE::PLAYER] = false;
-    matrix[Collider::TYPE::SOLID][Collider::TYPE::WATER] = false;
     matrix[Collider::TYPE::SOLID][Collider::TYPE::SPIKE] = false;
     matrix[Collider::TYPE::SOLID][Collider::TYPE::FRUIT] = false;
 
     matrix[Collider::TYPE::PLAYER][Collider::TYPE::NONE] = false;
     matrix[Collider::TYPE::PLAYER][Collider::TYPE::SOLID] = false;
     matrix[Collider::TYPE::PLAYER][Collider::TYPE::PLAYER] = false;
-    matrix[Collider::TYPE::PLAYER][Collider::TYPE::WATER] = false;
     matrix[Collider::TYPE::PLAYER][Collider::TYPE::SPIKE] = false;
     matrix[Collider::TYPE::PLAYER][Collider::TYPE::FRUIT] = false;
-
-    matrix[Collider::TYPE::WATER][Collider::TYPE::NONE] = false;
-    matrix[Collider::TYPE::WATER][Collider::TYPE::SOLID] = false;
-    matrix[Collider::TYPE::WATER][Collider::TYPE::PLAYER] = false;
-    matrix[Collider::TYPE::WATER][Collider::TYPE::WATER] = false;
-    matrix[Collider::TYPE::WATER][Collider::TYPE::SPIKE] = false;
-    matrix[Collider::TYPE::WATER][Collider::TYPE::FRUIT] = false;
 
     matrix[Collider::TYPE::SPIKE][Collider::TYPE::NONE] = false;
     matrix[Collider::TYPE::SPIKE][Collider::TYPE::SOLID] = false;
     matrix[Collider::TYPE::SPIKE][Collider::TYPE::PLAYER] = false;
-    matrix[Collider::TYPE::SPIKE][Collider::TYPE::WATER] = false;
     matrix[Collider::TYPE::SPIKE][Collider::TYPE::SPIKE] = false;
     matrix[Collider::TYPE::SPIKE][Collider::TYPE::FRUIT] = false;
 
     matrix[Collider::TYPE::FRUIT][Collider::TYPE::NONE] = false;
     matrix[Collider::TYPE::FRUIT][Collider::TYPE::SOLID] = false;
     matrix[Collider::TYPE::FRUIT][Collider::TYPE::PLAYER] = false;
-    matrix[Collider::TYPE::FRUIT][Collider::TYPE::WATER] = false;
     matrix[Collider::TYPE::FRUIT][Collider::TYPE::SPIKE] = false;
     matrix[Collider::TYPE::FRUIT][Collider::TYPE::FRUIT] = false;
 

@@ -13,7 +13,6 @@ public:
         NONE = -1,
         AIR,
         SOLID,
-        WATER,
         SPIKE,
         PLAYER,
         FRUIT,
