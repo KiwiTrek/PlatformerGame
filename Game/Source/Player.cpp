@@ -146,23 +146,68 @@ bool Player::Update(float dt)
 
 	//Collisions
 	int x = playerRect.x / 64;
+	int resX = playerRect.x % 64;
 	int y = playerRect.y / 64;
+	int resY = playerRect.y % 64;
+	if (x < 0) {
+		x = 0;
+	}
+	if (y < 0) {
+		y = 0;
+	}
 
 	//if (y == 11) { // to enter the GetColliderId on its first iteration with the floor thanks to a breakpoint
 	//	LOG("b");
 	//}
+	
+	//Left Wall x,x-1,y+-1
+	//if (GetColliderId(x, y) == Collider::TYPE::SOLID
+	//	&& (GetColliderId(x, y) == Collider::TYPE::AIR
+	//	|| GetColliderId(x, y) == Collider::TYPE::WATER)
+	//	&& ((GetColliderId(x, y - 1) == Collider::TYPE::SOLID
+	//	&& (GetColliderId(x - 1, y - 1) == Collider::TYPE::AIR
+	//	|| GetColliderId(x - 1, y - 1) == Collider::TYPE::WATER))
+	//	|| (GetColliderId(x, y + 1) == Collider::TYPE::SOLID
+	//	&& (GetColliderId(x - 1, y + 1) == Collider::TYPE::AIR
+	//	|| GetColliderId(x - 1, y + 1) == Collider::TYPE::WATER))))
+	//{
+	//	//reset jump
+	//	playerRect.x = 2 * 64 * (x - 1) - playerRect.x;
+	//	//LOG("%d - LEFT WALL!", playerRect.x);
+	//}
+	//else
+	//{
+	//	//LOG("NOT LEFT WALL!");
+	//}
 
-	//Floor
-	//if (GetColliderId(x,y + 1) == Collider::TYPE::SOLID
-	//	&& (GetColliderId(x - 1,y + 1) == Collider::TYPE::SOLID
-	//	|| GetColliderId(x + 1, y + 1) == Collider::TYPE::SOLID)
-	//	&& GetColliderId(x,y) == Collider::TYPE::AIR)
-	if (GetColliderId(x,y + 1) == Collider::TYPE::SOLID
-		&& (GetColliderId(x - 1,y + 1) == Collider::TYPE::SOLID
-		|| GetColliderId(x + 1, y + 1) == Collider::TYPE::SOLID))
+	//Right Wall x,x+1,y+-1
+	//if (GetColliderId(x, y) == Collider::TYPE::SOLID
+	//	&& (GetColliderId(x + 1, y) == Collider::TYPE::AIR
+	//	|| GetColliderId(x + 1, y) == Collider::TYPE::WATER)
+	//	&& ((GetColliderId(x, y - 1) == Collider::TYPE::SOLID
+	//	&& (GetColliderId(x + 1, y - 1) == Collider::TYPE::AIR
+	//	|| GetColliderId(x + 1, y - 1) == Collider::TYPE::WATER))
+	//	|| (GetColliderId(x, y + 1) == Collider::TYPE::SOLID
+	//	&& (GetColliderId(x + 1, y + 1) == Collider::TYPE::AIR
+	//	|| GetColliderId(x + 1, y + 1) == Collider::TYPE::WATER))))
+	//{
+	//	//reset jump
+	//	playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
+	//	//LOG("RIGHT WALL!");
+	//}
+	//else
+	//{
+	//	//LOG("NOT RIGHT WALL!");
+	//}
+
+	//Floor x+-1,y,y+1
+	if (GetColliderId(x, y) == Collider::TYPE::SOLID
+		&& GetColliderId(x, y - 1) == Collider::TYPE::AIR
+		&& (GetColliderId(x - 1, y) == Collider::TYPE::SOLID
+		|| GetColliderId(x + 1, y) == Collider::TYPE::SOLID))
 	{
 		//reset jump
-		playerRect.y = y* 64;
+		playerRect.y = y * 64;
 		speed.y = 0;
 		//LOG("FLOOR!");
 	}
@@ -170,57 +215,26 @@ bool Player::Update(float dt)
 	{
 		//LOG("NOT FLOOR!");
 	}
-	
-	//Left Wall
-	//if (GetColliderId(x - 1, y) == Collider::TYPE::SOLID
-	//	&& (GetColliderId(x - 1, y + 1) == Collider::TYPE::SOLID
-	//	|| GetColliderId(x - 1, y - 1) == Collider::TYPE::SOLID)
-	//	&& GetColliderId(x, y) == Collider::TYPE::AIR)
-	if(GetColliderId(x,y) == Collider::TYPE::SOLID && GetColliderId(x,y + 1) == Collider::TYPE::SOLID)
-	{
-		//reset jump
-		playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-		//LOG("%d - LEFT WALL!", playerRect.x);
-	}
-	else
-	{
-		//LOG("NOT LEFT WALL!");
-	}
 
-	//Right Wall
-	//if (GetColliderId(x + 1, y) == Collider::TYPE::SOLID
-	//	&& (GetColliderId(x + 1, y + 1) == Collider::TYPE::SOLID
-	//	|| GetColliderId(x + 1, y - 1) == Collider::TYPE::SOLID)
-	//	&& GetColliderId(x, y) == Collider::TYPE::AIR)
-	if (GetColliderId(x + 1, y) == Collider::TYPE::SOLID
-		&& GetColliderId(x + 1, y + 1) == Collider::TYPE::SOLID)
-	{
-		//reset jump
-		playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
-		LOG("RIGHT WALL!");
-	}
-	else
-	{
-		//LOG("NOT RIGHT WALL!");
-	}
-
-	//Ceiling
-	//if (GetColliderId(x, y - 1) == Collider::TYPE::SOLID
-	//	&& (GetColliderId(x - 1, y - 1) == Collider::TYPE::SOLID
-	//	|| GetColliderId(x + 1, y - 1) == Collider::TYPE::SOLID)
-	//	&& GetColliderId(x, y) == Collider::TYPE::AIR)
-	if (GetColliderId(x, y) == Collider::TYPE::SOLID
-		&& (GetColliderId(x - 1, y) == Collider::TYPE::SOLID
-		|| GetColliderId(x + 1, y) == Collider::TYPE::SOLID))
-	{
-		playerRect.y = (y + 2) * 64 - 64;
-		speed.y = 0;
-		LOG("CEILING!");
-	}
-	else
-	{
-		//LOG("NOT CEILING!");
-	}
+	//Ceiling x+-1,y,y-1
+	//if (GetColliderId(x, y) == Collider::TYPE::SOLID
+	//	&& (GetColliderId(x, y - 1) == Collider::TYPE::AIR
+	//	|| GetColliderId(x, y - 1) == Collider::TYPE::WATER)
+	//	&& ((GetColliderId(x - 1, y) == Collider::TYPE::SOLID
+	//	&& (GetColliderId(x - 1, y - 1) == Collider::TYPE::AIR
+	//	|| GetColliderId(x - 1, y - 1) == Collider::TYPE::WATER))
+	//	|| (GetColliderId(x + 1, y) == Collider::TYPE::SOLID
+	//	&& (GetColliderId(x + 1, y - 1) == Collider::TYPE::AIR
+	//	|| GetColliderId(x + 1, y - 1) == Collider::TYPE::WATER))))
+	//{
+	//	playerRect.y = (y + 2) * 64 - 64;
+	//	speed.y = 0;
+	//	//LOG("CEILING!");
+	//}
+	//else
+	//{
+	//	//LOG("NOT CEILING!");
+	//}
 	
 
 	// Spawns
