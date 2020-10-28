@@ -10,10 +10,10 @@ public:
     void UpdatePhysics(int& _x, int& _y, float& _sx, float& _sy) {
         if (axisX) { _x = _x + _sx * deltaTime; }
         if (axisY) {
-            // Verlet
-            //_y = _y + _sy * deltaTime + gravity * deltaTime * deltaTime / 2;
             //Euler
-            _y = _y + _sy * deltaTime;
+            //_y = _y + _sy * deltaTime;
+            // Verlet
+            _y = _y + _sy * deltaTime + (gravity * deltaTime * deltaTime * 0.5);
 
 
             _sy = _sy + gravity * deltaTime;

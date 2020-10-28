@@ -48,7 +48,7 @@ private:
 
 	Animation* currentAnimation = &idle;
 
-	int GetColliderId(int x, int y, bool isFruit = false) const;
+	int GetColliderId(int x, int y, bool isFruit = false, bool isObject = false) const;
 	Collider* playerCollider = nullptr;
 
 	iPoint spawnPoint;
