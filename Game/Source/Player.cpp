@@ -306,8 +306,8 @@ int Player::GetColliderId(int x, int y, bool isFruit) const
 
 	// Gets CollisionId
 	int id = (int)(ML->data->Get(x, y) - T->data->firstgId);	//returns id of the tile
-	Properties p = T->data->GetPropList(id);					//on second iteration there is no properties list (we think it gets destroyed)
-	ret = p.GetProperty("CollisionId",0);						//since there is no getpropList it triggers breakpoint and explodes
+	Tile* currentTile = T->data->GetPropList(id);					//on second iteration there is no properties list (we think it gets destroyed)
+	ret = currentTile->properties.GetProperty("CollisionId",0);						//since there is no getpropList it triggers breakpoint and explodes
 	//LOG("%d - %d", id, ret);
 	return ret;
 }

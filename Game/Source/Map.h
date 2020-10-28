@@ -72,7 +72,7 @@ struct Tileset
     SDL_Rect GetTileRect(int id) const;
 
     // Create a function that gives Id and returns properties
-    Properties GetPropList(int id) const;
+    Tile* GetPropList(int id) const;
 };
 
 struct MapLayer
