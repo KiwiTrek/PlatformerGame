@@ -39,6 +39,13 @@ public:
 	SDL_Rect playerRect = { 64 * 3,64 * 8,44,72 };
 
 private:
+	enum CollisionType {
+		DoubleAir,
+		DoubleSolid,
+		SolidAir,
+		AirSolid
+	};
+
 	int playerSize = 128;
 	Animation idle;	//9f
 	Animation run;	//8f
@@ -52,6 +59,9 @@ private:
 
 	int GetColliderId(int x, int y, bool isFruit = false, bool isObject = false) const;
 	Collider* playerCollider = nullptr;
+	bool positiveSpeedX = true;
+	bool positiveSpeedY = true;
+	CollisionType GetCollisionType(int A, int B) const;
 
 	iPoint spawnPoint;
 
