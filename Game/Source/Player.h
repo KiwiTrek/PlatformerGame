@@ -39,6 +39,7 @@ public:
 	SDL_Rect playerRect = { 64 * 3,64 * 8,44,72 };
 
 private:
+	// Different collision types
 	enum CollisionType {
 		DoubleAir,
 		DoubleSolid,
@@ -57,12 +58,15 @@ private:
 
 	Animation* currentAnimation = &idle;
 
+	// Gets the value of a property in a given tile
 	int GetTileProperty(int x, int y, const char* property, bool notMovCollision = false, bool isObject = false) const;
+	// Gets the coordinates of the spawn point
 	iPoint GetSpawnPoint();
 
 	Collider* playerCollider = nullptr;
 	bool positiveSpeedX = true;
 	bool positiveSpeedY = true;
+	// Returns the type of collision depending on two given tiles (movement collisions only)
 	CollisionType GetCollisionType(int A, int B) const;
 
 	iPoint spawnPoint;

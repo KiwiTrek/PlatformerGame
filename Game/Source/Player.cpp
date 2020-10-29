@@ -141,19 +141,19 @@ bool Player::Update(float dt)
 		{
 			if (app->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 			{
-				playerRect.y -= 1;
+				playerRect.y -= 5;
 				positiveSpeedY = false;
 				keyPressed = true;
 			}
 			if (app->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 			{
-				playerRect.y += 1;
+				playerRect.y += 5;
 				positiveSpeedY = true;
 				keyPressed = true;
 			}
 			if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_D) != KEY_REPEAT)
 			{
-				playerRect.x -= 1;
+				playerRect.x -= 5;
 				positiveSpeedX = false;
 				currentAnimation = &run;
 				if (invert == false)
@@ -164,7 +164,7 @@ bool Player::Update(float dt)
 			}
 			if (app->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_A) != KEY_REPEAT)
 			{
-				playerRect.x += 1;
+				playerRect.x += 5;
 				positiveSpeedX = true;
 				currentAnimation = &run;
 				if (invert == true)
@@ -191,12 +191,12 @@ bool Player::Update(float dt)
 						app->audio->PlayFx(doubleJumpFx);
 					}
 					--jumpCounter;
-					speed.y = -1000.0f;
+					speed.y = -500.0f;
 				}
 			}
 			if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_D) != KEY_REPEAT)
 			{
-				playerRect.x -= 1;
+				playerRect.x -= 5;
 				positiveSpeedX = false;
 				if (!isJumping)
 				{
@@ -210,7 +210,7 @@ bool Player::Update(float dt)
 			}
 			if (app->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_A) != KEY_REPEAT)
 			{
-				playerRect.x += 1;
+				playerRect.x += 5;
 				positiveSpeedX = true;
 				if (!isJumping)
 				{
@@ -369,6 +369,7 @@ bool Player::Update(float dt)
 			}
 		}
 
+		// Fruit collection
 		if (GetTileProperty(x, y, "CollisionId", true, true) == Collider::TYPE::FRUIT)
 		{
 			if(GetTileProperty(x, y, "NoDraw", true, true) == 0)
@@ -386,7 +387,7 @@ bool Player::Update(float dt)
 				app->audio->PlayMusic("Assets/audio/music/Victory.ogg", 1.0f);
 				once = false;
 			}
-			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, 600.0f);
+			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, 60.0f);
 		}
 
 		// Dead
@@ -407,7 +408,7 @@ bool Player::Update(float dt)
 		}
 		if (currentAnimation->HasFinished())
 		{
-			app->transition->FadeEffect((Module*)app->scene, (Module*)app->deathScene, false, 600.0f);
+			app->transition->FadeEffect((Module*)app->scene, (Module*)app->deathScene, false, 60.0f);
 		}
 	}
 
@@ -416,6 +417,7 @@ bool Player::Update(float dt)
 
 bool Player::PostUpdate()
 {
+	// Map borders
 	if (playerRect.x <= 0)
 	{
 		playerRect.x = 0;
@@ -428,7 +430,7 @@ bool Player::PostUpdate()
 	app->render->DrawTexture(playerTex, playerRect.x, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
 	if (app->render->drawAll)
 	{
-		app->render->DrawRectangle({ playerRect.x, playerRect.y, 64, 64 }, 0, 255, 0, 100); // temp
+		app->render->DrawRectangle({ playerRect.x, playerRect.y, 64, 64 }, 0, 255, 0, 100);		// Player "hitbox"
 	}
     return true;
 }
@@ -483,6 +485,7 @@ iPoint Player::GetSpawnPoint()
 		T = T->next;
 	}
 
+	// Gets coordinates
 	int id = 0;
 	for (int x = 0; x < app->map->data.w; ++x)
 	{
