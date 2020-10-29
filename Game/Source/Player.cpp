@@ -280,6 +280,12 @@ bool Player::Update(float dt)
 			}
 			else if (collisionType == CollisionType::AirSolid)
 			{
+				speed.y -= 25.0f;
+				if (speed.y <= 0) {
+					speed.y = 0;
+				}
+				jumpCounter = 1;
+				currentAnimation = &wallJump;
 				playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
 				LOG("BottomRight - AirSolid");
 			}
@@ -306,6 +312,12 @@ bool Player::Update(float dt)
 			}
 			else if (collisionType == CollisionType::AirSolid)
 			{
+				speed.y -= 25.0f;
+				if (speed.y <= 0) {
+					speed.y = 0;
+				}
+				jumpCounter = 1;
+				currentAnimation = &wallJump;
 				playerRect.x = 2 * 64 * (x)-playerRect.x;
 				LOG("TopRight - AirSolid");
 			}
@@ -316,7 +328,7 @@ bool Player::Update(float dt)
 				LOG("TopRight - SolidAir");
 			}
 		}
-		else if (!positiveSpeedX && !positiveSpeedY)	//top left corner
+		else if (!positiveSpeedX && !positiveSpeedY)	//left top corner
 		{
 			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y + 1, "CollisionId"), GetTileProperty(x + 1, y, "CollisionId"));
 			if (collisionType == CollisionType::DoubleSolid)
@@ -334,11 +346,17 @@ bool Player::Update(float dt)
 			}
 			else if (collisionType == CollisionType::SolidAir)
 			{
+				speed.y -= 25.0f;
+				if (speed.y <= 0) {
+					speed.y = 0;
+				}
+				jumpCounter = 1;
+				currentAnimation = &wallJump;
 				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
 				LOG("TopLeft - SolidAir");
 			}
 		}
-		else if (!positiveSpeedX && positiveSpeedY)	//bottom left corner
+		else if (!positiveSpeedX && positiveSpeedY)	//left bottom corner
 		{
 			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y, "CollisionId"), GetTileProperty(x + 1, y + 1, "CollisionId"));
 			if (collisionType == CollisionType::DoubleSolid)
@@ -364,6 +382,12 @@ bool Player::Update(float dt)
 			}
 			else if (collisionType == CollisionType::SolidAir)
 			{
+				speed.y -= 25.0f;
+				if (speed.y <= 0) {
+					speed.y = 0;
+				}
+				jumpCounter = 1;
+				currentAnimation = &wallJump;
 				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
 				LOG("BottomLeft - SolidAir");
 			}
