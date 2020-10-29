@@ -25,16 +25,25 @@ void Player::Init()
 
 bool Player::Start()
 {
+	jumpCounter = 2;
+
 	godMode = false;
 	keyPressed = false;
 	isJumping = false;
 	isDead = false;
 	invert = false;
 
+	onceDead = true;
+
 	playerPhysics.axisY = true;
 
 	playerTex = app->tex->Load("Assets/textures/characterSpritesheet.png");
 	deadFx = app->audio->LoadFx("Assets/audio/fx/lose.wav");
+	jumpFx = app->audio->LoadFx("Assets/audio/fx/jump.wav");
+	doubleJumpFx = app->audio->LoadFx("Assets/audio/fx/doubleJump.wav");
+	app->audio->SetFxVolume(deadFx);
+	app->audio->SetFxVolume(jumpFx);
+	app->audio->SetFxVolume(doubleJumpFx);
     return true;
 }
 
@@ -58,7 +67,7 @@ bool Player::Awake(pugi::xml_node&)
 	{
 		jumpPrep.PushBack({ 10 + (playerSize * i), 812, 60, 90 });
 	}
-	jumpPrep.speed = 0.01f;
+	jumpPrep.speed = 0.05f;
 	jumpPrep.loop = false;
 
 	for (int i = 0; i != 4; ++i)
@@ -70,7 +79,7 @@ bool Player::Awake(pugi::xml_node&)
 
 	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
 	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
-	jumpLand.speed = 0.01f;
+	jumpLand.speed = 0.3f;
 	jumpLand.loop = false;
 
 	for (int i = 0; i != 5; ++i)
@@ -99,9 +108,12 @@ bool Player::Update(float dt)
 
 	if (app->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
 	{
-		currentAnimation = &death;
 		isDead = true;
-		app->audio->PlayFx(deadFx);
+	}
+	if (app->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
+	{
+		godMode = !godMode;
+		playerPhysics.axisY = !playerPhysics.axisY;
 	}
 
 	if (isDead == false)
@@ -141,11 +153,23 @@ bool Player::Update(float dt)
 		}
 		else				//2 directional with jumping
 		{
-			if (app->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+			if (!isJumping || jumpCounter > 0)
 			{
-				currentAnimation = &jumpPrep;
-				isJumping = true;
-				speed.y = -30.0f;
+				if (app->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+				{
+					currentAnimation = &jumpPrep;
+					isJumping = true;
+					if (jumpCounter == 2)
+					{
+						app->audio->PlayFx(jumpFx);
+					}
+					if (jumpCounter == 1)
+					{
+						app->audio->PlayFx(doubleJumpFx);
+					}
+					--jumpCounter;
+					speed.y = -100.0f;
+				}
 			}
 			if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_D) != KEY_REPEAT)
 			{
@@ -193,6 +217,7 @@ bool Player::Update(float dt)
 				if (currentAnimation == &jumpLand)
 				{
 					isJumping = false;
+					jumpCounter = 2;
 					jumpLand.Reset();
 				}
 			}
@@ -244,6 +269,7 @@ bool Player::Update(float dt)
 		}
 	}
 
+
 	if (GetColliderId(x + 1, y) == Collider::TYPE::SOLID				//Right Wall x,x+1,y+-1
 		&& GetColliderId(x, y) == Collider::TYPE::AIR
 		&& (GetColliderId(x, y - 1) == Collider::TYPE::SOLID
@@ -278,6 +304,12 @@ bool Player::Update(float dt)
 	//}
 	if (isDead)
 	{
+		currentAnimation = &death;
+		if (onceDead)
+		{
+			onceDead = false;
+			app->audio->PlayFx(deadFx);
+		}
 		if (currentAnimation->HasFinished())
 		{
 			app->transition->FadeEffect((Module*)app->scene, (Module*)app->deathScene, false, 600.0f);

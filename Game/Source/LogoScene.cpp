@@ -39,6 +39,7 @@ bool LogoScene::Start()
 	app->transition->FadeEffect(nullptr, this, true, 6000.0f);
 	logo = app->tex->Load("Assets/textures/logoScreen.jpg");
 	logoFx = app->audio->LoadFx("Assets/audio/fx/logo.wav");
+	app->audio->SetFxVolume(logoFx);
 	return true;
 }
 
@@ -62,7 +63,7 @@ bool LogoScene::Update(float dt)
 
 	if (timer == 3000)
 	{
-	//	app->audio->PlayFx(logoFx);
+		app->audio->PlayFx(logoFx);
 	}
 	return true;
 }

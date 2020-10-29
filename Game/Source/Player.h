@@ -57,14 +57,25 @@ private:
 
 	Physics playerPhysics;
 	fPoint speed;
+	int jumpCounter;
+	/*
+	jumpCounter should decrease when dropped from platform
+	wallJump:	counts as double jump
+		- if walljump, should decrease to 0
+		- if touches another wall, is in air and jumpCounter = 0, should add 1 jump
+	*/
 
 	unsigned int deadFx;
+	unsigned int jumpFx;
+	unsigned int doubleJumpFx;
 
 	bool godMode;
 	bool keyPressed;
 	bool isJumping;
 	bool isDead;
 	bool invert;
+
+	bool onceDead;
 };
 
 #endif // !__PLAYER_H__

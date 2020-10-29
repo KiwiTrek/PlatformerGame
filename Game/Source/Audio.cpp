@@ -57,6 +57,7 @@ bool Audio::Awake(pugi::xml_node& config)
 	else
 	{
 		Mix_VolumeMusic(config.child("music").attribute("volume").as_int(64));
+		volumeFx = config.child("fx").attribute("volume").as_int(64);
 		LOG("Set volume to: %d\n", Mix_VolumeMusic(-1));
 	}
 
@@ -214,6 +215,18 @@ bool Audio::PlayFx(unsigned int id, int repeat)
 	}
 
 	return ret;
+}
+
+bool Audio::SetFxVolume(unsigned int index)
+{
+	ListItem<Mix_Chunk*>* s = fx.At(index - 1);
+	if (s != nullptr)
+	{
+		Mix_VolumeChunk(s->data, volumeFx);
+		return true;
+	}
+	
+	return false;
 }
 
 // Set volume to 0

@@ -1,6 +1,7 @@
 #include "App.h"
 #include "Window.h"
 #include "Render.h"
+#include "Input.h"
 #include "Map.h"
 
 #include "Defs.h"
@@ -71,6 +72,10 @@ bool Render::PreUpdate()
 
 bool Render::Update(float dt)
 {
+	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+	{
+		drawAll = !drawAll;
+	}
 	return true;
 }
 

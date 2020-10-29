@@ -29,6 +29,7 @@ public:
 	// Load/Unload a WAV in memory
 	unsigned int LoadFx(const char* path);
 	bool UnloadFx(unsigned int index);
+	bool SetFxVolume(unsigned int index);
 
 	// Play a previously loaded WAV
 	bool PlayFx(unsigned int fx, int repeat = 0);
@@ -43,6 +44,8 @@ private:
 
 	_Mix_Music* music;
 	List<Mix_Chunk *>	fx;
+
+	int volumeFx = 0;
 };
 
 #endif // __AUDIO_H__

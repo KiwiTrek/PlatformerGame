@@ -20,7 +20,7 @@ public:
     }
 
     bool axisY;
-    float gravity = 6.0f; // 600.0f
+    float gravity = 60.0f; // 600.0f
     float deltaTime = 1.0f / 60.0f;
 };
 

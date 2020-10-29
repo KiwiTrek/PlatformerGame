@@ -44,7 +44,7 @@ void Map::Draw()
     Tileset* T;
     while (L != NULL) // Iterate for all layers
     {
-        if (L->data->properties.GetProperty("NoDraw") == 0)
+        if (L->data->properties.GetProperty("NoDraw") == 0 || app->render->drawAll)
         {
             for (int y = 0; y < data.h; ++y)
             {

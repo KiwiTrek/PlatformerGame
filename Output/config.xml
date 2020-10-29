@@ -20,7 +20,7 @@
 
   <audio>
     <music volume="64"/>
-    <fx volume="64"/>
+    <fx volume="48"/>
   </audio>
 
     <map>
