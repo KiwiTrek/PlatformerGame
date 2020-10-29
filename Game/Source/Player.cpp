@@ -135,7 +135,7 @@ bool Player::Update(float dt)
 		positiveSpeedY = false;
 	}
 
-	if (isDead == false || once == false)
+	if (isDead == false)
 	{
 		if (godMode)		//4 directional movement
 		{
@@ -384,10 +384,10 @@ bool Player::Update(float dt)
 		{
 			if (once)
 			{
-				app->audio->PlayMusic("Assets/audio/music/Victory.ogg", 1.0f);
+				app->audio->PlayMusic("Assets/audio/music/Victory.ogg", 0.0f);
 				once = false;
 			}
-			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, 60.0f);
+			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, 180.0f);
 		}
 
 		// Dead
@@ -562,7 +562,7 @@ int Player::GetTileProperty(int x, int y, const char* property, bool notMovColli
 Player::CollisionType Player::GetCollisionType(int A, int B) const
 {
 	if (A == Collider::TYPE::SOLID && B == Collider::TYPE::SOLID)
-{
+	{
 		return CollisionType::DoubleSolid;
 	}
 	else if (A == Collider::TYPE::SOLID && B == Collider::TYPE::AIR)

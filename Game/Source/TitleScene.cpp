@@ -39,7 +39,7 @@ bool TitleScene::Start()
 {
 	app->render->SetBackgroundColor({ 0,0,0,0 });
 	titleScreen = app->tex->Load("Assets/textures/titleScreen.png");
-//	app->audio->PlayMusic("Assets/audio/music/TitleScreen.ogg",0.0f);
+	app->audio->PlayMusic("Assets/audio/music/TitleScreen.ogg",0.0f);
 	return true;
 }
 
@@ -54,7 +54,7 @@ bool TitleScene::Update(float dt)
 {
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 	{
-		app->transition->FadeEffect(this, (Module*)app->scene, false, 60.0f);
+		app->transition->FadeEffect(this, (Module*)app->scene, false, 30.0f);
 	}
 	return true;
 }
