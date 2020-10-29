@@ -62,7 +62,7 @@ bool LogoScene::Update(float dt)
 
 	if (timer == 3000)
 	{
-		app->audio->PlayFx(logoFx);
+	//	app->audio->PlayFx(logoFx);
 	}
 	return true;
 }

@@ -42,7 +42,9 @@ private:
 	int playerSize = 128;
 	Animation idle;	//9f
 	Animation run;	//8f
-	//Animation jump;	//2f Prep; 4f Mid; 1f Land;	else frame 3;
+	Animation jumpPrep;	//2f Prep; 4f Mid; 1f Land;	else frame 3;
+	Animation jumpMid;
+	Animation jumpLand;
 	Animation death; //5f
 	Animation wallJump;
 
@@ -60,6 +62,7 @@ private:
 
 	bool godMode;
 	bool keyPressed;
+	bool isJumping;
 	bool isDead;
 	bool invert;
 };

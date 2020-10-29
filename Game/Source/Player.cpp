@@ -25,12 +25,12 @@ void Player::Init()
 
 bool Player::Start()
 {
-	godMode = true;
+	godMode = false;
 	keyPressed = false;
+	isJumping = false;
 	isDead = false;
 	invert = false;
 
-	playerPhysics.axisX = false;
 	playerPhysics.axisY = true;
 
 	playerTex = app->tex->Load("Assets/textures/characterSpritesheet.png");
@@ -42,35 +42,47 @@ bool Player::Awake(pugi::xml_node&)
 {
 	for (int i = 0; i != 9; ++i)
 	{
-		idle.PushBack({ 10 + (playerSize * i),1338,56,72 });
+		idle.PushBack({ 10 + (playerSize * i),1329,56,73 });
 	}
-	idle.SetSpeed(0.05f);
-	idle.SetLoop(true);
+	idle.speed = 0.01f;
+	idle.loop = true;
 
 	for (int i = 0; i != 8; ++i)
 	{
-		run.PushBack({ 10 + (playerSize * i),1210,62,75 });
+		run.PushBack({ 10 + (playerSize * i),1202,62,82 });
 	}
-	run.SetSpeed(0.05f);
-	run.SetLoop(true);
+	run.speed = 0.01f;
+	run.loop = true;
 
-	/*for (int i = 0; i != 7; ++i)
+	for (int i = 0; i != 2; ++i)
 	{
-		jump.PushBack({ 22 + (playerSize * i),820,49,80 });
+		jumpPrep.PushBack({ 10 + (playerSize * i), 812, 60, 90 });
 	}
-	jump.SetSpeed(0.1f);
-	jump.SetLoop(false);*/
+	jumpPrep.speed = 0.01f;
+	jumpPrep.loop = false;
+
+	for (int i = 0; i != 4; ++i)
+	{
+		jumpMid.PushBack({ 10 + (2 * playerSize) + (playerSize * i),812,60,80 });
+	}
+	jumpMid.speed = 0.01f;
+	jumpMid.loop = true;
+
+	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
+	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
+	jumpLand.speed = 0.01f;
+	jumpLand.loop = false;
 
 	for (int i = 0; i != 5; ++i)
 	{
 		death.PushBack({ 10 + (playerSize * i),192,88,66 });
 	}
-	death.SetSpeed(0.03f);
-	death.SetLoop(false);
+	death.speed = 0.03f;
+	death.loop = false;
 
 	wallJump.PushBack({ 648,170,55,79 });
-	wallJump.SetSpeed(0.0f);
-	wallJump.SetLoop(false);
+	wallJump.speed = 0.0f;
+	wallJump.loop = false;
 
 	return true;
 }
@@ -94,7 +106,7 @@ bool Player::Update(float dt)
 
 	if (isDead == false)
 	{
-		if (godMode)
+		if (godMode)		//4 directional movement
 		{
 			if (app->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 			{
@@ -126,23 +138,69 @@ bool Player::Update(float dt)
 				}
 				keyPressed = true;
 			}
-			/*if (app->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+		}
+		else				//2 directional with jumping
+		{
+			if (app->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 			{
-				currentAnimation = &jump;
+				currentAnimation = &jumpPrep;
+				isJumping = true;
+				speed.y = -30.0f;
+			}
+			if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_D) != KEY_REPEAT)
+			{
+				playerRect.x -= 1;
+				if (!isJumping)
+				{
+					currentAnimation = &run;
+				}
+				if (invert == false)
+				{
+					invert = true;
+				}
 				keyPressed = true;
-			}*/
+			}
+			if (app->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_A) != KEY_REPEAT)
+			{
+				playerRect.x += 1;
+				if (!isJumping)
+				{
+					currentAnimation = &run;
+				}
+				if (invert == true)
+				{
+					invert = false;
+				}
+				keyPressed = true;
+			}
 		}
 
-		if (keyPressed == false)
+		if (keyPressed == false && isJumping == false)
 		{
 			run.Reset();
-			//jump.Reset();
 			currentAnimation = &idle;
+		}
+
+		if (isJumping == true)
+		{
+			if (currentAnimation->HasFinished())
+			{
+				if (currentAnimation == &jumpPrep)
+				{
+					currentAnimation = &jumpMid;
+					jumpPrep.Reset();
+				}
+				if (currentAnimation == &jumpLand)
+				{
+					isJumping = false;
+					jumpLand.Reset();
+				}
+			}
 		}
 	}
 
 	//Physics
-	playerPhysics.UpdatePhysics(playerRect.x, playerRect.y, speed.x, speed.y);
+	playerPhysics.UpdatePhysics(playerRect.y, speed.y);
 
 	//Collisions
 	int x = playerRect.x / 64;
@@ -180,6 +238,10 @@ bool Player::Update(float dt)
 		playerRect.y = (y) * 2 * 64 - (playerRect.y);
 		speed.y = 0;
 		LOG("Floor!");
+		if (isJumping)
+		{
+			currentAnimation = &jumpLand;
+		}
 	}
 
 	if (GetColliderId(x + 1, y) == Collider::TYPE::SOLID				//Right Wall x,x+1,y+-1
@@ -242,8 +304,8 @@ bool Player::PostUpdate()
 		--playerRect.x;
 	}
 
-	app->render->DrawRectangle({ playerRect.x, playerRect.y + 64, 64, 64 }, 255, 0, 0, 255); // temp
-	app->render->DrawRectangle({ playerRect.x, playerRect.y - 64, 64, 64 }, 0, 255, 0, 255); // temp
+	//app->render->DrawRectangle({ playerRect.x, playerRect.y + 64, 64, 64 }, 255, 0, 0, 255); // temp
+	//app->render->DrawRectangle({ playerRect.x, playerRect.y - 64, 64, 64 }, 0, 255, 0, 255); // temp
 	app->render->DrawTexture(playerTex, playerRect.x, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
     return true;
 }

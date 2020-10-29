@@ -39,7 +39,7 @@ bool TitleScene::Start()
 {
 	app->render->SetBackgroundColor({ 0,0,0,0 });
 	titleScreen = app->tex->Load("Assets/textures/titleScreen.png");
-	app->audio->PlayMusic("Assets/audio/music/TitleScreen.ogg",0.0f);
+//	app->audio->PlayMusic("Assets/audio/music/TitleScreen.ogg",0.0f);
 	return true;
 }
 

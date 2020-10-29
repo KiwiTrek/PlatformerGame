@@ -43,32 +43,6 @@ public:
 		return frames[(int)currentFrame];
 	}
 
-	void SetLoop(bool _loop)
-	{
-		loop = _loop;
-	}
-
-	float GetSpeed() const
-	{
-		return speed;
-	}
-
-	void SetSpeed(float _speed)
-	{
-		speed = _speed;
-	}
-
-	int GetHeight()
-	{
-		return frames[(int)currentFrame].h;
-	}
-
-	int GetWidth()
-	{
-		return frames[(int)currentFrame].w;
-	}
-
-private:
 	float currentFrame = 0.0f;
 	int totalFrames = 0;
 	int loopCount = 0;
