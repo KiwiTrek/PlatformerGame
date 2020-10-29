@@ -56,7 +56,10 @@ void Map::Draw()
                         T = GetTilesetFromTileId(tileId);
                         SDL_Rect n = T->GetTileRect(tileId);
                         iPoint pos = MapToWorld(x, y);
-                        app->render->DrawTexture(T->texture, pos.x, pos.y, false, &n);
+                        if (T->GetPropList(tileId - T->firstgId)->properties.GetProperty("NoDraw") == 0)
+                        {
+                            app->render->DrawTexture(T->texture, pos.x, pos.y, false, &n);
+                        }
                     }
                 }
             }
@@ -188,15 +191,12 @@ bool Map::LoadMap()
     else
     {
         LOG("Filling map info");
-        //data.version = map.attribute("version").as_string();
         SString strType(map.attribute("orientation").as_string());
         data.type = StrToMapType(strType);
-        //data.renderorder = map.attribute("renderorder").as_string();
         data.w = map.attribute("width").as_int();
         data.h = map.attribute("height").as_int();
         data.tileW = map.attribute("tilewidth").as_int();
         data.tileH = map.attribute("tileheight").as_int();
-        //data.nextObjectId = map.attribute("nextobjectid").as_int();
         SString color(map.attribute("backgroundcolor").as_string());
         color.Trim();
         sscanf_s(color.GetString(), "%02x%02x%02x", (uint)&data.backgroundColor.r, (uint)&data.backgroundColor.g, (uint)&data.backgroundColor.b);
@@ -372,18 +372,18 @@ void Map::LogInfo()
 {
     // LOG all the data loaded
     LOG("--------------------------------------------------------------------------");
-    LOG("<< MAP DATA >>");
+    LOG("#Map Data: ");
     LOG("Width=%d", data.w);
     LOG("Height=%d", data.h);
     LOG("TileWidth=%d", data.tileW);
     LOG("TileHeight=%d", data.tileH);
-    LOG("<< END MAP DATA >>\n");
+    LOG("\n");
 
     ListItem<Tileset*>* infoList;
     infoList = data.tilesets.start;
     while (infoList != NULL)
     {
-        LOG("<< TILESET >>");
+        LOG("#TileSet");
         LOG("Name=%s", infoList->data->name.GetString());
         LOG("Firstgid=%d", infoList->data->firstgId);
         LOG("Margin=%d", infoList->data->margin);
@@ -395,7 +395,7 @@ void Map::LogInfo()
         LOG("texHeight=%d", infoList->data->texHeight);
         LOG("numTilesWidth=%d", infoList->data->numTilesWidth);
         LOG("numTilesHeight=%d", infoList->data->numTilesHeight);
-        LOG("<< END TILESET >>\n");
+        LOG("\n");
 
         infoList = infoList->next;
     }
@@ -408,19 +408,20 @@ void Map::LogInfo()
     propertyList = data.mapLayer.start->data->properties.list.start;
     while (layerList != NULL)
     {
-        LOG("<< LAYER >>");
+        LOG("#Layer");
         LOG("Name=%s", layerList->data->name.GetString());
         LOG("Width=%d", layerList->data->width);
         LOG("Height=%d", layerList->data->height);
 
-        while (propertyList != NULL) {
-            LOG("<< PROPERTY >>");
+        while (propertyList != NULL)
+        {
+            LOG("#Property");
             LOG("Name=%s", propertyList->data->name.GetString());
             LOG("Value=%d", propertyList->data->value);
             propertyList = propertyList->next;
         }
 
-        LOG("<< END LAYER >>\n");
+        LOG("\n");
         layerList = layerList->next;
     }
     LOG("--------------------------------------------------------------------------");
@@ -428,7 +429,6 @@ void Map::LogInfo()
 
 int Properties::GetProperty(const char* value, int defaultValue) const
 {
-    //...
     ListItem<Property*>* P;
     P = list.start;
 
@@ -445,4 +445,75 @@ int Properties::GetProperty(const char* value, int defaultValue) const
     }
 
     return defaultValue;
+}
+
+void Properties::SetProperty(const char* name, int value)
+{
+    ListItem<Property*>* P;
+    P = list.start;
+
+    SString prop = name;
+
+    while (P != NULL)
+    {
+        //LOG("Checking property: %s", P->data->name.GetString());         //<- checks the property
+        if (P->data->name == prop)
+        {
+            P->data->value = value;
+            return;
+        }
+        P = P->next;
+    }
+}
+
+void Map::SetTileProperty(int x, int y, const char* property, int value, bool notMovCollision, bool isObject)
+{
+    // MapLayer
+    ListItem <MapLayer*>* ML = data.mapLayer.start;
+    SString layerName;
+    if (isObject)
+    {
+        layerName = "Objects";
+    }
+    else
+    {
+        layerName = "Collisions";
+    }
+    while (ML != NULL)
+    {
+        if (ML->data->name == layerName)
+        {
+            break;
+        }
+        ML = ML->next;
+    }
+
+    // Tileset
+    ListItem <Tileset*>* T = data.tilesets.start;
+    SString tilesetName;
+    if (notMovCollision)
+    {
+        tilesetName = "Level1Tileset(64x64)";
+    }
+    else
+    {
+        tilesetName = "MetaData";
+    }
+    while (T != NULL)
+    {
+        if (T->data->name == tilesetName)
+        {
+            break;
+        }
+        T = T->next;
+    }
+
+    // Gets CollisionId
+    int id = (int)(ML->data->Get(x, y) - T->data->firstgId);
+    if (id < 0)
+    {
+        return;
+    }
+    Tile* currentTile = T->data->GetPropList(id);
+    currentTile->properties.SetProperty(property, value);
 }

@@ -57,7 +57,9 @@ private:
 
 	Animation* currentAnimation = &idle;
 
-	int GetColliderId(int x, int y, bool isFruit = false, bool isObject = false) const;
+	int GetTileProperty(int x, int y, const char* property, bool notMovCollision = false, bool isObject = false) const;
+	iPoint GetSpawnPoint();
+
 	Collider* playerCollider = nullptr;
 	bool positiveSpeedX = true;
 	bool positiveSpeedY = true;
@@ -78,14 +80,15 @@ private:
 	unsigned int deadFx;
 	unsigned int jumpFx;
 	unsigned int doubleJumpFx;
+	unsigned int fruitFx;
 
 	bool godMode;
 	bool keyPressed;
 	bool isJumping;
 	bool isDead;
 	bool invert;
-
-	bool onceDead;
+	bool debugDraw;
+	bool once;
 };
 
 #endif // !__PLAYER_H__

@@ -25,6 +25,8 @@ void Player::Init()
 
 bool Player::Start()
 {
+	spawnPoint = GetSpawnPoint();
+	playerRect = { spawnPoint.x,spawnPoint.y,44,72 };
 	jumpCounter = 2;
 
 	godMode = false;
@@ -32,18 +34,28 @@ bool Player::Start()
 	isJumping = false;
 	isDead = false;
 	invert = false;
-
-	onceDead = true;
+	debugDraw = false;
+	once = true;
 
 	playerPhysics.axisY = true;
 
 	playerTex = app->tex->Load("Assets/textures/characterSpritesheet.png");
+	idle.Reset();
+	run.Reset();
+	jumpPrep.Reset();
+	jumpMid.Reset();
+	jumpLand.Reset();
+	death.Reset();
+	wallJump.Reset();
+
 	deadFx = app->audio->LoadFx("Assets/audio/fx/lose.wav");
 	jumpFx = app->audio->LoadFx("Assets/audio/fx/jump.wav");
 	doubleJumpFx = app->audio->LoadFx("Assets/audio/fx/doubleJump.wav");
+	fruitFx = app->audio->LoadFx("Assets/audio/fx/fruit.wav");
 	app->audio->SetFxVolume(deadFx);
 	app->audio->SetFxVolume(jumpFx);
 	app->audio->SetFxVolume(doubleJumpFx);
+	app->audio->SetFxVolume(fruitFx);
     return true;
 }
 
@@ -53,40 +65,40 @@ bool Player::Awake(pugi::xml_node&)
 	{
 		idle.PushBack({ 10 + (playerSize * i),1329,56,73 });
 	}
-	idle.speed = 0.01f;
+	idle.speed = 0.1f;
 	idle.loop = true;
 
 	for (int i = 0; i != 8; ++i)
 	{
 		run.PushBack({ 10 + (playerSize * i),1202,62,82 });
 	}
-	run.speed = 0.01f;
+	run.speed = 0.5f;
 	run.loop = true;
 
 	for (int i = 0; i != 2; ++i)
 	{
 		jumpPrep.PushBack({ 10 + (playerSize * i), 812, 60, 90 });
 	}
-	jumpPrep.speed = 0.05f;
+	jumpPrep.speed = 0.5f;
 	jumpPrep.loop = false;
 
 	for (int i = 0; i != 4; ++i)
 	{
 		jumpMid.PushBack({ 10 + (2 * playerSize) + (playerSize * i),812,60,80 });
 	}
-	jumpMid.speed = 0.01f;
+	jumpMid.speed = 0.1f;
 	jumpMid.loop = true;
 
 	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
 	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
-	jumpLand.speed = 0.3f;
+	jumpLand.speed = 3.0f;
 	jumpLand.loop = false;
 
 	for (int i = 0; i != 5; ++i)
 	{
 		death.PushBack({ 10 + (playerSize * i),192,88,66 });
 	}
-	death.speed = 0.03f;
+	death.speed = 0.3f;
 	death.loop = false;
 
 	wallJump.PushBack({ 648,170,55,79 });
@@ -123,7 +135,7 @@ bool Player::Update(float dt)
 		positiveSpeedY = false;
 	}
 
-	if (isDead == false)
+	if (isDead == false || once == false)
 	{
 		if (godMode)		//4 directional movement
 		{
@@ -164,7 +176,7 @@ bool Player::Update(float dt)
 		}
 		else				//2 directional with jumping
 		{
-			if (!isJumping || jumpCounter > 0)
+			if (jumpCounter > 0)
 			{
 				if (app->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 				{
@@ -179,7 +191,7 @@ bool Player::Update(float dt)
 						app->audio->PlayFx(doubleJumpFx);
 					}
 					--jumpCounter;
-					speed.y = -100.0f;
+					speed.y = -1000.0f;
 				}
 			}
 			if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_D) != KEY_REPEAT)
@@ -235,139 +247,162 @@ bool Player::Update(float dt)
 				}
 			}
 		}
-	}
 
-	//Physics
-	playerPhysics.UpdatePhysics(playerRect.y, speed.y);
+		//Physics
+		playerPhysics.UpdatePhysics(playerRect.y, speed.y);
 
-	//Collisions
-	int x = playerRect.x / 64;
-	int y = playerRect.y / 64;
-	if (x < 0)
-	{
-		x = 0;
-	}
-	if (y < 0)
-	{
-		y = 0;
-	}
-	LOG("%d,%d", x, y);
+		//Collisions
+		int x = playerRect.x / 64;
+		int y = playerRect.y / 64;
+		if (x < 0)
+		{
+			x = 0;
+		}
+		if (y < 0)
+		{
+			y = 0;
+		}
+		LOG("%d,%d", x, y);
 
-	if (positiveSpeedX && positiveSpeedY)	//bottom right corner
-	{
-		CollisionType collisionType = GetCollisionType(GetColliderId(x, y + 1), GetColliderId(x + 1, y));
-		//LOG("%d", collisionType);
-		if (collisionType == CollisionType::DoubleSolid) {
-			playerRect.y = y * 2 * 64 - playerRect.y;
-			speed.y = 0;
-			if (isJumping)	//for floors
+		if (positiveSpeedX && positiveSpeedY)	//bottom right corner
+		{
+			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y + 1, "CollisionId"), GetTileProperty(x + 1, y, "CollisionId"));
+			if (collisionType == CollisionType::DoubleSolid)
 			{
-				currentAnimation = &jumpLand;
+				playerRect.y = y * 2 * 64 - playerRect.y;
+				speed.y = 0;
+				if (isJumping)
+				{
+					currentAnimation = &jumpLand;
+				}
+				playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
+				LOG("BottomRight - DoubleSolid");
 			}
-			playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
-			LOG("BottomRight - DoubleSolid");
-		}
-		else if (collisionType == CollisionType::AirSolid) {
-			playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
-			LOG("BottomRight - AirSolid");
-		}
-		else if (collisionType == CollisionType::SolidAir) {
-			playerRect.y = y * 2 * 64 - playerRect.y;
-			speed.y = 0;
-			if (isJumping)	//for floors
+			else if (collisionType == CollisionType::AirSolid)
 			{
-				currentAnimation = &jumpLand;
+				playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
+				LOG("BottomRight - AirSolid");
 			}
-			LOG("BottomRight - SolidAir");
-		}
-	}
-	else if (positiveSpeedX && !positiveSpeedY)	//top right corner
-	{
-		CollisionType collisionType = GetCollisionType(GetColliderId(x, y), GetColliderId(x + 1, y + 1));
-		//LOG("%d", collisionType);
-		if (collisionType == CollisionType::DoubleSolid) {
-			playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
-			speed.y = 0;
-			playerRect.x = 2 * 64 * (x)-playerRect.x;
-			LOG("TopRight - DoubleSolid");
-		}
-		else if (collisionType == CollisionType::AirSolid) {
-			playerRect.x = 2 * 64 * (x)-playerRect.x;
-			LOG("TopRight - AirSolid");
-		}
-		else if (collisionType == CollisionType::SolidAir) {
-			playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
-			speed.y = 0;
-			LOG("TopRight - SolidAir");
-		}
-	}
-	else if (!positiveSpeedX && !positiveSpeedY)	//top left corner
-	{
-		CollisionType collisionType = GetCollisionType(GetColliderId(x, y + 1), GetColliderId(x + 1, y));
-		//LOG("%d", collisionType);
-		if (collisionType == CollisionType::DoubleSolid) {
-			playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
-			speed.y = 0;
-			playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-			LOG("TopLeft - DoubleSolid");
-		}
-		else if (collisionType == CollisionType::AirSolid) {
-			playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
-			speed.y = 0;
-			LOG("TopLeft - AirSolid");
-		}
-		else if (collisionType == CollisionType::SolidAir) {
-			playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-			LOG("TopLeft - SolidAir");
-		}
-	}
-	else if (!positiveSpeedX && positiveSpeedY)	//bottom left corner
-	{
-		CollisionType collisionType = GetCollisionType(GetColliderId(x, y), GetColliderId(x + 1, y + 1)); // for some reason x + 1 makes it work
-		//LOG("%d", collisionType);
-		if (collisionType == CollisionType::DoubleSolid) {
-			playerRect.y = y * 2 * 64 - playerRect.y;
-			speed.y = 0;
-			if (isJumping)	//for floors
+			else if (collisionType == CollisionType::SolidAir)
 			{
-				currentAnimation = &jumpLand;
+				playerRect.y = y * 2 * 64 - playerRect.y;
+				speed.y = 0;
+				if (isJumping)
+				{
+					currentAnimation = &jumpLand;
+				}
+				LOG("BottomRight - SolidAir");
 			}
-			playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-			LOG("BottomLeft - DoubleSolid");
 		}
-		else if (collisionType == CollisionType::AirSolid) {
-			playerRect.y = y * 2 * 64 - playerRect.y;
-			speed.y = 0;
-			if (isJumping)	//for floors
+		else if (positiveSpeedX && !positiveSpeedY)	//top right corner
+		{
+			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y, "CollisionId"), GetTileProperty(x + 1, y + 1, "CollisionId"));
+			if (collisionType == CollisionType::DoubleSolid)
 			{
-				currentAnimation = &jumpLand;
+				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
+				speed.y = 0;
+				playerRect.x = 2 * 64 * (x)-playerRect.x;
+				LOG("TopRight - DoubleSolid");
 			}
-			LOG("BottomLeft - AirSolid");
+			else if (collisionType == CollisionType::AirSolid)
+			{
+				playerRect.x = 2 * 64 * (x)-playerRect.x;
+				LOG("TopRight - AirSolid");
+			}
+			else if (collisionType == CollisionType::SolidAir)
+			{
+				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
+				speed.y = 0;
+				LOG("TopRight - SolidAir");
+			}
 		}
-		else if (collisionType == CollisionType::SolidAir) {
-			playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-			LOG("BottomLeft - SolidAir");
+		else if (!positiveSpeedX && !positiveSpeedY)	//top left corner
+		{
+			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y + 1, "CollisionId"), GetTileProperty(x + 1, y, "CollisionId"));
+			if (collisionType == CollisionType::DoubleSolid)
+			{
+				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
+				speed.y = 0;
+				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
+				LOG("TopLeft - DoubleSolid");
+			}
+			else if (collisionType == CollisionType::AirSolid)
+			{
+				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
+				speed.y = 0;
+				LOG("TopLeft - AirSolid");
+			}
+			else if (collisionType == CollisionType::SolidAir)
+			{
+				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
+				LOG("TopLeft - SolidAir");
+			}
+		}
+		else if (!positiveSpeedX && positiveSpeedY)	//bottom left corner
+		{
+			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y, "CollisionId"), GetTileProperty(x + 1, y + 1, "CollisionId"));
+			if (collisionType == CollisionType::DoubleSolid)
+			{
+				playerRect.y = y * 2 * 64 - playerRect.y;
+				speed.y = 0;
+				if (isJumping)
+				{
+					currentAnimation = &jumpLand;
+				}
+				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
+				LOG("BottomLeft - DoubleSolid");
+			}
+			else if (collisionType == CollisionType::AirSolid)
+			{
+				playerRect.y = y * 2 * 64 - playerRect.y;
+				speed.y = 0;
+				if (isJumping)
+				{
+					currentAnimation = &jumpLand;
+				}
+				LOG("BottomLeft - AirSolid");
+			}
+			else if (collisionType == CollisionType::SolidAir)
+			{
+				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
+				LOG("BottomLeft - SolidAir");
+			}
+		}
+
+		if (GetTileProperty(x, y, "CollisionId", true, true) == Collider::TYPE::FRUIT)
+		{
+			if(GetTileProperty(x, y, "NoDraw", true, true) == 0)
+			{
+				app->map->SetTileProperty(x, y, "NoDraw", 1, true, true);
+				app->audio->PlayFx(fruitFx);
+			}
+		}
+
+		// Win condition
+		if (GetTileProperty(x, y, "CollisionId", true, true) == Collider::TYPE::GOAL)
+		{
+			if (once)
+			{
+				app->audio->PlayMusic("Assets/audio/music/Victory.ogg", 1.0f);
+				once = false;
+			}
+			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, 600.0f);
+		}
+
+		// Dead
+		if (GetTileProperty(x, y + 1, "CollisionId") == Collider::TYPE::SPIKE)
+		{
+			isDead = true;
 		}
 	}
 
-
-
-	// Spawns
-	//if (GetColliderId(x, y) == Collider::TYPE::SPAWN)
-	//{
-	//	spawnPoint = { x, y };
-	//}
-
-	// Dead
-	//if (GetColliderId(x, y) == Collider::TYPE::SPIKE) {
-	//	isDead = true;
-	//}
+	
 	if (isDead)
 	{
 		currentAnimation = &death;
-		if (onceDead)
+		if (once)
 		{
-			onceDead = false;
+			once = false;
 			app->audio->PlayFx(deadFx);
 		}
 		if (currentAnimation->HasFinished())
@@ -375,12 +410,6 @@ bool Player::Update(float dt)
 			app->transition->FadeEffect((Module*)app->scene, (Module*)app->deathScene, false, 600.0f);
 		}
 	}
-
-	// Win condition
-	//if (GetColliderId(x, y) == Collider::TYPE::GOAL)
-	//{
-	//	LOG("YOU WIN, YAY!\n");
-	//}
 
     return true;
 }
@@ -396,9 +425,11 @@ bool Player::PostUpdate()
 		--playerRect.x;
 	}
 
-	//app->render->DrawRectangle({ playerRect.x, playerRect.y + 64, 64, 64 }, 255, 0, 0, 255); // temp
-	//app->render->DrawRectangle({ playerRect.x, playerRect.y - 64, 64, 64 }, 0, 255, 0, 255); // temp
 	app->render->DrawTexture(playerTex, playerRect.x, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
+	if (app->render->drawAll)
+	{
+		app->render->DrawRectangle({ playerRect.x, playerRect.y, 64, 64 }, 0, 255, 0, 100); // temp
+	}
     return true;
 }
 
@@ -407,6 +438,9 @@ bool Player::CleanUp()
 	app->tex->UnLoad(playerTex);
 
 	app->audio->UnloadFx(deadFx);
+	app->audio->UnloadFx(doubleJumpFx);
+	app->audio->UnloadFx(fruitFx);
+	app->audio->UnloadFx(jumpFx);
 
 	return true;
 }
@@ -421,65 +455,123 @@ bool Player::Save(pugi::xml_node&)
     return true;
 }
 
-int Player::GetColliderId(int x, int y, bool isFruit, bool isObject) const
+iPoint Player::GetSpawnPoint()
 {
-	int ret;
-	// MapLayer		<- this works
+	iPoint ret = { 0,0 };
+
+	// MapLayer
 	ListItem <MapLayer*>* ML = app->map->data.mapLayer.start;
-	SString layerName;
-	if (isObject) {
-		layerName = "Objects";
-	}
-	else {
-		layerName = "Collisions";
-	}
-	while (ML != NULL) {
-		if (ML->data->name == layerName) {
+	SString layerName = "Objects";
+	while (ML != NULL)
+	{
+		if (ML->data->name == layerName)
+		{
 			break;
 		}
 		ML = ML->next;
 	}
 
-	// Tileset		<- this works
+	// Tileset
+	ListItem <Tileset*>* T = app->map->data.tilesets.start;
+	SString tilesetName = "Level1Tileset(64x64)";
+	while (T != NULL)
+	{
+		if (T->data->name == tilesetName)
+		{
+			break;
+		}
+		T = T->next;
+	}
+
+	int id = 0;
+	for (int x = 0; x < app->map->data.w; ++x)
+	{
+		for (int y = 0; y < app->map->data.h; ++y)
+		{
+			id = (int)(ML->data->Get(x, y) - T->data->firstgId);
+			if (id == 28)
+			{
+				ret.x = x * 64;
+				ret.y = y * 64;
+				return ret;
+			}
+		}
+	}
+
+	return ret;
+}
+
+int Player::GetTileProperty(int x, int y, const char* property, bool notMovCollision, bool isObject) const
+{
+	int ret;
+	// MapLayer
+	ListItem <MapLayer*>* ML = app->map->data.mapLayer.start;
+	SString layerName;
+	if (isObject)
+	{
+		layerName = "Objects";
+	}
+	else
+	{
+		layerName = "Collisions";
+	}
+	while (ML != NULL)
+	{
+		if (ML->data->name == layerName)
+		{
+			break;
+		}
+		ML = ML->next;
+	}
+
+	// Tileset
 	ListItem <Tileset*>* T = app->map->data.tilesets.start;
 	SString tilesetName;
-	if (isFruit) {
+	if (notMovCollision)
+	{
 		tilesetName = "Level1Tileset(64x64)";
 	}
-	else {
+	else
+	{
 		tilesetName = "MetaData";
 	}
-	while (T != NULL) {
-		if (T->data->name == tilesetName) {
+	while (T != NULL)
+	{
+		if (T->data->name == tilesetName)
+		{
 			break;
 		}
 		T = T->next;
 	}
 
 	// Gets CollisionId
-	int id = (int)(ML->data->Get(x, y) - T->data->firstgId);	//returns id of the tile
-	if (id < 0) {
+	int id = (int)(ML->data->Get(x, y) - T->data->firstgId);
+	if (id < 0)
+	{
 		ret = 0;
 		return ret;
 	}
-	Tile* currentTile = T->data->GetPropList(id);					//on second iteration there is no properties list (we think it gets destroyed)
-	ret = currentTile->properties.GetProperty("CollisionId",0);						//since there is no getpropList it triggers breakpoint and explodes
-	//LOG("%d - %d", id, ret);
+	Tile* currentTile = T->data->GetPropList(id);
+	ret = currentTile->properties.GetProperty(property,0);
 	return ret;
 }
 
 Player::CollisionType Player::GetCollisionType(int A, int B) const
 {
-	if (A == Collider::TYPE::SOLID && B == Collider::TYPE::SOLID) {
+	if (A == Collider::TYPE::SOLID && B == Collider::TYPE::SOLID)
+{
 		return CollisionType::DoubleSolid;
 	}
-	else if (A == Collider::TYPE::SOLID && B == Collider::TYPE::AIR) {
+	else if (A == Collider::TYPE::SOLID && B == Collider::TYPE::AIR)
+	{
 		return CollisionType::SolidAir;
 	}
-	else if (A == Collider::TYPE::AIR && B == Collider::TYPE::AIR) {
+	else if (A == Collider::TYPE::AIR && B == Collider::TYPE::AIR)
+	{
 		return CollisionType::DoubleAir;
 	}
-	else if (A == Collider::TYPE::AIR && B == Collider::TYPE::SOLID) {
+	else if (A == Collider::TYPE::AIR && B == Collider::TYPE::SOLID)
+	{
 		return CollisionType::AirSolid;
 	}
 }

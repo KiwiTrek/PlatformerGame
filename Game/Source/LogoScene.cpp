@@ -36,7 +36,7 @@ bool LogoScene::Awake()
 // Called before the first frame
 bool LogoScene::Start()
 {
-	app->transition->FadeEffect(nullptr, this, true, 6000.0f);
+	app->transition->FadeEffect(nullptr, this, true, 100.0f);
 	logo = app->tex->Load("Assets/textures/logoScreen.jpg");
 	logoFx = app->audio->LoadFx("Assets/audio/fx/logo.wav");
 	app->audio->SetFxVolume(logoFx);
@@ -52,16 +52,16 @@ bool LogoScene::PreUpdate()
 // Called each loop iteration
 bool LogoScene::Update(float dt)
 {
-	if (timer < 10000)
+	if (timer < 200)
 	{
 		timer++;
 	}
 	else
 	{
-		app->transition->FadeEffect(this, (Module*)app->titleScene, false, 6000.0f);
+		app->transition->FadeEffect(this, (Module*)app->titleScene, false, 100.0f);
 	}
 
-	if (timer == 3000)
+	if (timer == 100)
 	{
 		app->audio->PlayFx(logoFx);
 	}

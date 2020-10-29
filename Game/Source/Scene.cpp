@@ -89,9 +89,15 @@ bool Scene::Update(float dt)
 		app->LoadRequest();
 	}
 
-	SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d", app->map->data.w, app->map->data.h, app->map->data.tileW, app->map->data.tileH, app->map->data.tilesets.count());
-
-	app->win->SetTitle(title.GetString());
+	if (app->render->drawAll)
+	{
+		SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d", app->map->data.w, app->map->data.h, app->map->data.tileW, app->map->data.tileH, app->map->data.tilesets.count());
+		app->win->SetTitle(title.GetString());
+	}
+	else
+	{
+		app->win->SetTitle(app->GetTitle());
+	}
 
 	return true;
 }
@@ -103,9 +109,6 @@ bool Scene::PostUpdate()
 
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
-
-	// to see the camera x and y position each frame
-	//LOG("%d,%d", app->render->camera.x, app->render->camera.y);
 
 	//Player restraint
 	if ((app->render->camera.x + app->player->playerRect.x) < (app->map->data.tileW * 6))
@@ -149,9 +152,9 @@ bool Scene::PostUpdate()
 	app->tex->GetSize(mountainsBack, wmb, hmb);
 	for (int i = 0; (wmb * i) <= (w - app->render->camera.x); i++)
 	{
-		app->render->DrawTexture(mountainsBack, wmb * i, app->map->data.tileH * 6, false, nullptr, false, 0.4f);
-		app->render->DrawTexture(clouds, wmb * i, app->map->data.tileH * 2.5, false, nullptr, false, 0.5f);
-		app->render->DrawTexture(mountainsFront, wmb * i, app->map->data.tileH * 8, false, nullptr, false, 0.85f);
+		app->render->DrawTexture(mountainsBack, wmb * i, app->map->data.tileH * 7, false, nullptr, false, 0.4f);
+		app->render->DrawTexture(clouds, wmb * i, app->map->data.tileH * 3, false, nullptr, false, 0.5f);
+		app->render->DrawTexture(mountainsFront, wmb * i, app->map->data.tileH * 9, false, nullptr, false, 0.85f);
 	}
 
 	app->map->Draw();

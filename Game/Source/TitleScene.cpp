@@ -54,7 +54,7 @@ bool TitleScene::Update(float dt)
 {
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 	{
-		app->transition->FadeEffect(this, (Module*)app->scene, false, 600.0f);
+		app->transition->FadeEffect(this, (Module*)app->scene, false, 60.0f);
 	}
 	return true;
 }

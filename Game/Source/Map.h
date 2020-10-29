@@ -39,7 +39,8 @@ struct Properties
     }
 
     // L06: TODO 7: Method to ask for the value of a custom property
-    int GetProperty(const char* name, int default_value = 0) const;
+    int GetProperty(const char* name, int defaultValue = 0) const;
+    void SetProperty(const char* name, int value);
 
     List<Property*> list;
 };
@@ -135,6 +136,9 @@ public:
 
     // Translates map position to world position
     iPoint MapToWorld(int x, int y) const;
+
+    // Changes property to value assigned
+    void SetTileProperty(int x, int y, const char* property, int value, bool notMovCollision = false, bool isObject = false);
 
     MapData data;
 
