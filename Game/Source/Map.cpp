@@ -358,9 +358,11 @@ Tile* TileSet::GetPropList(int id) const
 {
     ListItem<Tile*>* tile = tileSetPropList.start;
     Tile* t = tile->data;
-    while (tile != NULL) {
+    while (tile != NULL)
+    {
         t = tile->data;
-        if (t->id == id) {
+        if (t->id == id)
+        {
             return t;
         }
         tile = tile->next;

@@ -102,7 +102,7 @@ bool Player::Awake(pugi::xml_node&)
 	death.speed = 0.3f;
 	death.loop = false;
 
-	wallJump.PushBack({ 648,170,55,79 });
+	wallJump.PushBack({ 630,170,73,79 });
 	wallJump.speed = 0.0f;
 	wallJump.loop = false;
 
@@ -135,6 +135,7 @@ bool Player::Update(float dt)
 	else if (speed.y < 0) {
 		positiveSpeedY = false;
 	}
+
 	if (speed.x >= 0) {
 		positiveSpeedX = true;
 	}
@@ -187,7 +188,6 @@ bool Player::Update(float dt)
 			{
 				if (app->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 				{
-					if(currentAnimation == &wallJump){}
 					currentAnimation = &jumpPrep;
 					isJumping = true;
 					if (jumpCounter == 2)
@@ -204,7 +204,10 @@ bool Player::Update(float dt)
 			}
 			if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_D) != KEY_REPEAT)
 			{
-				playerRect.x -= 5;
+				if (currentAnimation != &wallJump)
+				{
+					playerRect.x -= 5;
+				}
 				positiveSpeedX = false;
 				if (!isJumping)
 				{
@@ -218,7 +221,10 @@ bool Player::Update(float dt)
 			}
 			if (app->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_A) != KEY_REPEAT)
 			{
-				playerRect.x += 5;
+				if (currentAnimation != &wallJump)
+				{
+					playerRect.x += 5;
+				}
 				positiveSpeedX = true;
 				if (!isJumping)
 				{
