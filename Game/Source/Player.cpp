@@ -37,6 +37,7 @@ bool Player::Start()
 	debugDraw = false;
 	once = true;
 
+	playerPhysics.axisX = true;
 	playerPhysics.axisY = true;
 
 	playerTex = app->tex->Load("Assets/textures/characterSpritesheet.png");
@@ -134,6 +135,12 @@ bool Player::Update(float dt)
 	else if (speed.y < 0) {
 		positiveSpeedY = false;
 	}
+	if (speed.x >= 0) {
+		positiveSpeedX = true;
+	}
+	else if (speed.x < 0) {
+		positiveSpeedX = false;
+	}
 
 	if (isDead == false)
 	{
@@ -180,6 +187,7 @@ bool Player::Update(float dt)
 			{
 				if (app->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 				{
+					if(currentAnimation == &wallJump){}
 					currentAnimation = &jumpPrep;
 					isJumping = true;
 					if (jumpCounter == 2)
@@ -249,7 +257,7 @@ bool Player::Update(float dt)
 		}
 
 		//Physics
-		playerPhysics.UpdatePhysics(playerRect.y, speed.y);
+		playerPhysics.UpdatePhysics(playerRect.x, playerRect.y, speed.x, speed.y);
 
 		//Collisions
 		int x = playerRect.x / 64;
@@ -276,6 +284,7 @@ bool Player::Update(float dt)
 					currentAnimation = &jumpLand;
 				}
 				playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
+				speed.x = 0;
 				LOG("BottomRight - DOUBLE_SOLID");
 			}
 			else if (collisionType == CollisionType::AIR_SOLID)
@@ -293,6 +302,7 @@ bool Player::Update(float dt)
 			{
 				playerRect.y = y * 2 * 64 - playerRect.y;
 				speed.y = 0;
+				speed.x = 0;
 				if (isJumping)
 				{
 					currentAnimation = &jumpLand;
@@ -368,12 +378,14 @@ bool Player::Update(float dt)
 					currentAnimation = &jumpLand;
 				}
 				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
+				speed.x = 0;
 				LOG("BottomLeft - DOUBLE_SOLID");
 			}
 			else if (collisionType == CollisionType::AIR_SOLID)
 			{
 				playerRect.y = y * 2 * 64 - playerRect.y;
 				speed.y = 0;
+				speed.x = 0;
 				if (isJumping)
 				{
 					currentAnimation = &jumpLand;

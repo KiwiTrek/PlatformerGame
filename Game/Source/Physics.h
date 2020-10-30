@@ -7,7 +7,10 @@
 
 struct Physics {
 public:
-    void UpdatePhysics(int& _y, float& _sy) {
+    void UpdatePhysics(int& _x, int& _y, float& _sx, float& _sy) {
+        if (axisX) {
+            _x = _x + _sx * deltaTime;
+        }
         if (axisY) {
             //Euler
             //_y = _y + _sy * deltaTime;
@@ -19,6 +22,7 @@ public:
         }
     }
 
+    bool axisX;
     bool axisY;
     float gravity = 950.0f;
     float deltaTime = 1.0f / 60.0f;
