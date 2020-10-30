@@ -51,7 +51,7 @@ struct Tile
     Properties properties;
 };
 
-struct Tileset
+struct TileSet
 {
     int firstgId;
     SString name;
@@ -67,7 +67,7 @@ struct Tileset
     int	offsetX;
     int	offsetY;
 
-    List<Tile*> tilesetPropList;
+    List<Tile*> tileSetPropList;
 
     // Receives a tile id and returns it's Rect position on the tileset
     SDL_Rect GetTileRect(int id) const;
@@ -107,7 +107,7 @@ struct MapData
     int tileW, tileH;
     SDL_Color backgroundColor;
     MapTypes type;
-    List<Tileset*> tilesets;
+    List<TileSet*> tileSets;
     List<MapLayer*> mapLayer;
 };
 
@@ -145,14 +145,14 @@ public:
 private:
 
     bool LoadMap();
-    bool LoadTilesetDetails(pugi::xml_node& tilesetNode, Tileset* set);
-    bool LoadTilesetImage(pugi::xml_node& tilesetNode, Tileset* set);
-    bool LoadTilesetProperties(pugi::xml_node& node, Tileset* set);
+    bool LoadTileSetDetails(pugi::xml_node& node, TileSet* set);
+    bool LoadTileSetImage(pugi::xml_node& node, TileSet* set);
+    bool LoadTileSetProperties(pugi::xml_node& node, TileSet* set);
     bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
     bool LoadProperties(pugi::xml_node& node, Properties& properties);
     MapTypes StrToMapType(SString str);
 
-    Tileset* GetTilesetFromTileId(int id) const;
+    TileSet* GetTileSetFromTileId(int id) const;
 
     bool StoreId(pugi::xml_node& node, MapLayer* layer, int index);
     void LogInfo();

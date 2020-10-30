@@ -9,7 +9,7 @@
 
 class Collider {
 public:
-    enum TYPE {
+    enum Type {
         NONE = -1,
         AIR,
         SOLID,
@@ -21,7 +21,7 @@ public:
         MAX
     };
 
-    Collider(SDL_Rect _rect, TYPE _type, Module* _listener = nullptr) : rect(_rect), type(_type), listener(_listener) {}
+    Collider(SDL_Rect _rect, Type _type, Module* _listener = nullptr) : rect(_rect), type(_type), listener(_listener) {}
 
     void SetPos(int _x, int _y, int _w, int _h);
 
@@ -29,7 +29,7 @@ public:
 
     SDL_Rect rect;
     bool pendingToDelete = false;
-    TYPE type;
+    Type type;
     Module* listener = nullptr;
 };
 
@@ -61,7 +61,7 @@ public:
 	bool Save(pugi::xml_node&);
 
 	// Adds a new collider to the list
-	Collider* AddCollider(SDL_Rect rect, Collider::TYPE type, Module* listener = nullptr);
+	Collider* AddCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
 
 	// Draws all existing colliders with some transparency
 	// void DebugDraw();		<- we dont need this do we?
@@ -72,7 +72,7 @@ private:
 
     // The collision matrix. Defines the interaction for two collider types
     // If set two false, collider 1 will ignore collider 2
-    bool matrix[Collider::TYPE::MAX][Collider::TYPE::MAX];
+    bool matrix[Collider::Type::MAX][Collider::Type::MAX];
 
     // Simple debugging flag to draw all colliders
     // bool debug = false;      <- same here i think

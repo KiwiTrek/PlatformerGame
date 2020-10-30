@@ -41,7 +41,7 @@ void Map::Draw()
     }
     ListItem<MapLayer*>* L;
     L = data.mapLayer.start;
-    Tileset* T;
+    TileSet* T;
     while (L != NULL) // Iterate for all layers
     {
         if (L->data->properties.GetProperty("NoDraw") == 0 || app->render->drawAll)
@@ -53,7 +53,7 @@ void Map::Draw()
                     int tileId = L->data->Get(x, y);
                     if (tileId > 0)
                     {
-                        T = GetTilesetFromTileId(tileId);
+                        T = GetTileSetFromTileId(tileId);
                         SDL_Rect n = T->GetTileRect(tileId);
                         iPoint pos = MapToWorld(x, y);
                         if (T->GetPropList(tileId - T->firstgId)->properties.GetProperty("NoDraw") == 0)
@@ -80,7 +80,7 @@ iPoint Map::MapToWorld(int x, int y) const
 
 
 // Get relative Tile rectangle
-SDL_Rect Tileset::GetTileRect(int id) const
+SDL_Rect TileSet::GetTileRect(int id) const
 {
     SDL_Rect rect = { 0 };
 
@@ -97,15 +97,15 @@ SDL_Rect Tileset::GetTileRect(int id) const
 bool Map::CleanUp()
 {
     LOG("Unloading map");
-    ListItem<Tileset*>* item;
-    item = data.tilesets.start;
+    ListItem<TileSet*>* item;
+    item = data.tileSets.start;
 
     while (item != NULL)
     {
         RELEASE(item->data);
         item = item->next;
     }
-    data.tilesets.clear();
+    data.tileSets.clear();
 
     // Remove all layers
     ListItem<MapLayer*>* layerList;
@@ -143,22 +143,22 @@ bool Map::Load(const char* filename)
         ret = LoadMap();
 
         // Load tileset
-        for (pugi::xml_node tileset = mapFile.child("map").child("tileset"); tileset && ret; tileset = tileset.next_sibling("tileset"))
+        for (pugi::xml_node tileSet = mapFile.child("map").child("tileset"); tileSet && ret; tileSet = tileSet.next_sibling("tileset"))
         {
-            Tileset* set = new Tileset();
+            TileSet* set = new TileSet();
             if(ret == true)
             {
-                ret = LoadTilesetDetails(tileset, set);
+                ret = LoadTileSetDetails(tileSet, set);
             }
             if(ret == true)
             {
-                ret = LoadTilesetImage(tileset, set);
+                ret = LoadTileSetImage(tileSet, set);
             }
             if (ret == true)
             {
-                ret = LoadTilesetProperties(tileset, set);
+                ret = LoadTileSetProperties(tileSet, set);
             }
-            data.tilesets.add(set);
+            data.tileSets.add(set);
         }
 
         // Load layers
@@ -205,25 +205,25 @@ bool Map::LoadMap()
     return ret;
 }
 
-bool Map::LoadTilesetDetails(pugi::xml_node& tileset_node, Tileset* set)
+bool Map::LoadTileSetDetails(pugi::xml_node& node, TileSet* set)
 {
     bool ret = true;
 
-    LOG("Filling TilesetDetails");
-    set->firstgId = tileset_node.attribute("firstgid").as_int();
-    set->name = tileset_node.attribute("name").as_string();
-    set->tileW = tileset_node.attribute("tilewidth").as_int();
-    set->tileH = tileset_node.attribute("tileheight").as_int();
-    set->spacing = tileset_node.attribute("spacing").as_int();
-    set->margin = tileset_node.attribute("margin").as_int();
+    LOG("Filling TileSetDetails");
+    set->firstgId = node.attribute("firstgid").as_int();
+    set->name = node.attribute("name").as_string();
+    set->tileW = node.attribute("tilewidth").as_int();
+    set->tileH = node.attribute("tileheight").as_int();
+    set->spacing = node.attribute("spacing").as_int();
+    set->margin = node.attribute("margin").as_int();
 
     return ret;
 }
 
-bool Map::LoadTilesetImage(pugi::xml_node& tileset_node, Tileset* set)
+bool Map::LoadTileSetImage(pugi::xml_node& node, TileSet* set)
 {
     bool ret = true;
-    pugi::xml_node image = tileset_node.child("image");
+    pugi::xml_node image = node.child("image");
 
     if (image == NULL)
     {
@@ -232,7 +232,7 @@ bool Map::LoadTilesetImage(pugi::xml_node& tileset_node, Tileset* set)
     }
     else
     {
-        LOG("Filling TilesetDetails");
+        LOG("Filling TileSetDetails");
         SString tmp("%s%s", folder.GetString(), image.attribute("source").as_string());
         set->texture = app->tex->Load(tmp.GetString());
         set->texWidth = image.attribute("width").as_int();
@@ -247,7 +247,7 @@ bool Map::LoadTilesetImage(pugi::xml_node& tileset_node, Tileset* set)
     return ret;
 }
 
-bool Map::LoadTilesetProperties(pugi::xml_node& node, Tileset* set)
+bool Map::LoadTileSetProperties(pugi::xml_node& node, TileSet* set)
 {
     bool ret = true;
     for (pugi::xml_node tileNode = node.child("tile"); tileNode && ret; tileNode = tileNode.next_sibling("tile"))
@@ -255,7 +255,7 @@ bool Map::LoadTilesetProperties(pugi::xml_node& node, Tileset* set)
         Tile* tileProperties = new Tile;
         tileProperties->id = tileNode.attribute("id").as_int();
         ret = LoadProperties(tileNode.child("properties"),tileProperties->properties);
-        set->tilesetPropList.add(tileProperties);
+        set->tileSetPropList.add(tileProperties);
     }
     return ret;
 }
@@ -335,10 +335,10 @@ MapTypes Map::StrToMapType(SString s)
     return MAPTYPE_UNKNOWN;
 }
 
-Tileset* Map::GetTilesetFromTileId(int id) const
+TileSet* Map::GetTileSetFromTileId(int id) const
 {
-    ListItem<Tileset*>* item = data.tilesets.end;
-    Tileset* set = item->data;
+    ListItem<TileSet*>* item = data.tileSets.end;
+    TileSet* set = item->data;
 
     //...
     while (item != NULL)
@@ -354,9 +354,9 @@ Tileset* Map::GetTilesetFromTileId(int id) const
     return set;
 }
 
-Tile* Tileset::GetPropList(int id) const
+Tile* TileSet::GetPropList(int id) const
 {
-    ListItem<Tile*>* tile = tilesetPropList.start;
+    ListItem<Tile*>* tile = tileSetPropList.start;
     Tile* t = tile->data;
     while (tile != NULL) {
         t = tile->data;
@@ -379,8 +379,8 @@ void Map::LogInfo()
     LOG("TileHeight=%d", data.tileH);
     LOG("\n");
 
-    ListItem<Tileset*>* infoList;
-    infoList = data.tilesets.start;
+    ListItem<TileSet*>* infoList;
+    infoList = data.tileSets.start;
     while (infoList != NULL)
     {
         LOG("#TileSet");
@@ -488,20 +488,20 @@ void Map::SetTileProperty(int x, int y, const char* property, int value, bool no
         ML = ML->next;
     }
 
-    // Tileset
-    ListItem <Tileset*>* T = data.tilesets.start;
-    SString tilesetName;
+    // TileSet
+    ListItem <TileSet*>* T = data.tileSets.start;
+    SString tileSetName;
     if (notMovCollision)
     {
-        tilesetName = "Level1Tileset(64x64)";
+        tileSetName = "Level1Tileset(64x64)";
     }
     else
     {
-        tilesetName = "MetaData";
+        tileSetName = "MetaData";
     }
     while (T != NULL)
     {
-        if (T->data->name == tilesetName)
+        if (T->data->name == tileSetName)
         {
             break;
         }

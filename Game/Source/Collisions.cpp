@@ -4,29 +4,29 @@
 
 Collisions::Collisions() {
     for (uint i = 0; i < MAX_COLLIDERS; ++i) { colliders[i] = nullptr; }
-    matrix[Collider::TYPE::SOLID][Collider::TYPE::NONE] = false;
-    matrix[Collider::TYPE::SOLID][Collider::TYPE::SOLID] = false;
-    matrix[Collider::TYPE::SOLID][Collider::TYPE::PLAYER] = false;
-    matrix[Collider::TYPE::SOLID][Collider::TYPE::SPIKE] = false;
-    matrix[Collider::TYPE::SOLID][Collider::TYPE::FRUIT] = false;
+    matrix[Collider::Type::SOLID][Collider::Type::NONE] = false;
+    matrix[Collider::Type::SOLID][Collider::Type::SOLID] = false;
+    matrix[Collider::Type::SOLID][Collider::Type::PLAYER] = false;
+    matrix[Collider::Type::SOLID][Collider::Type::SPIKE] = false;
+    matrix[Collider::Type::SOLID][Collider::Type::FRUIT] = false;
 
-    matrix[Collider::TYPE::PLAYER][Collider::TYPE::NONE] = false;
-    matrix[Collider::TYPE::PLAYER][Collider::TYPE::SOLID] = false;
-    matrix[Collider::TYPE::PLAYER][Collider::TYPE::PLAYER] = false;
-    matrix[Collider::TYPE::PLAYER][Collider::TYPE::SPIKE] = false;
-    matrix[Collider::TYPE::PLAYER][Collider::TYPE::FRUIT] = false;
+    matrix[Collider::Type::PLAYER][Collider::Type::NONE] = false;
+    matrix[Collider::Type::PLAYER][Collider::Type::SOLID] = false;
+    matrix[Collider::Type::PLAYER][Collider::Type::PLAYER] = false;
+    matrix[Collider::Type::PLAYER][Collider::Type::SPIKE] = false;
+    matrix[Collider::Type::PLAYER][Collider::Type::FRUIT] = false;
 
-    matrix[Collider::TYPE::SPIKE][Collider::TYPE::NONE] = false;
-    matrix[Collider::TYPE::SPIKE][Collider::TYPE::SOLID] = false;
-    matrix[Collider::TYPE::SPIKE][Collider::TYPE::PLAYER] = false;
-    matrix[Collider::TYPE::SPIKE][Collider::TYPE::SPIKE] = false;
-    matrix[Collider::TYPE::SPIKE][Collider::TYPE::FRUIT] = false;
+    matrix[Collider::Type::SPIKE][Collider::Type::NONE] = false;
+    matrix[Collider::Type::SPIKE][Collider::Type::SOLID] = false;
+    matrix[Collider::Type::SPIKE][Collider::Type::PLAYER] = false;
+    matrix[Collider::Type::SPIKE][Collider::Type::SPIKE] = false;
+    matrix[Collider::Type::SPIKE][Collider::Type::FRUIT] = false;
 
-    matrix[Collider::TYPE::FRUIT][Collider::TYPE::NONE] = false;
-    matrix[Collider::TYPE::FRUIT][Collider::TYPE::SOLID] = false;
-    matrix[Collider::TYPE::FRUIT][Collider::TYPE::PLAYER] = false;
-    matrix[Collider::TYPE::FRUIT][Collider::TYPE::SPIKE] = false;
-    matrix[Collider::TYPE::FRUIT][Collider::TYPE::FRUIT] = false;
+    matrix[Collider::Type::FRUIT][Collider::Type::NONE] = false;
+    matrix[Collider::Type::FRUIT][Collider::Type::SOLID] = false;
+    matrix[Collider::Type::FRUIT][Collider::Type::PLAYER] = false;
+    matrix[Collider::Type::FRUIT][Collider::Type::SPIKE] = false;
+    matrix[Collider::Type::FRUIT][Collider::Type::FRUIT] = false;
 
 }
 
@@ -68,7 +68,7 @@ bool Collisions::Save(pugi::xml_node&) {
     return true;
 }
 
-Collider* Collisions::AddCollider(SDL_Rect rect, Collider::TYPE type, Module* listener) {
+Collider* Collisions::AddCollider(SDL_Rect rect, Collider::Type type, Module* listener) {
     Collider* ret = nullptr;
     return ret;
 }

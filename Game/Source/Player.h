@@ -41,10 +41,10 @@ public:
 private:
 	// Different collision types
 	enum CollisionType {
-		DoubleAir,
-		DoubleSolid,
-		SolidAir,
-		AirSolid
+		DOUBLE_AIR,
+		DOUBLE_SOLID,
+		SOLID_AIR,
+		AIR_SOLID
 	};
 
 	int playerSize = 128;

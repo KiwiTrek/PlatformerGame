@@ -91,7 +91,7 @@ bool Scene::Update(float dt)
 
 	if (app->render->drawAll)
 	{
-		SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d", app->map->data.w, app->map->data.h, app->map->data.tileW, app->map->data.tileH, app->map->data.tilesets.count());
+		SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d", app->map->data.w, app->map->data.h, app->map->data.tileW, app->map->data.tileH, app->map->data.tileSets.count());
 		app->win->SetTitle(title.GetString());
 	}
 	else
