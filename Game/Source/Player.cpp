@@ -14,7 +14,10 @@
 
 #include "Log.h"
 
-Player::Player() {}
+Player::Player()
+{
+	name.Create("player");
+}
 
 Player::~Player() {}
 
@@ -26,21 +29,24 @@ void Player::Init()
 bool Player::Start()
 {
 	spawnPoint = GetSpawnPoint();
-	playerRect = { spawnPoint.x,spawnPoint.y,44,72 };
+	playerRect = { spawnPoint.x, spawnPoint.y, idle.GetCurrentFrame().w, idle.GetCurrentFrame().h };
 	jumpCounter = 2;
 
-	godMode = false;
+	isDead = false;
 	keyPressed = false;
 	isJumping = false;
 	isDead = false;
 	invert = false;
 	debugDraw = false;
 	once = true;
-
 	playerPhysics.axisX = true;
 	playerPhysics.axisY = true;
+	positiveSpeedX = true;
+	positiveSpeedY = true;
 
-	playerTex = app->tex->Load("Assets/textures/characterSpritesheet.png");
+	SString tmp("%s%s", folderTexture.GetString(), "characterSpritesheet.png");
+	playerTex = app->tex->Load(tmp.GetString());
+
 	idle.Reset();
 	run.Reset();
 	jumpPrep.Reset();
@@ -49,19 +55,34 @@ bool Player::Start()
 	death.Reset();
 	wallJump.Reset();
 
-	deadFx = app->audio->LoadFx("Assets/audio/fx/lose.wav");
-	jumpFx = app->audio->LoadFx("Assets/audio/fx/jump.wav");
-	doubleJumpFx = app->audio->LoadFx("Assets/audio/fx/doubleJump.wav");
-	fruitFx = app->audio->LoadFx("Assets/audio/fx/fruit.wav");
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudioFx.GetString(), "lose.wav");
+	deadFx = app->audio->LoadFx(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudioFx.GetString(), "jump.wav");
+	jumpFx = app->audio->LoadFx(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudioFx.GetString(), "doubleJump.wav");
+	doubleJumpFx = app->audio->LoadFx(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudioFx.GetString(), "fruit.wav");
+	fruitFx = app->audio->LoadFx(tmp.GetString());
+
 	app->audio->SetFxVolume(deadFx);
 	app->audio->SetFxVolume(jumpFx);
 	app->audio->SetFxVolume(doubleJumpFx);
 	app->audio->SetFxVolume(fruitFx);
+
     return true;
 }
 
-bool Player::Awake(pugi::xml_node&)
+bool Player::Awake(pugi::xml_node& config)
 {
+	playerSize = config.child("playerSize").attribute("value").as_int(0);
+
+	folderTexture.Create(config.child("folderTexture").child_value());
+	folderAudioFx.Create(config.child("folderAudioFx").child_value());
+
 	for (int i = 0; i != 9; ++i)
 	{
 		idle.PushBack({ 10 + (playerSize * i),1329,56,73 });
@@ -119,6 +140,14 @@ bool Player::Update(float dt)
 	currentAnimation->Update();
 	keyPressed = false;
 
+	if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && currentAnimation == &idle)
+	{
+		app->SaveRequest();
+	}
+	if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN && currentAnimation == &idle)
+	{
+		app->LoadRequest();
+	}
 	if (app->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
 	{
 		isDead = true;
@@ -126,26 +155,31 @@ bool Player::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
 	{
 		godMode = !godMode;
+		playerPhysics.axisX = !playerPhysics.axisX;
 		playerPhysics.axisY = !playerPhysics.axisY;
 	}
 
-	if (speed.y >= 0) {
+	// To know what direction the velocity is going
+	if (speed.y >= 0)
+	{
 		positiveSpeedY = true;
 	}
-	else if (speed.y < 0) {
+	else if (speed.y < 0)
+	{
 		positiveSpeedY = false;
 	}
-
-	if (speed.x >= 0) {
+	if (speed.x >= 0)
+	{
 		positiveSpeedX = true;
 	}
-	else if (speed.x < 0) {
+	else if (speed.x < 0)
+	{
 		positiveSpeedX = false;
 	}
 
 	if (isDead == false)
 	{
-		if (godMode)		//4 directional movement
+		if (godMode)		// 4 directional movement
 		{
 			if (app->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 			{
@@ -182,7 +216,7 @@ bool Player::Update(float dt)
 				keyPressed = true;
 			}
 		}
-		else				//2 directional with jumping
+		else				// 2 directional with jumping
 		{
 			if (jumpCounter > 0)
 			{
@@ -213,7 +247,7 @@ bool Player::Update(float dt)
 				{
 					currentAnimation = &run;
 				}
-				if (invert == false)
+				if (invert == false && currentAnimation != &wallJump)
 				{
 					invert = true;
 				}
@@ -230,7 +264,7 @@ bool Player::Update(float dt)
 				{
 					currentAnimation = &run;
 				}
-				if (invert == true)
+				if (invert == true && currentAnimation != &wallJump)
 				{
 					invert = false;
 				}
@@ -262,12 +296,14 @@ bool Player::Update(float dt)
 			}
 		}
 
-		//Physics
+		// Physics
 		playerPhysics.UpdatePhysics(playerRect.x, playerRect.y, speed.x, speed.y);
 
-		//Collisions
+		// Collisions
 		int x = playerRect.x / 64;
 		int y = playerRect.y / 64;
+
+		// So it doesn't check for non-existant tiles
 		if (x < 0)
 		{
 			x = 0;
@@ -278,7 +314,7 @@ bool Player::Update(float dt)
 		}
 		LOG("%d,%d", x, y);
 
-		if (positiveSpeedX && positiveSpeedY)	//bottom right corner
+		if (positiveSpeedX && positiveSpeedY)	// Bottom right corner
 		{
 			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y + 1, "CollisionId"), GetTileProperty(x + 1, y, "CollisionId"));
 			if (collisionType == CollisionType::DOUBLE_SOLID)
@@ -291,7 +327,7 @@ bool Player::Update(float dt)
 				}
 				playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
 				speed.x = 0;
-				LOG("BottomRight - DOUBLE_SOLID");
+				//LOG("BottomRight - DOUBLE_SOLID");
 			}
 			else if (collisionType == CollisionType::AIR_SOLID)
 			{
@@ -302,7 +338,7 @@ bool Player::Update(float dt)
 				jumpCounter = 1;
 				currentAnimation = &wallJump;
 				playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
-				LOG("BottomRight - AIR_SOLID");
+				//LOG("BottomRight - AIR_SOLID");
 			}
 			else if (collisionType == CollisionType::SOLID_AIR)
 			{
@@ -313,10 +349,10 @@ bool Player::Update(float dt)
 				{
 					currentAnimation = &jumpLand;
 				}
-				LOG("BottomRight - SOLID_AIR");
+				//LOG("BottomRight - SOLID_AIR");
 			}
 		}
-		else if (positiveSpeedX && !positiveSpeedY)	//top right corner
+		else if (positiveSpeedX && !positiveSpeedY)	// Top right corner
 		{
 			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y, "CollisionId"), GetTileProperty(x + 1, y + 1, "CollisionId"));
 			if (collisionType == CollisionType::DOUBLE_SOLID)
@@ -324,7 +360,7 @@ bool Player::Update(float dt)
 				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
 				speed.y = 0;
 				playerRect.x = 2 * 64 * (x)-playerRect.x;
-				LOG("TopRight - DOUBLE_SOLID");
+				//LOG("TopRight - DOUBLE_SOLID");
 			}
 			else if (collisionType == CollisionType::AIR_SOLID)
 			{
@@ -335,16 +371,16 @@ bool Player::Update(float dt)
 				jumpCounter = 1;
 				currentAnimation = &wallJump;
 				playerRect.x = 2 * 64 * (x)-playerRect.x;
-				LOG("TopRight - AIR_SOLID");
+				//LOG("TopRight - AIR_SOLID");
 			}
 			else if (collisionType == CollisionType::SOLID_AIR)
 			{
 				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
 				speed.y = 0;
-				LOG("TopRight - SOLID_AIR");
+				//LOG("TopRight - SOLID_AIR");
 			}
 		}
-		else if (!positiveSpeedX && !positiveSpeedY)	//left top corner
+		else if (!positiveSpeedX && !positiveSpeedY)	// Left top corner
 		{
 			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y + 1, "CollisionId"), GetTileProperty(x + 1, y, "CollisionId"));
 			if (collisionType == CollisionType::DOUBLE_SOLID)
@@ -352,13 +388,13 @@ bool Player::Update(float dt)
 				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
 				speed.y = 0;
 				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-				LOG("TopLeft - DOUBLE_SOLID");
+				//LOG("TopLeft - DOUBLE_SOLID");
 			}
 			else if (collisionType == CollisionType::AIR_SOLID)
 			{
 				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
 				speed.y = 0;
-				LOG("TopLeft - AIR_SOLID");
+				//LOG("TopLeft - AIR_SOLID");
 			}
 			else if (collisionType == CollisionType::SOLID_AIR)
 			{
@@ -369,10 +405,10 @@ bool Player::Update(float dt)
 				jumpCounter = 1;
 				currentAnimation = &wallJump;
 				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-				LOG("TopLeft - SOLID_AIR");
+				//LOG("TopLeft - SOLID_AIR");
 			}
 		}
-		else if (!positiveSpeedX && positiveSpeedY)	//left bottom corner
+		else if (!positiveSpeedX && positiveSpeedY)	// Left bottom corner
 		{
 			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y, "CollisionId"), GetTileProperty(x + 1, y + 1, "CollisionId"));
 			if (collisionType == CollisionType::DOUBLE_SOLID)
@@ -385,7 +421,7 @@ bool Player::Update(float dt)
 				}
 				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
 				speed.x = 0;
-				LOG("BottomLeft - DOUBLE_SOLID");
+				//LOG("BottomLeft - DOUBLE_SOLID");
 			}
 			else if (collisionType == CollisionType::AIR_SOLID)
 			{
@@ -396,7 +432,7 @@ bool Player::Update(float dt)
 				{
 					currentAnimation = &jumpLand;
 				}
-				LOG("BottomLeft - AIR_SOLID");
+				//LOG("BottomLeft - AIR_SOLID");
 			}
 			else if (collisionType == CollisionType::SOLID_AIR)
 			{
@@ -407,7 +443,7 @@ bool Player::Update(float dt)
 				jumpCounter = 1;
 				currentAnimation = &wallJump;
 				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-				LOG("BottomLeft - SOLID_AIR");
+				//LOG("BottomLeft - SOLID_AIR");
 			}
 		}
 
@@ -439,7 +475,6 @@ bool Player::Update(float dt)
 		}
 	}
 
-	
 	if (isDead)
 	{
 		currentAnimation = &death;
@@ -466,7 +501,7 @@ bool Player::PostUpdate()
 	}
 	if ((playerRect.x + playerRect.w) > (app->map->data.w * app->map->data.tileW))
 	{
-		--playerRect.x;
+		playerRect.x -= 5;
 	}
 
 	app->render->DrawTexture(playerTex, playerRect.x, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
@@ -489,14 +524,27 @@ bool Player::CleanUp()
 	return true;
 }
 
-bool Player::Load(pugi::xml_node&)
+bool Player::Load(pugi::xml_node& save)
 {
-    return true;
+	LOG("Loading player coordinates");
+	bool ret = true;
+
+	playerRect.x = save.child("coordinates").attribute("x").as_int();
+	playerRect.y = save.child("coordinates").attribute("y").as_int();
+
+	return ret;
 }
 
-bool Player::Save(pugi::xml_node&)
+bool Player::Save(pugi::xml_node& save)
 {
-    return true;
+	LOG("Saving player coordinates");
+	bool ret = true;
+
+	pugi::xml_node player = save.append_child("coordinates");
+	player.append_attribute("x").set_value(playerRect.x);
+	player.append_attribute("y").set_value(playerRect.y);
+
+	return ret;
 }
 
 iPoint Player::GetSpawnPoint()

@@ -17,7 +17,7 @@ public:
 	virtual ~Scene();
 
 	// Called before render is available
-	bool Awake();
+	bool Awake(pugi::xml_node& config);
 
 	// Called before the first frame
 	bool Start();
@@ -39,6 +39,8 @@ private:
 	SDL_Texture* clouds;
 	SDL_Texture* mountainsBack;
 	SDL_Texture* mountainsFront;
+	SString folderTexture;
+	SString folderAudioMusic;
 };
 
 #endif // __SCENE_H__

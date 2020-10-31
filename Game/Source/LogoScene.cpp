@@ -25,10 +25,14 @@ void LogoScene::Init()
 }
 
 // Called before render is available
-bool LogoScene::Awake()
+bool LogoScene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
 	bool ret = true;
+	timer = config.child("timer").attribute("value").as_int(0);
+
+	folderTexture.Create(config.child("folderTexture").child_value());
+	folderAudioFx.Create(config.child("folderAudioFx").child_value());
 
 	return ret;
 }
@@ -37,8 +41,11 @@ bool LogoScene::Awake()
 bool LogoScene::Start()
 {
 	app->transition->FadeEffect(nullptr, this, true, 100.0f);
-	logo = app->tex->Load("Assets/textures/logoScreen.jpg");
-	logoFx = app->audio->LoadFx("Assets/audio/fx/logo.wav");
+	SString tmp("%s%s", folderTexture.GetString(), "logoScreen.jpg");
+	logo = app->tex->Load(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudioFx.GetString(), "logo.wav");
+	logoFx = app->audio->LoadFx(tmp.GetString());
 	app->audio->SetFxVolume(logoFx);
 	return true;
 }

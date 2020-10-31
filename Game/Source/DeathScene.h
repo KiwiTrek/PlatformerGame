@@ -17,7 +17,7 @@ public:
 	void Init();
 
 	// Called before render is available
-	bool Awake();
+	bool Awake(pugi::xml_node& config);
 
 	// Called before the first frame
 	bool Start();
@@ -36,6 +36,8 @@ public:
 
 private:
 	SDL_Texture* deathScreen;
+	SString folderTexture;
+	SString folderAudioMusic;
 };
 
 #endif // __DEATH_SCENE_H__

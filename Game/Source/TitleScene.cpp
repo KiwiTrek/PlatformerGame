@@ -26,10 +26,12 @@ void TitleScene::Init()
 }
 
 // Called before render is available
-bool TitleScene::Awake()
+bool TitleScene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
 	bool ret = true;
+	folderTexture.Create(config.child("folderTexture").child_value());
+	folderAudioMusic.Create(config.child("folderAudioMusic").child_value());
 
 	return ret;
 }
@@ -38,8 +40,12 @@ bool TitleScene::Awake()
 bool TitleScene::Start()
 {
 	app->render->SetBackgroundColor({ 0,0,0,0 });
-	titleScreen = app->tex->Load("Assets/textures/titleScreen.png");
-	app->audio->PlayMusic("Assets/audio/music/TitleScreen.ogg",0.0f);
+	SString tmp("%s%s", folderTexture.GetString(), "titleScreen.png");
+	titleScreen = app->tex->Load(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudioMusic.GetString(), "TitleScreen.ogg");
+	app->audio->PlayMusic(tmp.GetString(),0.0f);
+
 	return true;
 }
 

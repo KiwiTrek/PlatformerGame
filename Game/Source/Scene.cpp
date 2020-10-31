@@ -28,10 +28,13 @@ void Scene::Init()
 }
 
 // Called before render is available
-bool Scene::Awake()
+bool Scene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
 	bool ret = true;
+
+	folderTexture.Create(config.child("folderTexture").child_value());
+	folderAudioMusic.Create(config.child("folderAudioMusic").child_value());
 
 	return ret;
 }
@@ -39,20 +42,27 @@ bool Scene::Awake()
 // Called before the first frame
 bool Scene::Start()
 {
-	clouds = app->tex->Load("Assets/textures/Background/clouds.png");
-	mountainsBack = app->tex->Load("Assets/textures/Background/mountain_depth_z_1.png");
-	mountainsFront = app->tex->Load("Assets/textures/Background/mountain_depth_z_2.png");
+	SString tmp("%s%s", folderTexture.GetString(), "clouds.png");
+	clouds = app->tex->Load(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderTexture.GetString(), "mountain_depth_back.png");
+	mountainsBack = app->tex->Load(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderTexture.GetString(), "mountain_depth_front.png");
+	mountainsFront = app->tex->Load(tmp.GetString());
 
 	app->map->Enable();
 	app->map->Load("level1.tmx");
 	app->render->SetBackgroundColor(app->map->data.backgroundColor);
 
 	app->render->camera.x = 0;
-	app->render->camera.y = app->map->data.tileH * -2;
+	app->render->camera.y = app->map->data.tileH * -2; // -128
 
 	app->player->Enable();
 
-	app->audio->PlayMusic("Assets/audio/music/Level1.ogg", 0.0f);
+	tmp.Clear();
+	tmp.Create("%s%s", folderTexture.GetString(), "Level1.ogg");
+	app->audio->PlayMusic(tmp.GetString(), 0.0f);
 
 	return true;
 }
@@ -79,14 +89,6 @@ bool Scene::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 	{
 		app->transition->FadeEffect(this, this, false);
-	}
-	if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
-	{
-		app->SaveRequest();
-	}
-	if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
-	{
-		app->LoadRequest();
 	}
 
 	if (app->render->drawAll)

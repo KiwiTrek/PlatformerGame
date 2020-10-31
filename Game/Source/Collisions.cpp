@@ -3,6 +3,7 @@
 #include "App.h"
 
 Collisions::Collisions() {
+    name.Create("collisions");
     for (uint i = 0; i < MAX_COLLIDERS; ++i) { colliders[i] = nullptr; }
     matrix[Collider::Type::SOLID][Collider::Type::NONE] = false;
     matrix[Collider::Type::SOLID][Collider::Type::SOLID] = false;

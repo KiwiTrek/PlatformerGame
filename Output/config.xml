@@ -18,12 +18,40 @@
     <fullscreen_window value="false"/>
   </window>
 
-  <audio>
-    <music volume="64"/>
-    <fx volume="48"/>
-  </audio>
+    <player>
+        <playerSize value ="128"/>
+        <folderTexture>Assets/textures/</folderTexture>
+        <folderAudioFx>Assets/audio/fx/</folderAudioFx>
+    </player>
+
+    <audio>
+        <music volume="64"/>
+        <fx volume="48"/>
+    </audio>
 
     <map>
         <folder>Assets/maps/</folder>
     </map>
+
+    <deathScene>
+        <folderTexture>Assets/textures/</folderTexture>
+        <folderAudioMusic>Assets/audio/music/</folderAudioMusic>
+    </deathScene>
+
+    <logoScene>
+        <timer value ="0"/>
+        <folderTexture>Assets/textures/</folderTexture>
+        <folderAudioFx>Assets/audio/fx/</folderAudioFx>
+    </logoScene>
+
+    <scene>
+        <camera x ="0" y="-128"/>
+        <folderTexture>Assets/textures/Background/</folderTexture>
+        <folderAudioMusic>Assets/audio/music/</folderAudioMusic>
+    </scene>
+
+    <titleScene>
+        <folderTexture>Assets/textures/</folderTexture>
+        <folderAudioMusic>Assets/audio/music/</folderAudioMusic>
+    </titleScene>
 </config>

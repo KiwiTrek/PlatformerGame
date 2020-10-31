@@ -6,8 +6,17 @@
 	<audio>
 		<volume value="64" />
 	</audio>
+	<map />
+	<logoScene />
+	<titleScene />
+	<deathScene />
 	<scene />
+	<player>
+		<coordinates x="7403" y="768" />
+	</player>
+	<collisions />
+	<transition />
 	<renderer>
-		<camera y="0" x="-533" />
+		<camera y="-303" x="-6400" />
 	</renderer>
 </save_state>

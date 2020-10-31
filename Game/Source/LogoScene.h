@@ -17,7 +17,7 @@ public:
 	void Init();
 
 	// Called before render is available
-	bool Awake();
+	bool Awake(pugi::xml_node& config);
 
 	// Called before the first frame
 	bool Start();
@@ -36,8 +36,10 @@ public:
 
 private:
 	SDL_Texture* logo;
-	int timer = 0;
-	unsigned int logoFx = 0;
+	int timer;
+	unsigned int logoFx;
+	SString folderTexture;
+	SString folderAudioFx;
 };
 
 #endif // __LOGO_SCENE_H__

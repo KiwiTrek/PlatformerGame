@@ -36,7 +36,7 @@ public:
 	bool Save(pugi::xml_node&);
 
 	SDL_Texture* playerTex;
-	SDL_Rect playerRect = { 64 * 3,64 * 8,44,72 };
+	SDL_Rect playerRect;
 
 private:
 	// Different collision types
@@ -47,7 +47,7 @@ private:
 		AIR_SOLID
 	};
 
-	int playerSize = 128;
+	int playerSize;
 	Animation idle;	//9f
 	Animation run;	//8f
 	Animation jumpPrep;	//2f Prep; 4f Mid; 1f Land;	else frame 3;
@@ -64,8 +64,8 @@ private:
 	iPoint GetSpawnPoint();
 
 	Collider* playerCollider = nullptr;
-	bool positiveSpeedX = true;
-	bool positiveSpeedY = true;
+	bool positiveSpeedX;
+	bool positiveSpeedY;
 	// Returns the type of collision depending on two given tiles (movement collisions only)
 	CollisionType GetCollisionType(int A, int B) const;
 
@@ -93,6 +93,9 @@ private:
 	bool invert;
 	bool debugDraw;
 	bool once;
+
+	SString folderTexture;
+	SString folderAudioFx;
 };
 
 #endif // !__PLAYER_H__

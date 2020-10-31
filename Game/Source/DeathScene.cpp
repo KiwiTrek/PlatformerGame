@@ -27,10 +27,13 @@ void DeathScene::Init()
 }
 
 // Called before render is available
-bool DeathScene::Awake()
+bool DeathScene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
 	bool ret = true;
+
+	folderTexture.Create(config.child("folderTexture").child_value());
+	folderAudioMusic.Create(config.child("folderAudioMusic").child_value());
 
 	return ret;
 }
@@ -39,8 +42,12 @@ bool DeathScene::Awake()
 bool DeathScene::Start()
 {
 	app->render->SetBackgroundColor({ 0,0,0,0 });
-	deathScreen = app->tex->Load("Assets/textures/gameOver.png");
-	app->audio->PlayMusic("Assets/audio/music/GameOver.ogg", 0.5f);
+	SString tmp("%s%s", folderTexture.GetString(), "gameOver.png");
+	deathScreen = app->tex->Load(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudioMusic.GetString(), "GameOver.ogg");
+	app->audio->PlayMusic(tmp.GetString(), 0.5f);
+
 	return true;
 }
 
