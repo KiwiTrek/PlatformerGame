@@ -27,7 +27,6 @@ enum KeyState
 
 class Input : public Module
 {
-
 public:
 
 	Input();
@@ -62,12 +61,13 @@ public:
 	bool GetWindowEvent(EventWindow ev);
 
 	// Get mouse / axis position
-	void GetMousePosition(int &x, int &y);
+	void GetMousePosition(int& x, int& y);
 	void GetMouseMotion(int& x, int& y);
 
 private:
+
 	bool windowEvents[WE_COUNT];
-	KeyState*	keyboard;
+	KeyState* keyboard;
 	KeyState mouseButtons[NUM_MOUSE_BUTTONS];
 	int	mouseMotionX;
 	int mouseMotionY;

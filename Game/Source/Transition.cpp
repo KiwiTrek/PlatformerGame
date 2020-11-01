@@ -24,27 +24,22 @@ bool Transition::Start()
 	return true;
 }
 
-bool Transition::PreUpdate()
-{
-	return true;
-}
-
 bool Transition::Update(float dt)
 {
 	// Exit this function if we are not performing a fade
-	if (currentStep == Transition_Step::NONE)
+	if (currentStep == TransitionStep::NONE)
 	{
 		return true;
 	}
 
-	if (currentStep == Transition_Step::TO_BLACK)
+	if (currentStep == TransitionStep::TO_BLACK)
 	{
 		++frameCount;
 		if (frameCount >= maxFadeFrames)
 		{
 			moduleToDisable->Disable();
 			moduleToEnable->Enable();
-			currentStep = Transition_Step::FROM_BLACK;
+			currentStep = TransitionStep::FROM_BLACK;
 		}
 	}
 	else
@@ -52,7 +47,7 @@ bool Transition::Update(float dt)
 		--frameCount;
 		if (frameCount <= 0)
 		{
-			currentStep = Transition_Step::NONE;
+			currentStep = TransitionStep::NONE;
 		}
 	}
 	return true;
@@ -61,12 +56,12 @@ bool Transition::Update(float dt)
 bool Transition::PostUpdate()
 {
 	// Exit this function if we are not performing a fade
-	if (currentStep == Transition_Step::NONE)
+	if (currentStep == TransitionStep::NONE)
 	{
 		return true;
 	}
 
-	float fadeRatio = (float)frameCount / (float)maxFadeFrames;
+	fadeRatio = (float)frameCount / (float)maxFadeFrames;
 
 	// Render the black square with alpha on the screen
 	SDL_SetRenderDrawColor(app->render->renderer, 0, 0, 0, (Uint8)(fadeRatio * 255.0f));
@@ -78,11 +73,11 @@ bool Transition::PostUpdate()
 bool Transition::FadeEffect(Module* moduleToDisable, Module* moduleToEnable, bool fadeInOnly, float frames)
 {
 	// If we are already in a fade process, ignore this call
-	if (currentStep == Transition_Step::NONE)
+	if (currentStep == TransitionStep::NONE)
 	{
 		if (fadeInOnly == false)
 		{
-			currentStep = Transition_Step::TO_BLACK;
+			currentStep = TransitionStep::TO_BLACK;
 			frameCount = 0;
 			maxFadeFrames = frames;
 
@@ -93,7 +88,7 @@ bool Transition::FadeEffect(Module* moduleToDisable, Module* moduleToEnable, boo
 		}
 		else
 		{
-			currentStep = Transition_Step::FROM_BLACK;
+			currentStep = TransitionStep::FROM_BLACK;
 			frameCount = frames;
 			maxFadeFrames = frames;
 

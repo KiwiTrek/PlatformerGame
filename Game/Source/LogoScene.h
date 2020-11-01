@@ -35,8 +35,9 @@ public:
 	bool CleanUp();
 
 private:
+
 	SDL_Texture* logo;
-	int timer;
+	int timer = 0;
 	unsigned int logoFx;
 	SString folderTexture;
 	SString folderAudioFx;

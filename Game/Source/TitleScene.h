@@ -35,6 +35,7 @@ public:
 	bool CleanUp();
 
 private:
+
 	SDL_Texture* titleScreen;
 	SString folderTexture;
 	SString folderAudioMusic;

@@ -62,7 +62,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 // Destructor
 App::~App()
 {
-	// release modules
+	// Release modules
 	ListItem<Module*>* item = modules.end;
 
 	while(item != NULL)
@@ -71,13 +71,13 @@ App::~App()
 		item = item->prev;
 	}
 
-	modules.clear();
+	modules.Clear();
 }
 
 void App::AddModule(Module* module)
 {
 	module->Init();
-	modules.add(module);
+	modules.Add(module);
 }
 
 // Called before render is available
@@ -199,7 +199,8 @@ bool App::PreUpdate()
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) {
+		if(pModule->active == false)
+		{
 			continue;
 		}
 
@@ -221,7 +222,8 @@ bool App::DoUpdate()
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) {
+		if(pModule->active == false)
+		{
 			continue;
 		}
 
@@ -242,7 +244,8 @@ bool App::PostUpdate()
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) {
+		if(pModule->active == false)
+		{
 			continue;
 		}
 

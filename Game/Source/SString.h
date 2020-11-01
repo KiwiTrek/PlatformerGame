@@ -42,7 +42,7 @@ public:
 		strcpy_s(str, size, string.str);
 	}
 
-	SString(const char *format, ...)
+	SString(const char* format, ...)
 	{
 		size = 0;
 
@@ -77,7 +77,7 @@ public:
 			delete[] str;
 	}
 
-	const SString& Create(const char *format, ...)
+	const SString& Create(const char* format, ...)
 	{
 		size = 0;
 

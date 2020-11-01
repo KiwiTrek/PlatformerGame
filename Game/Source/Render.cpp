@@ -57,8 +57,8 @@ bool Render::Awake(pugi::xml_node& config)
 // Called before the first frame
 bool Render::Start()
 {
-	LOG("render start");
-	// back background
+	LOG("Render start");
+
 	SDL_RenderGetViewport(renderer, &viewport);
 	return true;
 }

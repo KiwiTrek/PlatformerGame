@@ -8,7 +8,8 @@
 #include "SDL/include/SDL.h"
 
 struct Collider;
-class Player : public Module {
+class Player : public Module
+{
 public:
 
 	Player();
@@ -39,8 +40,10 @@ public:
 	SDL_Rect playerRect;
 
 private:
+
 	// Different collision types
-	enum CollisionType {
+	enum CollisionType
+	{
 		DOUBLE_AIR,
 		DOUBLE_SOLID,
 		SOLID_AIR,
@@ -48,12 +51,12 @@ private:
 	};
 
 	int playerSize;
-	Animation idle;	//9f
-	Animation run;	//8f
-	Animation jumpPrep;	//2f Prep; 4f Mid; 1f Land;	else frame 3;
+	Animation idle;
+	Animation run;
+	Animation jumpPrep;
 	Animation jumpMid;
 	Animation jumpLand;
-	Animation death; //5f
+	Animation death;
 	Animation wallJump;
 
 	Animation* currentAnimation = &idle;
@@ -74,25 +77,19 @@ private:
 	Physics playerPhysics;
 	fPoint speed;
 	int jumpCounter;
-	/*
-	jumpCounter should decrease when dropped from platform
-	wallJump:	counts as double jump
-		- if walljump, should decrease to 0
-		- if touches another wall, is in air and jumpCounter = 0, should add 1 jump
-	*/
 
 	unsigned int deadFx;
 	unsigned int jumpFx;
 	unsigned int doubleJumpFx;
 	unsigned int fruitFx;
 
-	bool godMode;
-	bool keyPressed;
-	bool isJumping;
-	bool isDead;
-	bool invert;
-	bool debugDraw;
-	bool once;
+	bool godMode = false;
+	bool isDead = false;
+	bool keyPressed = false;
+	bool isJumping = false;
+	bool invert = false;
+	bool debugDraw = false;
+	bool once = true;
 
 	SString folderTexture;
 	SString folderAudioFx;

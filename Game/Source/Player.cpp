@@ -19,7 +19,8 @@ Player::Player()
 	name.Create("player");
 }
 
-Player::~Player() {}
+Player::~Player()
+{}
 
 void Player::Init()
 {
@@ -32,10 +33,10 @@ bool Player::Start()
 	playerRect = { spawnPoint.x, spawnPoint.y, idle.GetCurrentFrame().w, idle.GetCurrentFrame().h };
 	jumpCounter = 2;
 
+	godMode = false;
 	isDead = false;
 	keyPressed = false;
 	isJumping = false;
-	isDead = false;
 	invert = false;
 	debugDraw = false;
 	once = true;
@@ -73,7 +74,7 @@ bool Player::Start()
 	app->audio->SetFxVolume(doubleJumpFx);
 	app->audio->SetFxVolume(fruitFx);
 
-    return true;
+	return true;
 }
 
 bool Player::Awake(pugi::xml_node& config)
@@ -168,6 +169,7 @@ bool Player::Update(float dt)
 	{
 		positiveSpeedY = false;
 	}
+
 	if (speed.x >= 0)
 	{
 		positiveSpeedX = true;
@@ -179,7 +181,7 @@ bool Player::Update(float dt)
 
 	if (isDead == false)
 	{
-		if (godMode)		// 4 directional movement
+		if (godMode)
 		{
 			if (app->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 			{
@@ -216,7 +218,7 @@ bool Player::Update(float dt)
 				keyPressed = true;
 			}
 		}
-		else				// 2 directional with jumping
+		else
 		{
 			if (jumpCounter > 0)
 			{
@@ -312,7 +314,7 @@ bool Player::Update(float dt)
 		{
 			y = 0;
 		}
-		LOG("%d,%d", x, y);
+		//LOG("%d,%d", x, y);
 
 		if (positiveSpeedX && positiveSpeedY)	// Bottom right corner
 		{
@@ -332,7 +334,8 @@ bool Player::Update(float dt)
 			else if (collisionType == CollisionType::AIR_SOLID)
 			{
 				speed.y -= 25.0f;
-				if (speed.y <= 0) {
+				if (speed.y <= 0)
+				{
 					speed.y = 0;
 				}
 				jumpCounter = 1;
@@ -365,7 +368,8 @@ bool Player::Update(float dt)
 			else if (collisionType == CollisionType::AIR_SOLID)
 			{
 				speed.y -= 25.0f;
-				if (speed.y <= 0) {
+				if (speed.y <= 0)
+				{
 					speed.y = 0;
 				}
 				jumpCounter = 1;
@@ -399,7 +403,8 @@ bool Player::Update(float dt)
 			else if (collisionType == CollisionType::SOLID_AIR)
 			{
 				speed.y -= 25.0f;
-				if (speed.y <= 0) {
+				if (speed.y <= 0)
+				{
 					speed.y = 0;
 				}
 				jumpCounter = 1;
@@ -437,7 +442,8 @@ bool Player::Update(float dt)
 			else if (collisionType == CollisionType::SOLID_AIR)
 			{
 				speed.y -= 25.0f;
-				if (speed.y <= 0) {
+				if (speed.y <= 0)
+				{
 					speed.y = 0;
 				}
 				jumpCounter = 1;
@@ -489,7 +495,7 @@ bool Player::Update(float dt)
 		}
 	}
 
-    return true;
+	return true;
 }
 
 bool Player::PostUpdate()
@@ -499,7 +505,7 @@ bool Player::PostUpdate()
 	{
 		playerRect.x = 0;
 	}
-	if ((playerRect.x + playerRect.w) > (app->map->data.w * app->map->data.tileW))
+	if ((playerRect.x + playerRect.w) > (app->map->data.width * app->map->data.tileWidth))
 	{
 		playerRect.x -= 5;
 	}
@@ -507,9 +513,10 @@ bool Player::PostUpdate()
 	app->render->DrawTexture(playerTex, playerRect.x, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
 	if (app->render->drawAll)
 	{
-		app->render->DrawRectangle({ playerRect.x, playerRect.y, 64, 64 }, 0, 255, 0, 100);		// Player "hitbox"
+		app->render->DrawRectangle({ playerRect.x, playerRect.y, 64, 64 }, 0, 255, 0, 100);
 	}
-    return true;
+
+	return true;
 }
 
 bool Player::CleanUp()
@@ -552,36 +559,36 @@ iPoint Player::GetSpawnPoint()
 	iPoint ret = { 0,0 };
 
 	// MapLayer
-	ListItem <MapLayer*>* ML = app->map->data.mapLayer.start;
+	ListItem<MapLayer*>* mapLayer = app->map->data.mapLayer.start;
 	SString layerName = "Objects";
-	while (ML != NULL)
+	while (mapLayer != NULL)
 	{
-		if (ML->data->name == layerName)
+		if (mapLayer->data->name == layerName)
 		{
 			break;
 		}
-		ML = ML->next;
+		mapLayer = mapLayer->next;
 	}
 
 	// TileSet
-	ListItem <TileSet*>* T = app->map->data.tileSets.start;
+	ListItem<TileSet*>* tileSet = app->map->data.tileSets.start;
 	SString tileSetName = "Level1Tileset(64x64)";
-	while (T != NULL)
+	while (tileSet != NULL)
 	{
-		if (T->data->name == tileSetName)
+		if (tileSet->data->name == tileSetName)
 		{
 			break;
 		}
-		T = T->next;
+		tileSet = tileSet->next;
 	}
 
 	// Gets coordinates
 	int id = 0;
-	for (int x = 0; x < app->map->data.w; ++x)
+	for (int x = 0; x < app->map->data.width; ++x)
 	{
-		for (int y = 0; y < app->map->data.h; ++y)
+		for (int y = 0; y < app->map->data.height; ++y)
 		{
-			id = (int)(ML->data->Get(x, y) - T->data->firstgId);
+			id = (int)(mapLayer->data->Get(x, y) - tileSet->data->firstgId);
 			if (id == 28)
 			{
 				ret.x = x * 64;
@@ -598,7 +605,7 @@ int Player::GetTileProperty(int x, int y, const char* property, bool notMovColli
 {
 	int ret;
 	// MapLayer
-	ListItem <MapLayer*>* ML = app->map->data.mapLayer.start;
+	ListItem<MapLayer*>* mapLayer = app->map->data.mapLayer.start;
 	SString layerName;
 	if (isObject)
 	{
@@ -608,17 +615,17 @@ int Player::GetTileProperty(int x, int y, const char* property, bool notMovColli
 	{
 		layerName = "Collisions";
 	}
-	while (ML != NULL)
+	while (mapLayer != NULL)
 	{
-		if (ML->data->name == layerName)
+		if (mapLayer->data->name == layerName)
 		{
 			break;
 		}
-		ML = ML->next;
+		mapLayer = mapLayer->next;
 	}
 
 	// TileSet
-	ListItem <TileSet*>* T = app->map->data.tileSets.start;
+	ListItem<TileSet*>* tileSet = app->map->data.tileSets.start;
 	SString tileSetName;
 	if (notMovCollision)
 	{
@@ -628,23 +635,23 @@ int Player::GetTileProperty(int x, int y, const char* property, bool notMovColli
 	{
 		tileSetName = "MetaData";
 	}
-	while (T != NULL)
+	while (tileSet != NULL)
 	{
-		if (T->data->name == tileSetName)
+		if (tileSet->data->name == tileSetName)
 		{
 			break;
 		}
-		T = T->next;
+		tileSet = tileSet->next;
 	}
 
 	// Gets CollisionId
-	int id = (int)(ML->data->Get(x, y) - T->data->firstgId);
+	int id = (int)(mapLayer->data->Get(x, y) - tileSet->data->firstgId);
 	if (id < 0)
 	{
 		ret = 0;
 		return ret;
 	}
-	Tile* currentTile = T->data->GetPropList(id);
+	Tile* currentTile = tileSet->data->GetPropList(id);
 	ret = currentTile->properties.GetProperty(property,0);
 	return ret;
 }

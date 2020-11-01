@@ -102,15 +102,20 @@ public:
 		return(*this);
 	}
 
-	TYPE sqrtf(float _x) {
+	TYPE Sqrtf(float x)
+	{
 		float number;
 		float sqrt;
-		sqrt = _x / 2;
+		sqrt = x / 2;
 		number = 0;
-		if (_x <= 0) { return number; }
-		while (sqrt != number) {
+		if (x <= 0)
+		{
+			return number;
+		}
+		while (sqrt != number)
+		{
 			number = sqrt;
-			sqrt = (_x / number + number) / 2;
+			sqrt = (x / number + number) / 2;
 		}
 		return sqrt;
 	}

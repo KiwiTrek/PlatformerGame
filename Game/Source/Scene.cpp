@@ -56,7 +56,7 @@ bool Scene::Start()
 	app->render->SetBackgroundColor(app->map->data.backgroundColor);
 
 	app->render->camera.x = 0;
-	app->render->camera.y = app->map->data.tileH * -2; // -128
+	app->render->camera.y = app->map->data.tileHeight * -2; // -128
 
 	app->player->Enable();
 
@@ -93,7 +93,7 @@ bool Scene::Update(float dt)
 
 	if (app->render->drawAll)
 	{
-		SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d", app->map->data.w, app->map->data.h, app->map->data.tileW, app->map->data.tileH, app->map->data.tileSets.count());
+		SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d", app->map->data.width, app->map->data.height, app->map->data.tileWidth, app->map->data.tileHeight, app->map->data.tileSets.Count());
 		app->win->SetTitle(title.GetString());
 	}
 	else
@@ -113,19 +113,19 @@ bool Scene::PostUpdate()
 		ret = false;
 
 	//Player restraint
-	if ((app->render->camera.x + app->player->playerRect.x) < (app->map->data.tileW * 6))
+	if ((app->render->camera.x + app->player->playerRect.x) < (app->map->data.tileWidth * 6))
 	{
 		app->render->camera.x += 5;
 	}
-	if ((app->player->playerRect.w + app->render->camera.x + app->player->playerRect.x) > (app->render->camera.w - app->map->data.tileW * 10))
+	if ((app->player->playerRect.w + app->render->camera.x + app->player->playerRect.x) > (app->render->camera.w - app->map->data.tileWidth * 10))
 	{
 		app->render->camera.x -= 5;
 	}
-	if ((app->render->camera.y + app->player->playerRect.y) < (app->map->data.tileH * 6))
+	if ((app->render->camera.y + app->player->playerRect.y) < (app->map->data.tileHeight * 6))
 	{
 		app->render->camera.y += 5;
 	}
-	if ((app->player->playerRect.h + app->render->camera.y + app->player->playerRect.y) > (app->render->camera.h - app->map->data.tileH * 6))
+	if ((app->player->playerRect.h + app->render->camera.y + app->player->playerRect.y) > (app->render->camera.h - app->map->data.tileHeight * 6))
 	{
 		app->render->camera.y -= 5;
 	}
@@ -135,7 +135,7 @@ bool Scene::PostUpdate()
 	{
 		app->render->camera.x -= 5;
 	}
-	if ((app->render->camera.w - app->render->camera.x) > (app->map->data.w * app->map->data.tileW))
+	if ((app->render->camera.w - app->render->camera.x) > (app->map->data.width * app->map->data.tileWidth))
 	{
 		app->render->camera.x += 5;
 	}
@@ -143,7 +143,7 @@ bool Scene::PostUpdate()
 	{
 		app->render->camera.y -= 5;
 	}
-	if ((app->render->camera.h - app->render->camera.y) > (app->map->data.h * app->map->data.tileH))
+	if ((app->render->camera.h - app->render->camera.y) > (app->map->data.height * app->map->data.tileHeight))
 	{
 		app->render->camera.y += 5;
 	}
@@ -154,9 +154,9 @@ bool Scene::PostUpdate()
 	app->tex->GetSize(mountainsBack, wmb, hmb);
 	for (int i = 0; (wmb * i) <= (w - app->render->camera.x); i++)
 	{
-		app->render->DrawTexture(mountainsBack, wmb * i, app->map->data.tileH * 7, false, nullptr, false, 0.4f);
-		app->render->DrawTexture(clouds, wmb * i, app->map->data.tileH * 3, false, nullptr, false, 0.5f);
-		app->render->DrawTexture(mountainsFront, wmb * i, app->map->data.tileH * 9, false, nullptr, false, 0.85f);
+		app->render->DrawTexture(mountainsBack, wmb * i, app->map->data.tileHeight * 7, false, nullptr, false, 0.4f);
+		app->render->DrawTexture(clouds, wmb * i, app->map->data.tileHeight * 3, false, nullptr, false, 0.5f);
+		app->render->DrawTexture(mountainsFront, wmb * i, app->map->data.tileHeight * 9, false, nullptr, false, 0.85f);
 	}
 
 	app->map->Draw();

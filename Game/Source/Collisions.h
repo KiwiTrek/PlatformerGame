@@ -7,33 +7,38 @@
 
 #include "SDL/include/SDL.h"
 
-class Collider {
+class Collider
+{
 public:
-    enum Type {
-        NONE = -1,
-        AIR,
-        SOLID,
-        SPIKE,
-        PLAYER,
-        FRUIT,
-        SPAWN,
-        GOAL,
-        MAX
-    };
 
-    Collider(SDL_Rect _rect, Type _type, Module* _listener = nullptr) : rect(_rect), type(_type), listener(_listener) {}
+	enum Type
+	{
+		NONE = -1,
+		AIR,
+		SOLID,
+		SPIKE,
+		PLAYER,
+		FRUIT,
+		SPAWN,
+		GOAL,
+		MAX
+	};
 
-    void SetPos(int _x, int _y, int _w, int _h);
+	Collider(SDL_Rect rect, Type type, Module* listener = nullptr) : rect(rect), type(type), listener(listener)
+	{}
 
-    bool Intersects(const SDL_Rect& r) const;
+	void SetPos(int x, int y, int w, int h);
 
-    SDL_Rect rect;
-    bool pendingToDelete = false;
-    Type type;
-    Module* listener = nullptr;
+	bool Intersects(const SDL_Rect& r) const;
+
+	SDL_Rect rect;
+	bool pendingToDelete = false;
+	Type type;
+	Module* listener = nullptr;
 };
 
-class Collisions : public Module {
+class Collisions : public Module
+{
 public:
 
 	Collisions();
@@ -64,13 +69,14 @@ public:
 	Collider* AddCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
 
 private:
-    // All existing colliders in the scene
-    // maybe change to a list
-    Collider* colliders[MAX_COLLIDERS] = { nullptr };
 
-    // The collision matrix. Defines the interaction for two collider types
-    // If set two false, collider 1 will ignore collider 2
-    bool matrix[Collider::Type::MAX][Collider::Type::MAX];
+	// All existing colliders in the scene
+	// maybe change to a list
+	Collider* colliders[MAX_COLLIDERS] = { nullptr };
+
+	// The collision matrix. Defines the interaction for two collider types
+	// If set two false, collider 1 will ignore collider 2
+	bool matrix[Collider::Type::MAX][Collider::Type::MAX];
 };
 
 #endif // !__COLLISIONS_H__
