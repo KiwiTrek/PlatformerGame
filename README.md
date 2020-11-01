@@ -18,6 +18,12 @@ Venture forth an incredible adventure crossing from the deepest of seas to the m
 	- A = Go left
 	- D = Go right
 
+ - DEBUG (God mode) controls:
+	- W = Go up
+	- A = Go left
+	- S = Go down
+	- D = Go right
+
  - DEBUG buttons:
  	- M: Mute Audio
  	- F1: Start from level 1
@@ -27,11 +33,6 @@ Venture forth an incredible adventure crossing from the deepest of seas to the m
 	- F7: Kill the player
 	- F9: Toggle Colliders
 	- F10: God mode
-		- Controls:
-			- W = Go up
-			- A = Go left
-			- S = Go down
-			- D = Go right
 
 ## Developers
 
