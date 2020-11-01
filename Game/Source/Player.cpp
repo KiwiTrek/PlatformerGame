@@ -475,7 +475,7 @@ bool Player::Update(float dt)
 		}
 
 		// Dead
-		if (GetTileProperty(x, y + 1, "CollisionId") == Collider::Type::SPIKE)
+		if (GetTileProperty(x, y + 1, "CollisionId") == Collider::Type::SPIKE && !godMode)
 		{
 			isDead = true;
 		}

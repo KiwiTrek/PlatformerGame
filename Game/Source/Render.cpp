@@ -94,29 +94,6 @@ bool Render::CleanUp()
 	return true;
 }
 
-bool Render::Load(pugi::xml_node& save)
-{
-	LOG("Loading SDL rendering info");
-	bool ret = true;
-
-	camera.x = save.child("camera").attribute("x").as_int();
-	camera.y = save.child("camera").attribute("y").as_int();
-
-	return ret;
-}
-
-bool Render::Save(pugi::xml_node& save)
-{
-	LOG("Saving SDL rendering info");
-	bool ret = true;
-
-	pugi::xml_node cam = save.append_child("camera");
-	cam.append_attribute("y").set_value(camera.y);
-	cam.append_attribute("x").set_value(camera.x);
-
-	return ret;
-}
-
 
 void Render::SetBackgroundColor(SDL_Color color)
 {

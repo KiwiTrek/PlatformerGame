@@ -12,11 +12,9 @@
 	<deathScene />
 	<scene />
 	<player>
-		<coordinates x="7403" y="768" />
+		<coordinates x="368" y="704" />
 	</player>
 	<collisions />
 	<transition />
-	<renderer>
-		<camera y="-303" x="-6400" />
-	</renderer>
+	<renderer />
 </save_state>
