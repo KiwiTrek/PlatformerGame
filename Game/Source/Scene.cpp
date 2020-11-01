@@ -61,7 +61,7 @@ bool Scene::Start()
 	app->player->Enable();
 
 	tmp.Clear();
-	tmp.Create("%s%s", folderTexture.GetString(), "Level1.ogg");
+	tmp.Create("%s%s", folderAudioMusic.GetString(), "Level1.ogg");
 	app->audio->PlayMusic(tmp.GetString(), 0.0f);
 
 	return true;
