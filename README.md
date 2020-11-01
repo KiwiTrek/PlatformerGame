@@ -1,24 +1,33 @@
-# {Project Name}
+# Adventure in Dreamworld
 
 ## Description
 
-{project description}
+Venture forth an incredible adventure crossing from the deepest of seas to the mysterious floating islands. Grab fruits along the way to challenge your skills of jumping, double jumping and wall jumping. And, at the end of the day, reach the camp in the middle of the floating islands for a well deserved rest!
 
 ## Key Features
 
- - {Feature01}
- - {Feature02}
- - {Feature03}
- - {Feature04}
+ - Control your player with wasd! owwoowowowwow
+ - You can jump aaand double jump!
+ - You can even wall jump!
+ - Collect all the fruits for a greater challenge!
  
 ## Controls
 
- - {ControlsScheme}
+ - Nomral controls:
+	- W = jump, double jump & wall jump
+	- A = go left
+	- D = go right
+
+ - God mode controls:
+	- W = go up
+	- A = go left
+	- S = go down
+	- D = go right
 
 ## Developers
 
- - Guillem Álava Burgueño - {Role(s)}
- - Sergi Colomer Ferrer - {Role(s)}
+ - Guillem Álava Burgueño - Programer
+ - Sergi Colomer Ferrer - Programer
  
 ## License
 
