@@ -17,13 +17,16 @@
 #include "Defs.h"
 #include "Log.h"
 
+#include "Optick/include/optick.h"
+#include "Optick/include/optick.config.h"
+
 #include <iostream>
 #include <sstream>
 
 // Constructor
 App::App(int argc, char* args[]) : argc(argc), args(args)
 {
-	frames = 0;
+	PERF_START(ptimer);
 
 	input = new Input();
 	win = new Window();
@@ -57,6 +60,8 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 
 	// render last to swap buffer
 	AddModule(render);
+
+	PERF_PEEK(ptimer);
 }
 
 // Destructor
@@ -83,6 +88,8 @@ void App::AddModule(Module* module)
 // Called before render is available
 bool App::Awake()
 {
+	PERF_START(ptimer);
+
 	pugi::xml_document configFile;
 	pugi::xml_node config;
 	pugi::xml_node configApp;
@@ -98,6 +105,11 @@ bool App::Awake()
 
 		title.Create(configApp.child("title").child_value());
 		organization.Create(configApp.child("organization").child_value());
+
+		// Read from config file your framerate cap
+		int cap = configApp.attribute("framerate_cap").as_int(-1); // -1 = No cap
+
+		if (cap > 0) cappedMs = 1000 / cap;
 	}
 
 	if (ret == true)
@@ -112,11 +124,16 @@ bool App::Awake()
 		}
 	}
 
+	PERF_PEEK(ptimer);
+
 	return ret;
 }
+
 // Called before the first frame
 bool App::Start()
 {
+	PERF_START(ptimer);
+
 	bool ret = true;
 	ListItem<Module*>* item;
 	item = modules.start;
@@ -130,6 +147,8 @@ bool App::Start()
 		item = item->next;
 	}
 
+	PERF_PEEK(ptimer);
+
 	return ret;
 }
 
@@ -139,17 +158,28 @@ bool App::Update()
 	bool ret = true;
 	PrepareUpdate();
 
-	if(input->GetWindowEvent(WE_QUIT) == true)
+	if (input->GetWindowEvent(WE_QUIT) == true)
+	{
 		ret = false;
+	}
 
-	if(ret == true)
+	if (ret == true)
+	{
+		OPTICK_CATEGORY("PreUpdate", Optick::Category::Input);
 		ret = PreUpdate();
+	}
 
-	if(ret == true)
+	if (ret == true)
+	{
+		OPTICK_CATEGORY("Update", Optick::Category::GameLogic);
 		ret = DoUpdate();
+	}
 
-	if(ret == true)
+	if (ret == true)
+	{
+		OPTICK_CATEGORY("PostUpdate", Optick::Category::Rendering);
 		ret = PostUpdate();
+	}
 
 	FinishUpdate();
 	return ret;
@@ -170,11 +200,21 @@ pugi::xml_node App::LoadConfig(pugi::xml_document& configFile) const
 // ---------------------------------------------
 void App::PrepareUpdate()
 {
+	OPTICK_CATEGORY("PrepareUpdate", Optick::Category::Debug);
+	frameCount++;
+	lastSecFrameCount++;
+
+	// Calculate the dt: differential time since last frame
+	dt = frameTime.ReadSec();
+
+	// We start the timer after read because we want to know how much time it took from the last frame to the new one
+	PERF_START(frameTime);
 }
 
 // ---------------------------------------------
 void App::FinishUpdate()
 {
+	OPTICK_CATEGORY("FinishUpdate", Optick::Category::Wait);
 	if (loadRequest)
 	{
 		loadRequest = !loadRequest;
@@ -185,6 +225,47 @@ void App::FinishUpdate()
 		saveRequest = !saveRequest;
 		SaveGame();
 	}
+
+	// Framerate calculations------------------------------------------
+	// To know how many frames have passed in the last second
+	if (lastSecFrameTime.Read() > 1000)
+	{
+		lastSecFrameTime.Start();
+		prevLastSecFrameCount = lastSecFrameCount;
+		lastSecFrameCount = 0;
+	}
+
+	// Amount of seconds since startup
+	float secondsSinceStartup = 0.0f;
+	secondsSinceStartup = startupTime.ReadSec();
+
+	// Amount of time since game start (use a low resolution timer)
+	uint32 lastFrameMs = 0;
+	lastFrameMs = frameTime.Read(); // Time from the prepare update until now (whole update method)
+
+	// Average FPS for the whole game life (since start)
+	float averageFps = 0.0f;
+	averageFps = float(frameCount) / startupTime.ReadSec();
+
+	// Amount of frames during the last update
+	uint32 framesOnLastUpdate = 0;
+	framesOnLastUpdate = prevLastSecFrameCount;
+
+	static char title[256];
+
+	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %I64u ",
+		averageFps, lastFrameMs, framesOnLastUpdate, dt, secondsSinceStartup, frameCount);
+	app->win->SetTitle(title);
+
+	// Use SDL_Delay to make sure you get your capped framerate
+	PERF_START(ptimer);
+	if (cappedMs > lastFrameMs)
+	{
+		SDL_Delay(cappedMs - lastFrameMs);
+	}
+
+	// Measure accurately the amount of time SDL_Delay() actually waits compared to what was expected
+	PERF_PEEK(ptimer);
 }
 
 // Call modules before each loop iteration

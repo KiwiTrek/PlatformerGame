@@ -81,6 +81,11 @@ bool Scene::Update(float dt)
 		app->audio->MuteVolume();
 	}
 
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	{
+		return false;
+	}
+
 	//DEBUG
 	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
@@ -91,6 +96,43 @@ bool Scene::Update(float dt)
 		app->transition->FadeEffect(this, this, false);
 	}
 
+	//Player restraint
+	if ((app->render->camera.x + app->player->playerRect.x) < (app->map->data.tileWidth * 6))
+	{
+		app->render->camera.x += floor(500.0f * dt);
+	}
+	if ((app->player->playerRect.w + app->render->camera.x + app->player->playerRect.x) > (app->render->camera.w - app->map->data.tileWidth * 10))
+	{
+		app->render->camera.x -= floor(500.0f * dt);
+	}
+	if ((app->render->camera.y + app->player->playerRect.y) < (app->map->data.tileHeight * 6))
+	{
+		app->render->camera.y += floor(500.0f * dt);
+	}
+	if ((app->player->playerRect.h + app->render->camera.y + app->player->playerRect.y) > (app->render->camera.h - app->map->data.tileHeight * 6))
+	{
+		app->render->camera.y -= floor(500.0f * dt);
+	}
+
+	// Map borders
+	if (app->render->camera.x >= 0)
+	{
+		app->render->camera.x -= floor(500.0f * dt);
+	}
+	if ((app->render->camera.w - app->render->camera.x) > (app->map->data.width * app->map->data.tileWidth))
+	{
+		app->render->camera.x += floor(500.0f * dt);
+	}
+	if (app->render->camera.y >= 0)
+	{
+		app->render->camera.y -= floor(500.0f * dt);
+	}
+	if ((app->render->camera.h - app->render->camera.y) > (app->map->data.height * app->map->data.tileHeight))
+	{
+		app->render->camera.y += floor(500.0f * dt);
+	}
+
+	/*
 	if (app->render->drawAll)
 	{
 		SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d", app->map->data.width, app->map->data.height, app->map->data.tileWidth, app->map->data.tileHeight, app->map->data.tileSets.Count());
@@ -100,6 +142,7 @@ bool Scene::Update(float dt)
 	{
 		app->win->SetTitle(app->GetTitle());
 	}
+	*/
 
 	return true;
 }
@@ -107,47 +150,6 @@ bool Scene::Update(float dt)
 // Called each loop iteration
 bool Scene::PostUpdate()
 {
-	bool ret = true;
-
-	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
-		ret = false;
-
-	//Player restraint
-	if ((app->render->camera.x + app->player->playerRect.x) < (app->map->data.tileWidth * 6))
-	{
-		app->render->camera.x += 5;
-	}
-	if ((app->player->playerRect.w + app->render->camera.x + app->player->playerRect.x) > (app->render->camera.w - app->map->data.tileWidth * 10))
-	{
-		app->render->camera.x -= 5;
-	}
-	if ((app->render->camera.y + app->player->playerRect.y) < (app->map->data.tileHeight * 6))
-	{
-		app->render->camera.y += 5;
-	}
-	if ((app->player->playerRect.h + app->render->camera.y + app->player->playerRect.y) > (app->render->camera.h - app->map->data.tileHeight * 6))
-	{
-		app->render->camera.y -= 5;
-	}
-
-	// Map borders
-	if (app->render->camera.x >= 0)
-	{
-		app->render->camera.x -= 5;
-	}
-	if ((app->render->camera.w - app->render->camera.x) > (app->map->data.width * app->map->data.tileWidth))
-	{
-		app->render->camera.x += 5;
-	}
-	if (app->render->camera.y >= 0)
-	{
-		app->render->camera.y -= 5;
-	}
-	if ((app->render->camera.h - app->render->camera.y) > (app->map->data.height * app->map->data.tileHeight))
-	{
-		app->render->camera.y += 5;
-	}
-
 	uint w, h;
 	app->win->GetWindowSize(w, h);
 	uint wmb, hmb;
@@ -161,7 +163,7 @@ bool Scene::PostUpdate()
 
 	app->map->Draw();
 
-	return ret;
+	return true;
 }
 
 // Called before quitting

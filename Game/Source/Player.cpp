@@ -185,19 +185,19 @@ bool Player::Update(float dt)
 		{
 			if (app->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 			{
-				playerRect.y -= 5;
+				playerRect.y -= floor(500.0f * dt);
 				positiveSpeedY = false;
 				keyPressed = true;
 			}
 			if (app->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 			{
-				playerRect.y += 5;
+				playerRect.y += floor(500.0f * dt);
 				positiveSpeedY = true;
 				keyPressed = true;
 			}
 			if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_D) != KEY_REPEAT)
 			{
-				playerRect.x -= 5;
+				playerRect.x -= floor(500.0f * dt);
 				positiveSpeedX = false;
 				currentAnimation = &run;
 				if (invert == false)
@@ -208,7 +208,7 @@ bool Player::Update(float dt)
 			}
 			if (app->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_A) != KEY_REPEAT)
 			{
-				playerRect.x += 5;
+				playerRect.x += floor(500.0f * dt);
 				positiveSpeedX = true;
 				currentAnimation = &run;
 				if (invert == true)
@@ -242,7 +242,7 @@ bool Player::Update(float dt)
 			{
 				if (currentAnimation != &wallJump)
 				{
-					playerRect.x -= 5;
+					playerRect.x -= floor(500.0f * dt);
 				}
 				positiveSpeedX = false;
 				if (!isJumping)
@@ -259,7 +259,7 @@ bool Player::Update(float dt)
 			{
 				if (currentAnimation != &wallJump)
 				{
-					playerRect.x += 5;
+					playerRect.x += floor(500.0f * dt);
 				}
 				positiveSpeedX = true;
 				if (!isJumping)
@@ -471,7 +471,7 @@ bool Player::Update(float dt)
 				app->audio->PlayMusic("Assets/audio/music/Victory.ogg", 0.0f);
 				once = false;
 			}
-			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, 180.0f);
+			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, floor(18000.0f * dt));
 		}
 
 		// Dead
@@ -491,7 +491,7 @@ bool Player::Update(float dt)
 		}
 		if (currentAnimation->HasFinished())
 		{
-			app->transition->FadeEffect((Module*)app->scene, (Module*)app->deathScene, false, 60.0f);
+			app->transition->FadeEffect((Module*)app->scene, (Module*)app->deathScene, false, floor(6000.0f * dt));
 		}
 	}
 
