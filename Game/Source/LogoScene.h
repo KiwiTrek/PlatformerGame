@@ -41,6 +41,7 @@ private:
 	unsigned int logoFx;
 	SString folderTexture;
 	SString folderAudioFx;
+	bool once = true;
 };
 
 #endif // __LOGO_SCENE_H__

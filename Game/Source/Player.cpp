@@ -40,6 +40,7 @@ bool Player::Start()
 	invert = false;
 	debugDraw = false;
 	once = true;
+	onceAnim = true;
 	playerPhysics.axisX = true;
 	playerPhysics.axisY = true;
 	positiveSpeedX = true;
@@ -88,44 +89,37 @@ bool Player::Awake(pugi::xml_node& config)
 	{
 		idle.PushBack({ 10 + (playerSize * i),1329,56,73 });
 	}
-	idle.speed = 0.1f;
 	idle.loop = true;
 
 	for (int i = 0; i != 8; ++i)
 	{
 		run.PushBack({ 10 + (playerSize * i),1202,62,82 });
 	}
-	run.speed = 0.5f;
 	run.loop = true;
 
 	for (int i = 0; i != 2; ++i)
 	{
 		jumpPrep.PushBack({ 10 + (playerSize * i), 812, 60, 90 });
 	}
-	jumpPrep.speed = 0.5f;
 	jumpPrep.loop = false;
 
 	for (int i = 0; i != 4; ++i)
 	{
 		jumpMid.PushBack({ 10 + (2 * playerSize) + (playerSize * i),812,60,80 });
 	}
-	jumpMid.speed = 0.1f;
 	jumpMid.loop = true;
 
 	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
 	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
-	jumpLand.speed = 3.0f;
 	jumpLand.loop = false;
 
 	for (int i = 0; i != 5; ++i)
 	{
 		death.PushBack({ 10 + (playerSize * i),192,88,66 });
 	}
-	death.speed = 0.3f;
 	death.loop = false;
 
 	wallJump.PushBack({ 630,170,73,79 });
-	wallJump.speed = 0.0f;
 	wallJump.loop = false;
 
 	return true;
@@ -138,6 +132,17 @@ bool Player::PreUpdate()
 
 bool Player::Update(float dt)
 {
+	if(onceAnim)
+	{
+		onceAnim = false;
+		idle.speed = 5.0f * dt;
+		run.speed = 5.0f * dt;
+		jumpPrep.speed = 5.0f * dt;
+		jumpMid.speed = 5.0f * dt;
+		jumpLand.speed = 15.0f * dt;
+		death.speed = 5.0f * dt;
+		wallJump.speed = 0.0f;
+	}
 	currentAnimation->Update();
 	keyPressed = false;
 
@@ -161,20 +166,20 @@ bool Player::Update(float dt)
 	}
 
 	// To know what direction the velocity is going
-	if (speed.y >= 0)
+	if (speed.y >= 0.0f)
 	{
 		positiveSpeedY = true;
 	}
-	else if (speed.y < 0)
+	else if (speed.y < 0.0f)
 	{
 		positiveSpeedY = false;
 	}
 
-	if (speed.x >= 0)
+	if (speed.x >= 0.0f)
 	{
 		positiveSpeedX = true;
 	}
-	else if (speed.x < 0)
+	else if (speed.x < 0.0f)
 	{
 		positiveSpeedX = false;
 	}
@@ -185,19 +190,19 @@ bool Player::Update(float dt)
 		{
 			if (app->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 			{
-				playerRect.y -= floor(500.0f * dt);
+				playerRect.y -= floor(250.0f * dt);
 				positiveSpeedY = false;
 				keyPressed = true;
 			}
 			if (app->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 			{
-				playerRect.y += floor(500.0f * dt);
+				playerRect.y += floor(250.0f * dt);
 				positiveSpeedY = true;
 				keyPressed = true;
 			}
 			if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_D) != KEY_REPEAT)
 			{
-				playerRect.x -= floor(500.0f * dt);
+				playerRect.x -= floor(250.0f * dt);
 				positiveSpeedX = false;
 				currentAnimation = &run;
 				if (invert == false)
@@ -208,7 +213,7 @@ bool Player::Update(float dt)
 			}
 			if (app->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_A) != KEY_REPEAT)
 			{
-				playerRect.x += floor(500.0f * dt);
+				playerRect.x += floor(250.0f * dt);
 				positiveSpeedX = true;
 				currentAnimation = &run;
 				if (invert == true)
@@ -235,14 +240,15 @@ bool Player::Update(float dt)
 						app->audio->PlayFx(doubleJumpFx);
 					}
 					--jumpCounter;
-					speed.y = -500.0f;
+					speed.y = -450.0f;
 				}
 			}
 			if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_D) != KEY_REPEAT)
 			{
 				if (currentAnimation != &wallJump)
 				{
-					playerRect.x -= floor(500.0f * dt);
+					// playerRect.x -= floor(250.0f * dt);
+					speed.x = -250.0f;
 				}
 				positiveSpeedX = false;
 				if (!isJumping)
@@ -259,7 +265,8 @@ bool Player::Update(float dt)
 			{
 				if (currentAnimation != &wallJump)
 				{
-					playerRect.x += floor(500.0f * dt);
+					// playerRect.x += floor(250.0f * dt);
+					speed.x = 250.0f;
 				}
 				positiveSpeedX = true;
 				if (!isJumping)
@@ -274,10 +281,14 @@ bool Player::Update(float dt)
 			}
 		}
 
-		if (keyPressed == false && isJumping == false)
+		if (keyPressed == false)
 		{
-			run.Reset();
-			currentAnimation = &idle;
+			speed.x = 0;
+			if (isJumping == false)
+			{
+				run.Reset();
+				currentAnimation = &idle;
+			}
 		}
 
 		if (isJumping == true)
@@ -299,7 +310,7 @@ bool Player::Update(float dt)
 		}
 
 		// Physics
-		playerPhysics.UpdatePhysics(playerRect.x, playerRect.y, speed.x, speed.y);
+		playerPhysics.UpdatePhysics(playerRect.x, playerRect.y, speed.x, speed.y, dt);
 
 		// Collisions
 		int x = playerRect.x / 64;
@@ -322,32 +333,33 @@ bool Player::Update(float dt)
 			if (collisionType == CollisionType::DOUBLE_SOLID)
 			{
 				playerRect.y = y * 2 * 64 - playerRect.y;
-				speed.y = 0;
+				speed.y = 0.0f;
 				if (isJumping)
 				{
 					currentAnimation = &jumpLand;
 				}
 				playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
-				speed.x = 0;
+				speed.x = 0.0f;
 				//LOG("BottomRight - DOUBLE_SOLID");
 			}
 			else if (collisionType == CollisionType::AIR_SOLID)
 			{
-				speed.y -= 25.0f;
-				if (speed.y <= 0)
+				speed.y -= 450.0f;
+				if (speed.y <= 0.0f)
 				{
-					speed.y = 0;
+					speed.y = 0.0f;
 				}
 				jumpCounter = 1;
 				currentAnimation = &wallJump;
 				playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
+				speed.x = 0.0f;
 				//LOG("BottomRight - AIR_SOLID");
 			}
 			else if (collisionType == CollisionType::SOLID_AIR)
 			{
 				playerRect.y = y * 2 * 64 - playerRect.y;
-				speed.y = 0;
-				speed.x = 0;
+				speed.y = 0.0f;
+				speed.x = 0.0f;
 				if (isJumping)
 				{
 					currentAnimation = &jumpLand;
@@ -361,26 +373,27 @@ bool Player::Update(float dt)
 			if (collisionType == CollisionType::DOUBLE_SOLID)
 			{
 				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
-				speed.y = 0;
+				speed.y = 0.0f;
 				playerRect.x = 2 * 64 * (x)-playerRect.x;
 				//LOG("TopRight - DOUBLE_SOLID");
 			}
 			else if (collisionType == CollisionType::AIR_SOLID)
 			{
-				speed.y -= 25.0f;
-				if (speed.y <= 0)
+				speed.y -= 450.0f;
+				if (speed.y <= 0.0f)
 				{
-					speed.y = 0;
+					speed.y = 0.0f;
 				}
 				jumpCounter = 1;
 				currentAnimation = &wallJump;
 				playerRect.x = 2 * 64 * (x)-playerRect.x;
+				speed.x = 0.0f;
 				//LOG("TopRight - AIR_SOLID");
 			}
 			else if (collisionType == CollisionType::SOLID_AIR)
 			{
 				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
-				speed.y = 0;
+				speed.y = 0.0f;
 				//LOG("TopRight - SOLID_AIR");
 			}
 		}
@@ -390,26 +403,27 @@ bool Player::Update(float dt)
 			if (collisionType == CollisionType::DOUBLE_SOLID)
 			{
 				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
-				speed.y = 0;
+				speed.y = 0.0f;
 				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
 				//LOG("TopLeft - DOUBLE_SOLID");
 			}
 			else if (collisionType == CollisionType::AIR_SOLID)
 			{
 				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
-				speed.y = 0;
+				speed.y = 0.0f;
 				//LOG("TopLeft - AIR_SOLID");
 			}
 			else if (collisionType == CollisionType::SOLID_AIR)
 			{
-				speed.y -= 25.0f;
-				if (speed.y <= 0)
+				speed.y -= 450.0f;
+				if (speed.y <= 0.0f)
 				{
-					speed.y = 0;
+					speed.y = 0.0f;
 				}
 				jumpCounter = 1;
 				currentAnimation = &wallJump;
 				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
+				speed.x = 0.0f;
 				//LOG("TopLeft - SOLID_AIR");
 			}
 		}
@@ -419,20 +433,20 @@ bool Player::Update(float dt)
 			if (collisionType == CollisionType::DOUBLE_SOLID)
 			{
 				playerRect.y = y * 2 * 64 - playerRect.y;
-				speed.y = 0;
+				speed.y = 0.0f;
 				if (isJumping)
 				{
 					currentAnimation = &jumpLand;
 				}
 				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-				speed.x = 0;
+				speed.x = 0.0f;
 				//LOG("BottomLeft - DOUBLE_SOLID");
 			}
 			else if (collisionType == CollisionType::AIR_SOLID)
 			{
 				playerRect.y = y * 2 * 64 - playerRect.y;
-				speed.y = 0;
-				speed.x = 0;
+				speed.y = 0.0f;
+				speed.x = 0.0f;
 				if (isJumping)
 				{
 					currentAnimation = &jumpLand;
@@ -441,14 +455,15 @@ bool Player::Update(float dt)
 			}
 			else if (collisionType == CollisionType::SOLID_AIR)
 			{
-				speed.y -= 25.0f;
-				if (speed.y <= 0)
+				speed.y -= 450.0f;
+				if (speed.y <= 0.0f)
 				{
-					speed.y = 0;
+					speed.y = 0.0f;
 				}
 				jumpCounter = 1;
 				currentAnimation = &wallJump;
 				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
+				speed.x = 0.0f;
 				//LOG("BottomLeft - SOLID_AIR");
 			}
 		}
@@ -468,10 +483,10 @@ bool Player::Update(float dt)
 		{
 			if (once)
 			{
-				app->audio->PlayMusic("Assets/audio/music/Victory.ogg", 0.0f);
+				app->audio->PlayMusic("Assets/audio/music/victory.ogg", 0.0f);
 				once = false;
 			}
-			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, floor(18000.0f * dt));
+			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, floor(3000.0f * dt));
 		}
 
 		// Dead
@@ -491,15 +506,10 @@ bool Player::Update(float dt)
 		}
 		if (currentAnimation->HasFinished())
 		{
-			app->transition->FadeEffect((Module*)app->scene, (Module*)app->deathScene, false, floor(6000.0f * dt));
+			app->transition->FadeEffect((Module*)app->scene, (Module*)app->deathScene, false, floor(1200.0f * dt));
 		}
 	}
 
-	return true;
-}
-
-bool Player::PostUpdate()
-{
 	// Map borders
 	if (playerRect.x <= 0)
 	{
@@ -507,9 +517,14 @@ bool Player::PostUpdate()
 	}
 	if ((playerRect.x + playerRect.w) > (app->map->data.width * app->map->data.tileWidth))
 	{
-		playerRect.x -= 5;
+		playerRect.x -= floor(250.0f * dt);
 	}
 
+	return true;
+}
+
+bool Player::PostUpdate()
+{
 	app->render->DrawTexture(playerTex, playerRect.x, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
 	if (app->render->drawAll)
 	{
@@ -572,7 +587,7 @@ iPoint Player::GetSpawnPoint()
 
 	// TileSet
 	ListItem<TileSet*>* tileSet = app->map->data.tileSets.start;
-	SString tileSetName = "Level1Tileset(64x64)";
+	SString tileSetName = "level1Tileset";
 	while (tileSet != NULL)
 	{
 		if (tileSet->data->name == tileSetName)
@@ -629,11 +644,11 @@ int Player::GetTileProperty(int x, int y, const char* property, bool notMovColli
 	SString tileSetName;
 	if (notMovCollision)
 	{
-		tileSetName = "Level1Tileset(64x64)";
+		tileSetName = "level1Tileset";
 	}
 	else
 	{
-		tileSetName = "MetaData";
+		tileSetName = "metaData";
 	}
 	while (tileSet != NULL)
 	{

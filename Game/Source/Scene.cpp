@@ -45,10 +45,10 @@ bool Scene::Start()
 	SString tmp("%s%s", folderTexture.GetString(), "clouds.png");
 	clouds = app->tex->Load(tmp.GetString());
 	tmp.Clear();
-	tmp.Create("%s%s", folderTexture.GetString(), "mountain_depth_back.png");
+	tmp.Create("%s%s", folderTexture.GetString(), "mountainDepthBack.png");
 	mountainsBack = app->tex->Load(tmp.GetString());
 	tmp.Clear();
-	tmp.Create("%s%s", folderTexture.GetString(), "mountain_depth_front.png");
+	tmp.Create("%s%s", folderTexture.GetString(), "mountainDepthFront.png");
 	mountainsFront = app->tex->Load(tmp.GetString());
 
 	app->map->Enable();
@@ -61,7 +61,7 @@ bool Scene::Start()
 	app->player->Enable();
 
 	tmp.Clear();
-	tmp.Create("%s%s", folderAudioMusic.GetString(), "Level1.ogg");
+	tmp.Create("%s%s", folderAudioMusic.GetString(), "level1.ogg");
 	app->audio->PlayMusic(tmp.GetString(), 0.0f);
 
 	return true;
@@ -99,37 +99,37 @@ bool Scene::Update(float dt)
 	//Player restraint
 	if ((app->render->camera.x + app->player->playerRect.x) < (app->map->data.tileWidth * 6))
 	{
-		app->render->camera.x += floor(500.0f * dt);
+		app->render->camera.x += (250.0f * dt);
 	}
 	if ((app->player->playerRect.w + app->render->camera.x + app->player->playerRect.x) > (app->render->camera.w - app->map->data.tileWidth * 10))
 	{
-		app->render->camera.x -= floor(500.0f * dt);
+		app->render->camera.x -= (250.0f * dt);
 	}
 	if ((app->render->camera.y + app->player->playerRect.y) < (app->map->data.tileHeight * 6))
 	{
-		app->render->camera.y += floor(500.0f * dt);
+		app->render->camera.y += floor(250.0f * dt);
 	}
 	if ((app->player->playerRect.h + app->render->camera.y + app->player->playerRect.y) > (app->render->camera.h - app->map->data.tileHeight * 6))
 	{
-		app->render->camera.y -= floor(500.0f * dt);
+		app->render->camera.y -= floor(250.0f * dt);
 	}
 
 	// Map borders
 	if (app->render->camera.x >= 0)
 	{
-		app->render->camera.x -= floor(500.0f * dt);
+		app->render->camera.x -= (250.0f * dt);
 	}
 	if ((app->render->camera.w - app->render->camera.x) > (app->map->data.width * app->map->data.tileWidth))
 	{
-		app->render->camera.x += floor(500.0f * dt);
+		app->render->camera.x += (250.0f * dt);
 	}
 	if (app->render->camera.y >= 0)
 	{
-		app->render->camera.y -= floor(500.0f * dt);
+		app->render->camera.y -= floor(250.0f * dt);
 	}
 	if ((app->render->camera.h - app->render->camera.y) > (app->map->data.height * app->map->data.tileHeight))
 	{
-		app->render->camera.y += floor(500.0f * dt);
+		app->render->camera.y += floor(250.0f * dt);
 	}
 
 	/*

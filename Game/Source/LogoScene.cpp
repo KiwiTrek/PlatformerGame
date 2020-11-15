@@ -40,7 +40,6 @@ bool LogoScene::Awake(pugi::xml_node& config)
 // Called before the first frame
 bool LogoScene::Start()
 {
-	app->transition->FadeEffect(nullptr, this, true, 100.0f);
 	SString tmp("%s%s", folderTexture.GetString(), "logoScreen.jpg");
 	logo = app->tex->Load(tmp.GetString());
 	tmp.Clear();
@@ -59,18 +58,23 @@ bool LogoScene::PreUpdate()
 // Called each loop iteration
 bool LogoScene::Update(float dt)
 {
+	if (once)
+	{
+		once = false;
+		app->transition->FadeEffect(nullptr, this, true, floor(100.0f * dt));
+	}
+
 	if (timer < 200)
 	{
 		timer++;
+		if (timer == 100)
+		{
+			app->audio->PlayFx(logoFx);
+		}
 	}
 	else
 	{
-		app->transition->FadeEffect(this, (Module*)app->titleScene, false, 100.0f);
-	}
-
-	if (timer == 100)
-	{
-		app->audio->PlayFx(logoFx);
+		app->transition->FadeEffect(this, (Module*)app->titleScene, false, floor(1200.0f * dt));
 	}
 	return true;
 }

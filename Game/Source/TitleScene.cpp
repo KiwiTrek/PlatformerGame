@@ -43,7 +43,7 @@ bool TitleScene::Start()
 	SString tmp("%s%s", folderTexture.GetString(), "titleScreen.png");
 	titleScreen = app->tex->Load(tmp.GetString());
 	tmp.Clear();
-	tmp.Create("%s%s", folderAudioMusic.GetString(), "TitleScreen.ogg");
+	tmp.Create("%s%s", folderAudioMusic.GetString(), "titleScreen.ogg");
 	app->audio->PlayMusic(tmp.GetString(),0.0f);
 
 	return true;
@@ -60,7 +60,7 @@ bool TitleScene::Update(float dt)
 {
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 	{
-		app->transition->FadeEffect(this, (Module*)app->scene, false, 30.0f);
+		app->transition->FadeEffect(this, (Module*)app->scene, false, floor(1200.0f * dt));
 	}
 	return true;
 }

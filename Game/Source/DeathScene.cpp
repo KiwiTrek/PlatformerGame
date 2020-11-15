@@ -45,7 +45,7 @@ bool DeathScene::Start()
 	SString tmp("%s%s", folderTexture.GetString(), "gameOver.png");
 	deathScreen = app->tex->Load(tmp.GetString());
 	tmp.Clear();
-	tmp.Create("%s%s", folderAudioMusic.GetString(), "GameOver.ogg");
+	tmp.Create("%s%s", folderAudioMusic.GetString(), "gameOver.ogg");
 	app->audio->PlayMusic(tmp.GetString(), 0.5f);
 
 	return true;
@@ -62,7 +62,7 @@ bool DeathScene::Update(float dt)
 {
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 	{
-		app->transition->FadeEffect(this, (Module*)app->titleScene, false, 30.0f);
+		app->transition->FadeEffect(this, (Module*)app->titleScene, false, floor(1200.0f * dt));
 	}
 	return true;
 }

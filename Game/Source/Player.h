@@ -90,6 +90,7 @@ private:
 	bool invert = false;
 	bool debugDraw = false;
 	bool once = true;
+	bool onceAnim = true;
 
 	SString folderTexture;
 	SString folderAudioFx;

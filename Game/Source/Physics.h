@@ -8,7 +8,7 @@
 struct Physics
 {
 public:
-	void UpdatePhysics(int& x, int& y, float& sx, float& sy)
+	void UpdatePhysics(int& x, int& y, float& sx, float& sy, float deltaTime)
 	{
 		if (axisX)
 		{
@@ -29,8 +29,7 @@ public:
 
 	bool axisX;
 	bool axisY;
-	float gravity = 950.0f;
-	float deltaTime = 1.0f / 60.0f;
+	float gravity = 600.0f;
 };
 
 #endif // !__PHYSICS_H__

@@ -494,11 +494,11 @@ void Map::SetTileProperty(int x, int y, const char* property, int value, bool no
 	SString tileSetName;
 	if (notMovCollision)
 	{
-		tileSetName = "Level1Tileset(64x64)";
+		tileSetName = "level1Tileset";
 	}
 	else
 	{
-		tileSetName = "MetaData";
+		tileSetName = "metaData";
 	}
 	while (tileSet != NULL)
 	{
