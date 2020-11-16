@@ -73,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="Source\Timer.h" />
     <ClInclude Include="Source\PerfTimer.h" />
+    <ClInclude Include="Source\Queue.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">
