@@ -26,6 +26,7 @@
     <ClCompile Include="Source\PerfTimer.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\EnemyManagement.cpp" />
+    <ClCompile Include="Source\EnemyGround.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Window.h" />
@@ -80,6 +81,7 @@
     </ClInclude>
     <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\EnemyManagement.h" />
+    <ClInclude Include="Source\EnemyGround.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">

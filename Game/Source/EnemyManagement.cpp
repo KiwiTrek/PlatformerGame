@@ -8,6 +8,7 @@
 #include "Audio.h"
 
 #include "Enemy.h"
+#include "EnemyGround.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -89,13 +90,13 @@ bool EnemyManagement::CleanUp()
 	return true;
 }
 
-bool EnemyManagement::AddEnemy(ENEMY_TYPE type, int x, int y)
+bool EnemyManagement::AddEnemy(EnemyType type, int x, int y)
 {
 	bool ret = false;
 
 	for (uint i = 0; i < MAX_ENEMIES; ++i)
 	{
-		if (spawnQueue[i].type == ENEMY_TYPE::NO_TYPE)
+		if (spawnQueue[i].type == EnemyType::NO_TYPE)
 		{
 			spawnQueue[i].type = type;
 			spawnQueue[i].x = x;
@@ -113,7 +114,7 @@ void EnemyManagement::HandleEnemiesSpawn()
 	// Iterate all the enemies queue
 	for (uint i = 0; i < MAX_ENEMIES; ++i)
 	{
-		if (spawnQueue[i].type != ENEMY_TYPE::NO_TYPE)
+		if (spawnQueue[i].type != EnemyType::NO_TYPE)
 		{
 			// Spawn a new enemy if the screen has reached a spawn position
 			if (spawnQueue[i].x * app->win->GetScale() < app->render->camera.x + (app->render->camera.w * app->win->GetScale()) + SPAWN_MARGIN)
@@ -121,7 +122,7 @@ void EnemyManagement::HandleEnemiesSpawn()
 				LOG("Spawning enemy at %d", spawnQueue[i].x * app->win->GetScale());
 
 				SpawnEnemy(spawnQueue[i]);
-				spawnQueue[i].type = ENEMY_TYPE::NO_TYPE; // Removing the newly spawned enemy from the queue
+				spawnQueue[i].type = EnemyType::NO_TYPE; // Removing the newly spawned enemy from the queue
 			}
 		}
 	}
@@ -155,10 +156,11 @@ void EnemyManagement::SpawnEnemy(const EnemySpawnpoint& info)
 		{
 			switch (info.type)
 			{
-			case ENEMY_TYPE::GROUND:
+			case EnemyType::GROUND:
 				//enemies[i] = new Enemy_RedBird(info.x, info.y);
+				enemies[i] = new EnemyGround(info.x, info.y, info.type);
 				break;
-			case ENEMY_TYPE::FLYING:
+			case EnemyType::FLYING:
 				//enemies[i] = new Enemy_BrownShip(info.x, info.y);
 				break;
 			}
@@ -175,7 +177,7 @@ void EnemyManagement::OnCollision(Collider* c1, Collider* c2)
 	{
 		if (enemies[i] != nullptr && enemies[i]->GetCollider() == c1)
 		{
-			enemies[i]->OnCollision(c2); //Notify the enemy of a collision
+			enemies[i]->OnCollision(c1, c2); //Notify the enemy of a collision
 
 			delete enemies[i];
 			enemies[i] = nullptr;

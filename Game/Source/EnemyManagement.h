@@ -2,23 +2,18 @@
 #define __MODULE_ENEMIES_H__
 
 #include "Module.h"
+#include "Enemy.h"
 
 #define MAX_ENEMIES 100
 
-enum class ENEMY_TYPE
-{
-	NO_TYPE,
-	GROUND,
-	FLYING
-};
-
 struct EnemySpawnpoint
 {
-	ENEMY_TYPE type = ENEMY_TYPE::NO_TYPE;
+	EnemyType type = EnemyType::NO_TYPE;
 	int x, y;
 };
 
 class Enemy;
+enum EnemyType;
 struct SDL_Texture;
 
 class EnemyManagement : public Module
@@ -54,7 +49,7 @@ public:
 	void OnCollision(Collider* c1, Collider* c2);
 
 	// Add an enemy into the queue to be spawned later
-	bool AddEnemy(ENEMY_TYPE type, int x, int y);
+	bool AddEnemy(EnemyType type, int x, int y);
 
 	// Iterates the queue and checks for camera position
 	void HandleEnemiesSpawn();

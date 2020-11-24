@@ -5,7 +5,9 @@
 #include "Audio.h"
 #include "Render.h"
 
-Enemy::Enemy(int x, int y) : position(x, y)
+#include "Log.h"
+
+Enemy::Enemy(int x, int y, EnemyType type) : position(x, y), type(type)
 {
 	spawnPos = position;
 }
@@ -35,7 +37,3 @@ void Enemy::Draw()
 	if (currentAnim != nullptr)
 		app->render->DrawTexture(texture, position.x, position.y, false, &(currentAnim->GetCurrentFrame()));
 }
-
-//void Enemy::OnCollision(Collider* collider)
-//{
-//}

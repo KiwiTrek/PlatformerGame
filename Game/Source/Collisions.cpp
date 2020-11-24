@@ -16,29 +16,66 @@ Collisions::Collisions()
 
 	matrix[Collider::Type::SOLID][Collider::Type::NONE] = false;
 	matrix[Collider::Type::SOLID][Collider::Type::SOLID] = false;
-	matrix[Collider::Type::SOLID][Collider::Type::PLAYER] = false;
 	matrix[Collider::Type::SOLID][Collider::Type::SPIKE] = false;
+	matrix[Collider::Type::SOLID][Collider::Type::PLAYER] = false;
 	matrix[Collider::Type::SOLID][Collider::Type::FRUIT] = false;
 	matrix[Collider::Type::SOLID][Collider::Type::SPAWN] = false;
-
-	matrix[Collider::Type::PLAYER][Collider::Type::NONE] = false;
-	matrix[Collider::Type::PLAYER][Collider::Type::SOLID] = false;
-	matrix[Collider::Type::PLAYER][Collider::Type::PLAYER] = false;
-	matrix[Collider::Type::PLAYER][Collider::Type::SPIKE] = false;
-	matrix[Collider::Type::PLAYER][Collider::Type::FRUIT] = false;
+	matrix[Collider::Type::SOLID][Collider::Type::GOAL] = false;
+	matrix[Collider::Type::SOLID][Collider::Type::ENEMY] = false;
 
 	matrix[Collider::Type::SPIKE][Collider::Type::NONE] = false;
 	matrix[Collider::Type::SPIKE][Collider::Type::SOLID] = false;
-	matrix[Collider::Type::SPIKE][Collider::Type::PLAYER] = false;
 	matrix[Collider::Type::SPIKE][Collider::Type::SPIKE] = false;
+	matrix[Collider::Type::SPIKE][Collider::Type::PLAYER] = false;
 	matrix[Collider::Type::SPIKE][Collider::Type::FRUIT] = false;
+	matrix[Collider::Type::SPIKE][Collider::Type::SPAWN] = false;
+	matrix[Collider::Type::SPIKE][Collider::Type::GOAL] = false;
+	matrix[Collider::Type::SPIKE][Collider::Type::ENEMY] = false;
+
+	matrix[Collider::Type::PLAYER][Collider::Type::NONE] = false;
+	matrix[Collider::Type::PLAYER][Collider::Type::SOLID] = false;
+	matrix[Collider::Type::PLAYER][Collider::Type::SPIKE] = false;
+	matrix[Collider::Type::PLAYER][Collider::Type::PLAYER] = false;
+	matrix[Collider::Type::PLAYER][Collider::Type::FRUIT] = false;
+	matrix[Collider::Type::PLAYER][Collider::Type::SPAWN] = false;
+	matrix[Collider::Type::PLAYER][Collider::Type::GOAL] = false;
+	matrix[Collider::Type::PLAYER][Collider::Type::ENEMY] = true;
 
 	matrix[Collider::Type::FRUIT][Collider::Type::NONE] = false;
 	matrix[Collider::Type::FRUIT][Collider::Type::SOLID] = false;
-	matrix[Collider::Type::FRUIT][Collider::Type::PLAYER] = false;
 	matrix[Collider::Type::FRUIT][Collider::Type::SPIKE] = false;
+	matrix[Collider::Type::FRUIT][Collider::Type::PLAYER] = false;
 	matrix[Collider::Type::FRUIT][Collider::Type::FRUIT] = false;
+	matrix[Collider::Type::FRUIT][Collider::Type::SPAWN] = false;
+	matrix[Collider::Type::FRUIT][Collider::Type::GOAL] = false;
+	matrix[Collider::Type::FRUIT][Collider::Type::ENEMY] = false;
 
+	matrix[Collider::Type::SPAWN][Collider::Type::NONE] = false;
+	matrix[Collider::Type::SPAWN][Collider::Type::SOLID] = false;
+	matrix[Collider::Type::SPAWN][Collider::Type::SPIKE] = false;
+	matrix[Collider::Type::SPAWN][Collider::Type::PLAYER] = false;
+	matrix[Collider::Type::SPAWN][Collider::Type::FRUIT] = false;
+	matrix[Collider::Type::SPAWN][Collider::Type::SPAWN] = false;
+	matrix[Collider::Type::SPAWN][Collider::Type::GOAL] = false;
+	matrix[Collider::Type::SPAWN][Collider::Type::ENEMY] = false;
+
+	matrix[Collider::Type::GOAL][Collider::Type::NONE] = false;
+	matrix[Collider::Type::GOAL][Collider::Type::SOLID] = false;
+	matrix[Collider::Type::GOAL][Collider::Type::SPIKE] = false;
+	matrix[Collider::Type::GOAL][Collider::Type::PLAYER] = false;
+	matrix[Collider::Type::GOAL][Collider::Type::FRUIT] = false;
+	matrix[Collider::Type::GOAL][Collider::Type::SPAWN] = false;
+	matrix[Collider::Type::GOAL][Collider::Type::GOAL] = false;
+	matrix[Collider::Type::GOAL][Collider::Type::ENEMY] = false;
+
+	matrix[Collider::Type::ENEMY][Collider::Type::NONE] = false;
+	matrix[Collider::Type::ENEMY][Collider::Type::SOLID] = false;
+	matrix[Collider::Type::ENEMY][Collider::Type::SPIKE] = false;
+	matrix[Collider::Type::ENEMY][Collider::Type::PLAYER] = true;
+	matrix[Collider::Type::ENEMY][Collider::Type::FRUIT] = false;
+	matrix[Collider::Type::ENEMY][Collider::Type::SPAWN] = false;
+	matrix[Collider::Type::ENEMY][Collider::Type::GOAL] = false;
+	matrix[Collider::Type::ENEMY][Collider::Type::ENEMY] = false;
 }
 
 Collisions::~Collisions()

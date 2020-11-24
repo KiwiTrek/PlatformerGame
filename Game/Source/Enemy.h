@@ -5,14 +5,21 @@
 #include "Animation.h"
 
 struct SDL_Texture;
-struct Collider;
+class Collider;
+
+enum EnemyType
+{
+	NO_TYPE,
+	GROUND,
+	FLYING
+};
 
 class Enemy
 {
 public:
 	// Constructor
 	// Saves the spawn position for later movement calculations
-	Enemy(int x, int y);
+	Enemy(int x, int y, EnemyType type);
 
 	// Destructor
 	virtual ~Enemy();
@@ -30,7 +37,7 @@ public:
 	// Collision response
 	// Triggers an animation and a sound fx
 	
-	virtual void OnCollision(Collider* collider);
+	virtual void OnCollision(Collider* c1, Collider* c2) = 0;
 
 public:
 	// The current position in the world
@@ -48,6 +55,7 @@ protected:
 
 	// The enemy's collider
 	Collider* collider = nullptr;
+	EnemyType type = EnemyType::NO_TYPE;
 
 	// Original spawn position. Stored for movement calculations
 	iPoint spawnPos;

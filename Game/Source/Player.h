@@ -36,7 +36,7 @@ public:
 	bool Load(pugi::xml_node&);
 	bool Save(pugi::xml_node&);
 
-	void OnCollision(Collider* c1, Collider* c2){}
+	void OnCollision(Collider* c1, Collider* c2);
 
 	SDL_Texture* playerTex;
 	SDL_Rect playerRect;

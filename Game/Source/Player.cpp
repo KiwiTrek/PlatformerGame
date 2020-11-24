@@ -691,3 +691,10 @@ Player::CollisionType Player::GetCollisionType(int A, int B) const
 		return CollisionType::AIR_SOLID;
 	}
 }
+
+void Player::OnCollision(Collider* c1, Collider* c2)
+{
+	if (c2->type == Collider::Type::ENEMY) {
+		LOG("Enemy collision!\n");
+	}
+}
