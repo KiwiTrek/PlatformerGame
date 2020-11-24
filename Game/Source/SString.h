@@ -357,9 +357,9 @@ public:
 
 private:
 
-	void Alloc(unsigned int requiered_memory)
+	void Alloc(unsigned int requieredMemory)
 	{
-		size = requiered_memory;
+		size = requieredMemory;
 		str = new char[size];
 	}
 

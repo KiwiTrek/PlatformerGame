@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="120" height="16" tilewidth="64" tileheight="64" infinite="0" backgroundcolor="#3fc0ef" nextlayerid="8" nextobjectid="1">
- <tileset firstgid="1" name="level1Tileset" tilewidth="64" tileheight="64" tilecount="128" columns="16">
-  <image source="level1Tileset.png" width="1024" height="512"/>
+ <tileset firstgid="1" name="level_1_tileset" tilewidth="64" tileheight="64" tilecount="128" columns="16">
+  <image source="level_1_tileset.png" width="1024" height="512"/>
   <terraintypes>
    <terrain name="Objects" tile="26"/>
    <terrain name="Water" tile="92"/>
@@ -24,6 +24,7 @@
     <property name="CollisionId" type="int" value="6"/>
    </properties>
   </tile>
+  <tile id="45" terrain="0,,,"/>
   <tile id="54">
    <properties>
     <property name="CollisionId" type="int" value="4"/>
@@ -48,8 +49,8 @@
   <tile id="93" terrain="1,1,1,1" probability="0.01"/>
   <tile id="94" terrain="1,1,1,1" probability="0.01"/>
  </tileset>
- <tileset firstgid="129" name="metaData" tilewidth="64" tileheight="64" tilecount="2" columns="2">
-  <image source="metaData.png" width="128" height="64"/>
+ <tileset firstgid="129" name="meta_data" tilewidth="64" tileheight="64" tilecount="2" columns="2">
+  <image source="meta_data.png" width="128" height="64"/>
   <tile id="0">
    <properties>
     <property name="CollisionId" type="int" value="1"/>

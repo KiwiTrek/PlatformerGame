@@ -40,10 +40,10 @@ bool TitleScene::Awake(pugi::xml_node& config)
 bool TitleScene::Start()
 {
 	app->render->SetBackgroundColor({ 0,0,0,0 });
-	SString tmp("%s%s", folderTexture.GetString(), "titleScreen.png");
+	SString tmp("%s%s", folderTexture.GetString(), "title_screen.png");
 	titleScreen = app->tex->Load(tmp.GetString());
 	tmp.Clear();
-	tmp.Create("%s%s", folderAudioMusic.GetString(), "titleScreen.ogg");
+	tmp.Create("%s%s", folderAudioMusic.GetString(), "title_screen.ogg");
 	app->audio->PlayMusic(tmp.GetString(),0.0f);
 
 	return true;

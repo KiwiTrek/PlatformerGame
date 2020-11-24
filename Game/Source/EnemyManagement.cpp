@@ -1,0 +1,185 @@
+#include "EnemyManagement.h"
+
+#include "App.h"
+
+#include "Window.h"
+#include "Render.h"
+#include "Textures.h"
+#include "Audio.h"
+
+#include "Enemy.h"
+
+#include "Defs.h"
+#include "Log.h"
+
+#define SPAWN_MARGIN 50
+
+
+EnemyManagement::EnemyManagement()
+{
+	for (uint i = 0; i < MAX_ENEMIES; ++i)
+		enemies[i] = nullptr;
+
+	name.Create("enemyManagement");
+}
+
+EnemyManagement::~EnemyManagement()
+{
+
+}
+
+void EnemyManagement::Init()
+{
+	active = false;
+}
+
+bool EnemyManagement::Awake(pugi::xml_node& config)
+{
+	return true;
+}
+
+bool EnemyManagement::Start()
+{
+	//texture = app->tex->Load("Assets/enemies.png");
+	//enemyDestroyedFx = app->audio->LoadFx("Assets/explosion.wav");
+
+	return true;
+}
+
+bool EnemyManagement::Update(float dt)
+{
+	HandleEnemiesSpawn();
+
+	for (uint i = 0; i < MAX_ENEMIES; ++i)
+	{
+		if (enemies[i] != nullptr)
+			enemies[i]->Update(dt);
+	}
+
+	HandleEnemiesDespawn();
+
+	return true;
+}
+
+bool EnemyManagement::PostUpdate()
+{
+	for (uint i = 0; i < MAX_ENEMIES; ++i)
+	{
+		if (enemies[i] != nullptr)
+			enemies[i]->Draw();
+	}
+
+	return true;
+}
+
+// Called before quitting
+bool EnemyManagement::CleanUp()
+{
+	LOG("Freeing all enemies");
+
+	for (uint i = 0; i < MAX_ENEMIES; ++i)
+	{
+		if (enemies[i] != nullptr)
+		{
+			delete enemies[i];
+			enemies[i] = nullptr;
+		}
+	}
+
+	return true;
+}
+
+bool EnemyManagement::AddEnemy(ENEMY_TYPE type, int x, int y)
+{
+	bool ret = false;
+
+	for (uint i = 0; i < MAX_ENEMIES; ++i)
+	{
+		if (spawnQueue[i].type == ENEMY_TYPE::NO_TYPE)
+		{
+			spawnQueue[i].type = type;
+			spawnQueue[i].x = x;
+			spawnQueue[i].y = y;
+			ret = true;
+			break;
+		}
+	}
+
+	return ret;
+}
+
+void EnemyManagement::HandleEnemiesSpawn()
+{
+	// Iterate all the enemies queue
+	for (uint i = 0; i < MAX_ENEMIES; ++i)
+	{
+		if (spawnQueue[i].type != ENEMY_TYPE::NO_TYPE)
+		{
+			// Spawn a new enemy if the screen has reached a spawn position
+			if (spawnQueue[i].x * app->win->GetScale() < app->render->camera.x + (app->render->camera.w * app->win->GetScale()) + SPAWN_MARGIN)
+			{
+				LOG("Spawning enemy at %d", spawnQueue[i].x * app->win->GetScale());
+
+				SpawnEnemy(spawnQueue[i]);
+				spawnQueue[i].type = ENEMY_TYPE::NO_TYPE; // Removing the newly spawned enemy from the queue
+			}
+		}
+	}
+}
+
+void EnemyManagement::HandleEnemiesDespawn()
+{
+	// Iterate existing enemies
+	for (uint i = 0; i < MAX_ENEMIES; ++i)
+	{
+		if (enemies[i] != nullptr)
+		{
+			// Delete the enemy when it has reached the end of the screen
+			if (enemies[i]->position.x * app->win->GetScale() < (app->render->camera.x) - SPAWN_MARGIN)
+			{
+				LOG("DeSpawning enemy at %d", enemies[i]->position.x * app->win->GetScale());
+
+				delete enemies[i];
+				enemies[i] = nullptr;
+			}
+		}
+	}
+}
+
+void EnemyManagement::SpawnEnemy(const EnemySpawnpoint& info)
+{
+	// Find an empty slot in the enemies array
+	for (uint i = 0; i < MAX_ENEMIES; ++i)
+	{
+		if (enemies[i] == nullptr)
+		{
+			switch (info.type)
+			{
+			case ENEMY_TYPE::GROUND:
+				//enemies[i] = new Enemy_RedBird(info.x, info.y);
+				break;
+			case ENEMY_TYPE::FLYING:
+				//enemies[i] = new Enemy_BrownShip(info.x, info.y);
+				break;
+			}
+			enemies[i]->texture = texture;
+			enemies[i]->destroyedFx = enemyDestroyedFx;
+			break;
+		}
+	}
+}
+
+void EnemyManagement::OnCollision(Collider* c1, Collider* c2)
+{
+	for (uint i = 0; i < MAX_ENEMIES; ++i)
+	{
+		if (enemies[i] != nullptr && enemies[i]->GetCollider() == c1)
+		{
+			enemies[i]->OnCollision(c2); //Notify the enemy of a collision
+
+			delete enemies[i];
+			enemies[i] = nullptr;
+			break;
+		}
+	}
+}

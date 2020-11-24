@@ -5,6 +5,7 @@
 #include "Textures.h"
 #include "Audio.h"
 #include "Player.h"
+#include "EnemyManagement.h"
 #include "Map.h"
 #include "Transition.h"
 #include "Collisions.h"
@@ -34,6 +35,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	tex = new Textures();
 	audio = new Audio();
 	player = new Player();
+	enemies = new EnemyManagement();
 	map = new Map();
 	transition = new Transition();
 	collisions = new Collisions();
@@ -55,6 +57,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(deathScene);
 	AddModule(scene);
 	AddModule(player);
+	AddModule(enemies);
 	AddModule(collisions);
 	AddModule(transition);
 

@@ -45,14 +45,14 @@ bool Scene::Start()
 	SString tmp("%s%s", folderTexture.GetString(), "clouds.png");
 	clouds = app->tex->Load(tmp.GetString());
 	tmp.Clear();
-	tmp.Create("%s%s", folderTexture.GetString(), "mountainDepthBack.png");
+	tmp.Create("%s%s", folderTexture.GetString(), "mountain_depth_back.png");
 	mountainsBack = app->tex->Load(tmp.GetString());
 	tmp.Clear();
-	tmp.Create("%s%s", folderTexture.GetString(), "mountainDepthFront.png");
+	tmp.Create("%s%s", folderTexture.GetString(), "mountain_depth_front.png");
 	mountainsFront = app->tex->Load(tmp.GetString());
 
 	app->map->Enable();
-	app->map->Load("level1.tmx");
+	app->map->Load("level_1.tmx");
 	app->render->SetBackgroundColor(app->map->data.backgroundColor);
 
 	app->render->camera.x = 0;
@@ -61,7 +61,7 @@ bool Scene::Start()
 	app->player->Enable();
 
 	tmp.Clear();
-	tmp.Create("%s%s", folderAudioMusic.GetString(), "level1.ogg");
+	tmp.Create("%s%s", folderAudioMusic.GetString(), "level_1.ogg");
 	app->audio->PlayMusic(tmp.GetString(), 0.0f);
 
 	return true;

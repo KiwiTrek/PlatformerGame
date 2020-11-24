@@ -46,7 +46,7 @@ bool Player::Start()
 	positiveSpeedX = true;
 	positiveSpeedY = true;
 
-	SString tmp("%s%s", folderTexture.GetString(), "characterSpritesheet.png");
+	SString tmp("%s%s", folderTexture.GetString(), "character_spritesheet.png");
 	playerTex = app->tex->Load(tmp.GetString());
 
 	idle.Reset();
@@ -64,7 +64,7 @@ bool Player::Start()
 	tmp.Create("%s%s", folderAudioFx.GetString(), "jump.wav");
 	jumpFx = app->audio->LoadFx(tmp.GetString());
 	tmp.Clear();
-	tmp.Create("%s%s", folderAudioFx.GetString(), "doubleJump.wav");
+	tmp.Create("%s%s", folderAudioFx.GetString(), "double_jump.wav");
 	doubleJumpFx = app->audio->LoadFx(tmp.GetString());
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioFx.GetString(), "fruit.wav");
@@ -134,13 +134,14 @@ bool Player::Update(float dt)
 {
 	if(onceAnim)
 	{
+		// NEEDS FIXING (with framerate)
 		onceAnim = false;
-		idle.speed = 5.0f * dt;
-		run.speed = 5.0f * dt;
-		jumpPrep.speed = 5.0f * dt;
-		jumpMid.speed = 5.0f * dt;
-		jumpLand.speed = 15.0f * dt;
-		death.speed = 5.0f * dt;
+		idle.speed = 2.5f * dt;
+		run.speed = 2.5f * dt;
+		jumpPrep.speed = 2.5f * dt;
+		jumpMid.speed = 2.5f * dt;
+		jumpLand.speed = 7.5f * dt;
+		death.speed = 2.5f * dt;
 		wallJump.speed = 0.0f;
 	}
 	currentAnimation->Update();
@@ -483,7 +484,7 @@ bool Player::Update(float dt)
 		{
 			if (once)
 			{
-				app->audio->PlayMusic("Assets/audio/music/victory.ogg", 0.0f);
+				app->audio->PlayMusic("Assets/Audio/Music/victory.ogg", 0.0f);
 				once = false;
 			}
 			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, floor(3000.0f * dt));
@@ -587,7 +588,7 @@ iPoint Player::GetSpawnPoint()
 
 	// TileSet
 	ListItem<TileSet*>* tileSet = app->map->data.tileSets.start;
-	SString tileSetName = "level1Tileset";
+	SString tileSetName = "level_1_tileset";
 	while (tileSet != NULL)
 	{
 		if (tileSet->data->name == tileSetName)
@@ -644,11 +645,11 @@ int Player::GetTileProperty(int x, int y, const char* property, bool notMovColli
 	SString tileSetName;
 	if (notMovCollision)
 	{
-		tileSetName = "level1Tileset";
+		tileSetName = "level_1_tileset";
 	}
 	else
 	{
-		tileSetName = "metaData";
+		tileSetName = "meta_data";
 	}
 	while (tileSet != NULL)
 	{

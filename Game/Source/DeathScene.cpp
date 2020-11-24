@@ -42,10 +42,10 @@ bool DeathScene::Awake(pugi::xml_node& config)
 bool DeathScene::Start()
 {
 	app->render->SetBackgroundColor({ 0,0,0,0 });
-	SString tmp("%s%s", folderTexture.GetString(), "gameOver.png");
+	SString tmp("%s%s", folderTexture.GetString(), "game_over.png");
 	deathScreen = app->tex->Load(tmp.GetString());
 	tmp.Clear();
-	tmp.Create("%s%s", folderAudioMusic.GetString(), "gameOver.ogg");
+	tmp.Create("%s%s", folderAudioMusic.GetString(), "game_over.ogg");
 	app->audio->PlayMusic(tmp.GetString(), 0.5f);
 
 	return true;

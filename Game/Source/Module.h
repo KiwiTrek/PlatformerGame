@@ -65,7 +65,7 @@ public:
 		return true;
 	}
 
-	virtual void Module::Enable()
+	virtual void Enable()
 	{
 		if (!active)
 		{
@@ -74,7 +74,7 @@ public:
 		}
 	}
 
-	virtual void Module::Disable()
+	virtual void Disable()
 	{
 		if (active)
 		{
@@ -82,6 +82,8 @@ public:
 			CleanUp();
 		}
 	}
+
+	virtual void OnCollision(Collider* c1, Collider* c2){}
 
 public:
 

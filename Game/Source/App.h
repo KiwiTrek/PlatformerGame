@@ -19,6 +19,7 @@ class Render;
 class Textures;
 class Audio;
 class Player;
+class EnemyManagement;
 class Map;
 class Transition;
 class Collisions;
@@ -96,6 +97,7 @@ public:
 	Textures* tex;
 	Audio* audio;
 	Player* player;
+	EnemyManagement* enemies;
 	Map* map;
 	Transition* transition;
 	Collisions* collisions;

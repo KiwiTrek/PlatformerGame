@@ -24,6 +24,8 @@
     <ClCompile Include="Source\Collisions.cpp" />
     <ClCompile Include="Source\Timer.cpp" />
     <ClCompile Include="Source\PerfTimer.cpp" />
+    <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\EnemyManagement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Window.h" />
@@ -76,6 +78,8 @@
     <ClInclude Include="Source\Queue.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\EnemyManagement.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">

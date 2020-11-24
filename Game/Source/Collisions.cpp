@@ -2,6 +2,9 @@
 
 #include "App.h"
 
+#include "Defs.h"
+#include "Log.h"
+
 Collisions::Collisions()
 {
 	name.Create("collisions");
@@ -16,6 +19,7 @@ Collisions::Collisions()
 	matrix[Collider::Type::SOLID][Collider::Type::PLAYER] = false;
 	matrix[Collider::Type::SOLID][Collider::Type::SPIKE] = false;
 	matrix[Collider::Type::SOLID][Collider::Type::FRUIT] = false;
+	matrix[Collider::Type::SOLID][Collider::Type::SPAWN] = false;
 
 	matrix[Collider::Type::PLAYER][Collider::Type::NONE] = false;
 	matrix[Collider::Type::PLAYER][Collider::Type::SOLID] = false;
@@ -57,21 +61,51 @@ bool Collisions::Awake(pugi::xml_node&)
 
 bool Collisions::PreUpdate()
 {
-	return true;
-}
+	// Remove all colliders scheduled for deletion
+	for (uint i = 0; i < MAX_COLLIDERS; ++i) {
+		if (colliders[i] != nullptr && colliders[i]->pendingToDelete == true) {
+			delete colliders[i];
+			colliders[i] = nullptr;
+		}
+	}
 
-bool Collisions::Update(float dt)
-{
-	return true;
-}
+	Collider* c1;
+	Collider* c2;
 
-bool Collisions::PostUpdate()
-{
+	for (uint i = 0; i < MAX_COLLIDERS; ++i) {
+		// skip empty colliders
+		if (colliders[i] == nullptr) { continue; }
+
+		c1 = colliders[i];
+
+		// avoid checking collisions already checked
+		for (uint k = i + 1; k < MAX_COLLIDERS; ++k) {
+			// skip empty colliders
+			if (colliders[k] == nullptr) { continue; }
+
+			c2 = colliders[k];
+
+			if (c1->Intersects(c2->rect) && matrix[c1->type][c2->type]) {
+				if (c1->listener) { c1->listener->OnCollision(c1, c2); }
+				if (c2->listener) { c2->listener->OnCollision(c2, c1); }
+			}
+		}
+	}
+
 	return true;
 }
 
 bool Collisions::CleanUp()
 {
+	LOG("Freeing all colliders");
+
+	for (uint i = 0; i < MAX_COLLIDERS; ++i) {
+		if (colliders[i] != nullptr) {
+			delete colliders[i];
+			colliders[i] = nullptr;
+		}
+	}
+
 	return true;
 }
 
@@ -88,6 +122,14 @@ bool Collisions::Save(pugi::xml_node&)
 Collider* Collisions::AddCollider(SDL_Rect rect, Collider::Type type, Module* listener)
 {
 	Collider* ret = nullptr;
+
+	for (uint i = 0; i < MAX_COLLIDERS; ++i) {
+		if (colliders[i] == nullptr) {
+			ret = colliders[i] = new Collider(rect, type, listener);
+			break;
+		}
+	}
+
 	return ret;
 }
 
