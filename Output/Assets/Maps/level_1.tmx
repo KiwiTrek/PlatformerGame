@@ -16,6 +16,11 @@
     <property name="CollisionId" type="int" value="5"/>
    </properties>
   </tile>
+  <tile id="30">
+   <properties>
+    <property name="CollisionId" type="int" value="5"/>
+   </properties>
+  </tile>
   <tile id="38" terrain="0,0,0,0" probability="0.01"/>
   <tile id="39" terrain="0,0,0,0" probability="0.01"/>
   <tile id="41" probability="0.01"/>
@@ -38,6 +43,12 @@
    </properties>
   </tile>
   <tile id="56">
+   <properties>
+    <property name="CollisionId" type="int" value="4"/>
+    <property name="NoDraw" type="int" value="0"/>
+   </properties>
+  </tile>
+  <tile id="57">
    <properties>
     <property name="CollisionId" type="int" value="4"/>
     <property name="NoDraw" type="int" value="0"/>
@@ -6286,7 +6297,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="31"/>
    <tile/>
    <tile/>
    <tile/>
@@ -6726,7 +6737,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="58"/>
    <tile/>
    <tile/>
    <tile/>

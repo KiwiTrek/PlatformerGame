@@ -39,7 +39,9 @@ public:
 	void OnCollision(Collider* c1, Collider* c2);
 
 	SDL_Texture* playerTex;
+	SDL_Texture* playerHeart;
 	SDL_Rect playerRect;
+	iPoint spawnPoint;
 
 private:
 
@@ -58,6 +60,7 @@ private:
 	Animation jumpPrep;
 	Animation jumpMid;
 	Animation jumpLand;
+	Animation hit;
 	Animation death;
 	Animation wallJump;
 
@@ -74,7 +77,8 @@ private:
 	// Returns the type of collision depending on two given tiles (movement collisions only)
 	CollisionType GetCollisionType(int A, int B) const;
 
-	iPoint spawnPoint;
+	bool changeSpawn;
+	iPoint prevPoint;
 
 	Physics playerPhysics;
 	fPoint speed;
@@ -84,11 +88,16 @@ private:
 	unsigned int jumpFx;
 	unsigned int doubleJumpFx;
 	unsigned int fruitFx;
+	unsigned int hitFx;
+	unsigned int checkpointFx;
+
+	bool isDead = false;
+	int lives = 3;
 
 	bool godMode = false;
-	bool isDead = false;
 	bool keyPressed = false;
 	bool isJumping = false;
+	bool isHit = false;
 	bool invert = false;
 	bool debugDraw = false;
 	bool once = true;

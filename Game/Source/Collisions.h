@@ -19,7 +19,7 @@ public:
 		SPIKE,
 		PLAYER,
 		FRUIT,
-		SPAWN,
+		CHECKPOINT,
 		GOAL,
 		ENEMY,
 		MAX

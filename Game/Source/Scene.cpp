@@ -117,11 +117,11 @@ bool Scene::Update(float dt)
 	// Map borders
 	if (app->render->camera.x >= 0)
 	{
-		app->render->camera.x -= (250.0f * dt);
+		app->render->camera.x -= floor(250.0f * dt);
 	}
 	if ((app->render->camera.w - app->render->camera.x) > (app->map->data.width * app->map->data.tileWidth))
 	{
-		app->render->camera.x += (250.0f * dt);
+		app->render->camera.x += floor(250.0f * dt);
 	}
 	if (app->render->camera.y >= 0)
 	{

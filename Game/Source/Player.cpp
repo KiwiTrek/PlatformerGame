@@ -25,18 +25,28 @@ Player::~Player()
 void Player::Init()
 {
 	active = false;
+	spawnPoint = { 0,0 };
 }
 
 bool Player::Start()
 {
-	spawnPoint = GetSpawnPoint();
+	changeSpawn = false;
+	if (spawnPoint.IsZero())
+	{
+		spawnPoint = GetSpawnPoint();
+	}
 	playerRect = { spawnPoint.x, spawnPoint.y, idle.GetCurrentFrame().w, idle.GetCurrentFrame().h };
+	prevPoint.x = 0;
+	prevPoint.y = 0;
 	jumpCounter = 2;
 
-	godMode = false;
+	lives = 3;
 	isDead = false;
+
+	godMode = false;
 	keyPressed = false;
 	isJumping = false;
+	isHit = false;
 	invert = false;
 	debugDraw = false;
 	once = true;
@@ -48,6 +58,10 @@ bool Player::Start()
 
 	SString tmp("%s%s", folderTexture.GetString(), "character_spritesheet.png");
 	playerTex = app->tex->Load(tmp.GetString());
+
+	tmp.Clear();
+	tmp.Create("%s%s", folderTexture.GetString(), "heart.png");
+	playerHeart = app->tex->Load(tmp.GetString());
 
 	idle.Reset();
 	run.Reset();
@@ -69,11 +83,20 @@ bool Player::Start()
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioFx.GetString(), "fruit.wav");
 	fruitFx = app->audio->LoadFx(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudioFx.GetString(), "hit.wav");
+	hitFx = app->audio->LoadFx(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudioFx.GetString(), "checkpoint.wav");
+	checkpointFx = app->audio->LoadFx(tmp.GetString());
 
 	app->audio->SetFxVolume(deadFx);
 	app->audio->SetFxVolume(jumpFx);
 	app->audio->SetFxVolume(doubleJumpFx);
 	app->audio->SetFxVolume(fruitFx);
+	app->audio->SetFxVolume(hitFx);
+	app->audio->SetFxVolume(checkpointFx);
+
 
 	return true;
 }
@@ -113,6 +136,12 @@ bool Player::Awake(pugi::xml_node& config)
 	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
 	jumpLand.loop = false;
 
+	for (int i = 0; i != 3; ++i)
+	{
+		hit.PushBack({ 10 + (playerSize * i),52,56,73 });
+	}
+	hit.loop = false;
+
 	for (int i = 0; i != 5; ++i)
 	{
 		death.PushBack({ 10 + (playerSize * i),192,88,66 });
@@ -136,12 +165,13 @@ bool Player::Update(float dt)
 	{
 		// NEEDS FIXING (with framerate)
 		onceAnim = false;
-		idle.speed = 2.5f * dt;
-		run.speed = 2.5f * dt;
-		jumpPrep.speed = 2.5f * dt;
-		jumpMid.speed = 2.5f * dt;
-		jumpLand.speed = 7.5f * dt;
-		death.speed = 2.5f * dt;
+		idle.speed = 2.0f * dt;
+		run.speed = 2.0f * dt;
+		jumpPrep.speed = 2.0f * dt;
+		jumpMid.speed = 2.0f * dt;
+		jumpLand.speed = 5.0f * dt;
+		death.speed = 2.0f * dt;
+		hit.speed = 1.0f * dt;
 		wallJump.speed = 0.0f;
 	}
 	currentAnimation->Update();
@@ -230,6 +260,8 @@ bool Player::Update(float dt)
 			{
 				if (app->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 				{
+					prevPoint.x = playerRect.x;
+					prevPoint.y = playerRect.y;
 					currentAnimation = &jumpPrep;
 					isJumping = true;
 					if (jumpCounter == 2)
@@ -285,7 +317,15 @@ bool Player::Update(float dt)
 		if (keyPressed == false)
 		{
 			speed.x = 0;
-			if (isJumping == false)
+			if (isHit)
+			{
+				if (currentAnimation->HasFinished())
+				{
+					isHit = false;
+					hit.Reset();
+				}
+			}
+			else if (isJumping == false)
 			{
 				run.Reset();
 				currentAnimation = &idle;
@@ -358,6 +398,8 @@ bool Player::Update(float dt)
 			}
 			else if (collisionType == CollisionType::SOLID_AIR)
 			{
+				prevPoint.x = playerRect.x - 64;
+				prevPoint.y = playerRect.y;
 				playerRect.y = y * 2 * 64 - playerRect.y;
 				speed.y = 0.0f;
 				speed.x = 0.0f;
@@ -445,6 +487,8 @@ bool Player::Update(float dt)
 			}
 			else if (collisionType == CollisionType::AIR_SOLID)
 			{
+				prevPoint.x = playerRect.x + 64;
+				prevPoint.y = playerRect.y;
 				playerRect.y = y * 2 * 64 - playerRect.y;
 				speed.y = 0.0f;
 				speed.x = 0.0f;
@@ -469,11 +513,28 @@ bool Player::Update(float dt)
 			}
 		}
 
+		// Spawn change
+		if (GetTileProperty(x, y, "CollisionId", true, true) == Collider::Type::CHECKPOINT)
+		{
+			if (changeSpawn)
+			{
+				spawnPoint.x = playerRect.x;
+				spawnPoint.y = playerRect.y;
+				app->audio->PlayFx(checkpointFx);
+				changeSpawn = false;
+			}
+		}
+		else
+		{
+			changeSpawn = true;
+		}
+
 		// Fruit collection
 		if (GetTileProperty(x, y, "CollisionId", true, true) == Collider::Type::FRUIT)
 		{
 			if(GetTileProperty(x, y, "NoDraw", true, true) == 0)
 			{
+				lives++;
 				app->map->SetTileProperty(x, y, "NoDraw", 1, true, true);
 				app->audio->PlayFx(fruitFx);
 			}
@@ -485,6 +546,8 @@ bool Player::Update(float dt)
 			if (once)
 			{
 				app->audio->PlayMusic("Assets/Audio/Music/victory.ogg", 0.0f);
+				spawnPoint.x = 0;
+				spawnPoint.y = 0;
 				once = false;
 			}
 			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, floor(3000.0f * dt));
@@ -493,7 +556,21 @@ bool Player::Update(float dt)
 		// Dead
 		if (GetTileProperty(x, y + 1, "CollisionId") == Collider::Type::SPIKE && !godMode)
 		{
-			isDead = true;
+			lives--;
+			if (lives == 0)
+			{
+				isDead = true;
+			}
+			else
+			{
+				playerRect.x = prevPoint.x;
+				playerRect.y = prevPoint.y;
+				speed.x = 0.0f;
+				speed.y = 0.0f;
+				app->audio->PlayFx(hitFx);
+				currentAnimation = &hit;
+				isHit = true;
+			}
 		}
 	}
 
@@ -507,7 +584,7 @@ bool Player::Update(float dt)
 		}
 		if (currentAnimation->HasFinished())
 		{
-			app->transition->FadeEffect((Module*)app->scene, (Module*)app->deathScene, false, floor(1200.0f * dt));
+			app->transition->FadeEffect((Module*)app->scene, (Module*)app->deathScene, false, floor(10000.0f * dt));
 		}
 	}
 
@@ -532,6 +609,11 @@ bool Player::PostUpdate()
 		app->render->DrawRectangle({ playerRect.x, playerRect.y, 64, 64 }, 0, 255, 0, 100);
 	}
 
+	iPoint tmp(-app->render->camera.x, -app->render->camera.y);
+	for (int i = lives; i > 0; i--) {
+		app->render->DrawTexture(playerHeart, tmp.x + (i*68) - 64, tmp.y);
+	}
+
 	return true;
 }
 
@@ -543,6 +625,8 @@ bool Player::CleanUp()
 	app->audio->UnloadFx(doubleJumpFx);
 	app->audio->UnloadFx(fruitFx);
 	app->audio->UnloadFx(jumpFx);
+	app->audio->UnloadFx(hitFx);
+	app->audio->UnloadFx(checkpointFx);
 
 	return true;
 }
