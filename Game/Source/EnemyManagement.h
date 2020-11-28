@@ -69,9 +69,13 @@ private:
 	Enemy* enemies[MAX_ENEMIES] = { nullptr };
 
 	// The enemies sprite sheet
-	SDL_Texture* texture = nullptr;
+	SDL_Texture* ground = nullptr;
+	SDL_Texture* flying = nullptr;
+	SDL_Texture* death = nullptr;
 
 	// The audio fx for destroying an enemy
+	int enemyGroundFx = 0;
+	int enemyFlyingFx = 0;
 	int enemyDestroyedFx = 0;
 };
 

@@ -36,6 +36,7 @@ bool Player::Start()
 		spawnPoint = GetSpawnPoint();
 	}
 	playerRect = { spawnPoint.x, spawnPoint.y, idle.GetCurrentFrame().w, idle.GetCurrentFrame().h };
+	playerCollider = app->collisions->AddCollider(playerRect, Collider::Type::PLAYER, this);
 	prevPoint.x = 0;
 	prevPoint.y = 0;
 	jumpCounter = 2;
@@ -96,7 +97,6 @@ bool Player::Start()
 	app->audio->SetFxVolume(fruitFx);
 	app->audio->SetFxVolume(hitFx);
 	app->audio->SetFxVolume(checkpointFx);
-
 
 	return true;
 }
@@ -512,6 +512,9 @@ bool Player::Update(float dt)
 				//LOG("BottomLeft - SOLID_AIR");
 			}
 		}
+
+		playerCollider->SetPos(playerRect.x, playerRect.y, currentAnimation->GetCurrentFrame().w, currentAnimation->GetCurrentFrame().h);
+		LOG("x = %d, y = %d", playerCollider->rect.x, playerCollider->rect.y);
 
 		// Spawn change
 		if (GetTileProperty(x, y, "CollisionId", true, true) == Collider::Type::CHECKPOINT)

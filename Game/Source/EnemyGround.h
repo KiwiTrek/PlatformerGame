@@ -13,13 +13,14 @@ public:
 	// The enemy is going to follow the different steps in the path
 	// Position will be updated depending on the speed defined at each step
 	void Update(float dt);
-	void Enemy::OnCollision(Collider* c1, Collider* c2) override;
 
 	EnemyType type;
 private:
 	// This enemy has one sprite and one frame
 	// We are keeping it an animation for consistency with other enemies
-	Animation fly;
+	Animation idle;
+	Animation walking;
+	Animation hurt;
 };
 
 #endif // __ENEMY_GROUND_H__

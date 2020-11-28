@@ -18,11 +18,6 @@ Enemy::~Enemy()
 		collider->pendingToDelete = true;
 }
 
-const Collider* Enemy::GetCollider() const
-{
-	return collider;
-}
-
 void Enemy::Update(float dt)
 {
 	if (currentAnim != nullptr)
@@ -36,4 +31,12 @@ void Enemy::Draw()
 {
 	if (currentAnim != nullptr)
 		app->render->DrawTexture(texture, position.x, position.y, false, &(currentAnim->GetCurrentFrame()));
+}
+
+void Enemy::OnCollision(Collider* c1, Collider* c2)
+{
+	if (type == EnemyType::GROUND)
+	{
+		LOG("Ground enemy collided!");
+	}
 }

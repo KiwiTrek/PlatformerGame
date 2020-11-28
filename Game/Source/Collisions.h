@@ -68,7 +68,6 @@ public:
 	Collider* AddCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
 
 private:
-
 	// All existing colliders in the scene
 	// maybe change to a list
 	Collider* colliders[MAX_COLLIDERS] = { nullptr };

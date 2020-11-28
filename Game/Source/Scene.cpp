@@ -7,6 +7,8 @@
 #include "Scene.h"
 #include "Map.h"
 #include "Player.h"
+#include "EnemyManagement.h"
+#include "Collisions.h"
 #include "Transition.h"
 #include "DeathScene.h"
 
@@ -58,7 +60,12 @@ bool Scene::Start()
 	app->render->camera.x = 0;
 	app->render->camera.y = app->map->data.tileHeight * -2; // -128
 
+	app->collisions->Enable();
+
 	app->player->Enable();
+
+	app->enemies->Enable();
+	app->enemies->AddEnemy(EnemyType::GROUND, app->map->data.tileWidth * 6, app->map->data.tileHeight * 11);
 
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioMusic.GetString(), "level_1.ogg");
@@ -177,6 +184,7 @@ bool Scene::CleanUp()
 	app->tex->UnLoad(mountainsBack);
 	app->tex->UnLoad(mountainsFront);
 
+	app->enemies->Disable();
 	app->player->Disable();
 	app->map->Disable();
 

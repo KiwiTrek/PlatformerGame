@@ -12,8 +12,9 @@
 	<deathScene />
 	<scene />
 	<player>
-		<coordinates x="368" y="704" />
+		<coordinates x="645" y="704" />
 	</player>
+	<enemyManagement />
 	<collisions />
 	<transition />
 	<renderer />
