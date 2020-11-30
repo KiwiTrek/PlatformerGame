@@ -14,7 +14,7 @@ Collisions::Collisions()
 		colliders[i] = nullptr;
 	}
 
-	matrix[Collider::Type::SOLID][Collider::Type::NONE] = false;
+	matrix[Collider::Type::SOLID][Collider::Type::AIR] = false;
 	matrix[Collider::Type::SOLID][Collider::Type::SOLID] = false;
 	matrix[Collider::Type::SOLID][Collider::Type::SPIKE] = false;
 	matrix[Collider::Type::SOLID][Collider::Type::PLAYER] = false;
@@ -23,7 +23,7 @@ Collisions::Collisions()
 	matrix[Collider::Type::SOLID][Collider::Type::GOAL] = false;
 	matrix[Collider::Type::SOLID][Collider::Type::ENEMY] = false;
 
-	matrix[Collider::Type::SPIKE][Collider::Type::NONE] = false;
+	matrix[Collider::Type::SPIKE][Collider::Type::AIR] = false;
 	matrix[Collider::Type::SPIKE][Collider::Type::SOLID] = false;
 	matrix[Collider::Type::SPIKE][Collider::Type::SPIKE] = false;
 	matrix[Collider::Type::SPIKE][Collider::Type::PLAYER] = false;
@@ -32,7 +32,7 @@ Collisions::Collisions()
 	matrix[Collider::Type::SPIKE][Collider::Type::GOAL] = false;
 	matrix[Collider::Type::SPIKE][Collider::Type::ENEMY] = false;
 
-	matrix[Collider::Type::PLAYER][Collider::Type::NONE] = false;
+	matrix[Collider::Type::PLAYER][Collider::Type::AIR] = false;
 	matrix[Collider::Type::PLAYER][Collider::Type::SOLID] = false;
 	matrix[Collider::Type::PLAYER][Collider::Type::SPIKE] = false;
 	matrix[Collider::Type::PLAYER][Collider::Type::PLAYER] = false;
@@ -41,7 +41,7 @@ Collisions::Collisions()
 	matrix[Collider::Type::PLAYER][Collider::Type::GOAL] = false;
 	matrix[Collider::Type::PLAYER][Collider::Type::ENEMY] = true;
 
-	matrix[Collider::Type::FRUIT][Collider::Type::NONE] = false;
+	matrix[Collider::Type::FRUIT][Collider::Type::AIR] = false;
 	matrix[Collider::Type::FRUIT][Collider::Type::SOLID] = false;
 	matrix[Collider::Type::FRUIT][Collider::Type::SPIKE] = false;
 	matrix[Collider::Type::FRUIT][Collider::Type::PLAYER] = false;
@@ -50,7 +50,7 @@ Collisions::Collisions()
 	matrix[Collider::Type::FRUIT][Collider::Type::GOAL] = false;
 	matrix[Collider::Type::FRUIT][Collider::Type::ENEMY] = false;
 
-	matrix[Collider::Type::CHECKPOINT][Collider::Type::NONE] = false;
+	matrix[Collider::Type::CHECKPOINT][Collider::Type::AIR] = false;
 	matrix[Collider::Type::CHECKPOINT][Collider::Type::SOLID] = false;
 	matrix[Collider::Type::CHECKPOINT][Collider::Type::SPIKE] = false;
 	matrix[Collider::Type::CHECKPOINT][Collider::Type::PLAYER] = false;
@@ -59,7 +59,7 @@ Collisions::Collisions()
 	matrix[Collider::Type::CHECKPOINT][Collider::Type::GOAL] = false;
 	matrix[Collider::Type::CHECKPOINT][Collider::Type::ENEMY] = false;
 
-	matrix[Collider::Type::GOAL][Collider::Type::NONE] = false;
+	matrix[Collider::Type::GOAL][Collider::Type::AIR] = false;
 	matrix[Collider::Type::GOAL][Collider::Type::SOLID] = false;
 	matrix[Collider::Type::GOAL][Collider::Type::SPIKE] = false;
 	matrix[Collider::Type::GOAL][Collider::Type::PLAYER] = false;
@@ -68,7 +68,7 @@ Collisions::Collisions()
 	matrix[Collider::Type::GOAL][Collider::Type::GOAL] = false;
 	matrix[Collider::Type::GOAL][Collider::Type::ENEMY] = false;
 
-	matrix[Collider::Type::ENEMY][Collider::Type::NONE] = false;
+	matrix[Collider::Type::ENEMY][Collider::Type::AIR] = false;
 	matrix[Collider::Type::ENEMY][Collider::Type::SOLID] = false;
 	matrix[Collider::Type::ENEMY][Collider::Type::SPIKE] = false;
 	matrix[Collider::Type::ENEMY][Collider::Type::PLAYER] = true;
