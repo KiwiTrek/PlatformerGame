@@ -10,6 +10,7 @@
 
 #include "Enemy.h"
 #include "EnemyGround.h"
+#include "EnemyFlying.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -43,8 +44,9 @@ bool EnemyManagement::Awake(pugi::xml_node& config)
 bool EnemyManagement::Start()
 {
 	ground = app->tex->Load("Assets/Textures/enemy_ground_spritesheet.png");
-	death = app->tex->Load("Assets/Textures/smoke.png");
-	enemyGroundFx = app->audio->LoadFx("Assets/Audio/Fx/ground_idle.wav");
+	flying = app->tex->Load("Assets/Textures/enemy_flying_spritesheet.png");
+	enemyGroundFx = app->audio->LoadFx("Assets/Audio/Fx/ground_chasing.wav");
+	enemyFlyingFx = app->audio->LoadFx("Assets/Audio/Fx/flying_chasing.wav");
 	enemyDestroyedFx = app->audio->LoadFx("Assets/Audio/Fx/enemy_death.wav");
 
 	return true;
@@ -134,13 +136,13 @@ void EnemyManagement::HandleEnemiesDespawn()
 		if (enemies[i] != nullptr)
 		{
 			// Delete the enemy when it has reached the end of the screen
-			/*if (enemies[i]->position.x * app->win->GetScale() < (app->render->camera.x) - SPAWN_MARGIN)
+			if (enemies[i]->pendingToDelete)
 			{
 				LOG("DeSpawning enemy at %d", enemies[i]->position.x * app->win->GetScale());
 
 				delete enemies[i];
 				enemies[i] = nullptr;
-			}*/
+			}
 		}
 	}
 }
@@ -155,19 +157,18 @@ void EnemyManagement::SpawnEnemy(const EnemySpawnpoint& info)
 			switch (info.type)
 			{
 			case EnemyType::GROUND:
-				//enemies[i] = new Enemy_RedBird(info.x, info.y);
 				enemies[i] = new EnemyGround(info.x, info.y, info.type);
 				enemies[i]->texture = ground;
 				enemies[i]->chasingFx = enemyGroundFx;
 				break;
 			case EnemyType::FLYING:
-				//enemies[i] = new Enemy_BrownShip(info.x, info.y);
-				//enemies[i]->texture = flying;
-				//enemies[i]->chasingFx = enemyFlyingFx;
+				enemies[i] = new EnemyFlying(info.x, info.y, info.type);
+				enemies[i]->texture = flying;
+				enemies[i]->chasingFx = enemyFlyingFx;
 				break;
 			}
-			enemies[i]->deathTexture = death;
 			enemies[i]->destroyedFx = enemyDestroyedFx;
+			app->audio->SetFxVolume(enemies[i]->destroyedFx);
 			break;
 		}
 	}

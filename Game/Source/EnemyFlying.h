@@ -1,14 +1,14 @@
-#ifndef __ENEMY_GROUND_H__
-#define __ENEMY_GROUND_H__
+#ifndef __ENEMY_FLYING_H__
+#define __ENEMY_FLYING_H__
 
 #include "Enemy.h"
 
-class EnemyGround : public Enemy
+class EnemyFlying : public Enemy
 {
 public:
 	// Constructor (x y coordinates in the world)
 	// Creates animation and movement data and the collider
-	EnemyGround(int x, int y, EnemyType typeOfEnemy);
+	EnemyFlying(int x, int y, EnemyType typeOfEnemy);
 
 	// The enemy is going to follow the different steps in the path
 	// Position will be updated depending on the speed defined at each step
@@ -18,8 +18,7 @@ public:
 private:
 	// This enemy has one sprite and one frame
 	// We are keeping it an animation for consistency with other enemies
-	Animation idle;
-	Animation walking;
+	Animation flying;
 	Animation hurt;
 	Animation attack;
 };

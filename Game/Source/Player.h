@@ -60,6 +60,7 @@ private:
 	Animation jumpPrep;
 	Animation jumpMid;
 	Animation jumpLand;
+	Animation attack;
 	Animation hit;
 	Animation death;
 	Animation wallJump;
@@ -72,6 +73,7 @@ private:
 	iPoint GetSpawnPoint();
 
 	Collider* playerCollider = nullptr;
+	Collider* hurtBox = nullptr;
 	bool positiveSpeedX;
 	bool positiveSpeedY;
 	// Returns the type of collision depending on two given tiles (movement collisions only)
@@ -89,15 +91,18 @@ private:
 	unsigned int doubleJumpFx;
 	unsigned int fruitFx;
 	unsigned int hitFx;
+	unsigned int slashFx;
 	unsigned int checkpointFx;
 
 	bool isDead = false;
+	int hitCD = 5;
 	int lives = 3;
 
 	bool godMode = false;
 	bool keyPressed = false;
 	bool isJumping = false;
 	bool isHit = false;
+	bool isAttacking = false;
 	bool invert = false;
 	bool debugDraw = false;
 	bool once = true;

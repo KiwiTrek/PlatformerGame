@@ -42,7 +42,9 @@ public:
 
 	// The enemy's texture
 	SDL_Texture* texture = nullptr;
-	SDL_Texture* deathTexture = nullptr;
+
+	// Add to despawn queue
+	bool pendingToDelete = false;
 
 	// The enemy's collider
 	Collider* collider = nullptr;
@@ -60,6 +62,10 @@ protected:
 
 	// Original spawn position. Stored for movement calculations
 	iPoint spawnPos;
+
+	// State changes
+	bool attackChange = false;
+	bool hurtChange = false;
 };
 
 #endif // __ENEMY_H__

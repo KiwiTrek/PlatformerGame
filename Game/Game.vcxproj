@@ -92,6 +92,7 @@
     <ClCompile Include="Source\Collisions.cpp" />
     <ClCompile Include="Source\DeathScene.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\EnemyFlying.cpp" />
     <ClCompile Include="Source\EnemyGround.cpp" />
     <ClCompile Include="Source\EnemyManagement.cpp" />
     <ClCompile Include="Source\LogoScene.cpp" />
@@ -110,6 +111,7 @@
     <ClCompile Include="Source\Transition.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\EnemyFlying.h" />
     <ClInclude Include="Source\EnemyGround.h" />
     <ClInclude Include="Source\EnemyManagement.h" />
     <ClInclude Include="Source\Queue.h" />

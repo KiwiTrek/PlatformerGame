@@ -43,11 +43,13 @@ bool Player::Start()
 
 	lives = 3;
 	isDead = false;
+	hitCD = 0;
 
 	godMode = false;
 	keyPressed = false;
 	isJumping = false;
 	isHit = false;
+	isAttacking = false;
 	invert = false;
 	debugDraw = false;
 	once = true;
@@ -69,6 +71,8 @@ bool Player::Start()
 	jumpPrep.Reset();
 	jumpMid.Reset();
 	jumpLand.Reset();
+	hit.Reset();
+	attack.Reset();
 	death.Reset();
 	wallJump.Reset();
 
@@ -88,6 +92,9 @@ bool Player::Start()
 	tmp.Create("%s%s", folderAudioFx.GetString(), "hit.wav");
 	hitFx = app->audio->LoadFx(tmp.GetString());
 	tmp.Clear();
+	tmp.Create("%s%s", folderAudioFx.GetString(), "slash.wav");
+	slashFx = app->audio->LoadFx(tmp.GetString());
+	tmp.Clear();
 	tmp.Create("%s%s", folderAudioFx.GetString(), "checkpoint.wav");
 	checkpointFx = app->audio->LoadFx(tmp.GetString());
 
@@ -96,6 +103,7 @@ bool Player::Start()
 	app->audio->SetFxVolume(doubleJumpFx);
 	app->audio->SetFxVolume(fruitFx);
 	app->audio->SetFxVolume(hitFx);
+	app->audio->SetFxVolume(slashFx);
 	app->audio->SetFxVolume(checkpointFx);
 
 	return true;
@@ -136,6 +144,12 @@ bool Player::Awake(pugi::xml_node& config)
 	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
 	jumpLand.loop = false;
 
+	for (int i = 0; i != 7; ++i)
+	{
+		attack.PushBack({ (playerSize * i), 434, 104, 72 });
+	}
+	attack.loop = false;
+
 	for (int i = 0; i != 3; ++i)
 	{
 		hit.PushBack({ 10 + (playerSize * i),52,56,73 });
@@ -170,6 +184,7 @@ bool Player::Update(float dt)
 		jumpPrep.speed = 2.0f * dt;
 		jumpMid.speed = 2.0f * dt;
 		jumpLand.speed = 5.0f * dt;
+		attack.speed = 2.0f * dt;
 		death.speed = 2.0f * dt;
 		hit.speed = 1.0f * dt;
 		wallJump.speed = 0.0f;
@@ -254,7 +269,7 @@ bool Player::Update(float dt)
 				keyPressed = true;
 			}
 		}
-		else
+		else if (hitCD == 0)
 		{
 			if (jumpCounter > 0)
 			{
@@ -287,6 +302,7 @@ bool Player::Update(float dt)
 				if (!isJumping)
 				{
 					currentAnimation = &run;
+					isAttacking = false;
 				}
 				if (invert == false && currentAnimation != &wallJump)
 				{
@@ -305,6 +321,7 @@ bool Player::Update(float dt)
 				if (!isJumping)
 				{
 					currentAnimation = &run;
+					isAttacking = false;
 				}
 				if (invert == true && currentAnimation != &wallJump)
 				{
@@ -314,6 +331,27 @@ bool Player::Update(float dt)
 			}
 		}
 
+		if (app->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN && currentAnimation != &run)
+		{
+			currentAnimation = &attack;
+			app->audio->PlayFx(slashFx);
+			hurtBox = app->collisions->AddCollider(currentAnimation->GetCurrentFrame(), Collider::Type::ATTACK, this);
+			isAttacking = true;
+		}
+
+		if (hurtBox != nullptr)
+		{
+			if (invert && currentAnimation == &attack)
+			{
+				hurtBox->SetPos(playerRect.x - 56, playerRect.y, currentAnimation->GetCurrentFrame().w, currentAnimation->GetCurrentFrame().h);
+			}
+			else
+			{
+				hurtBox->SetPos(playerRect.x, playerRect.y, currentAnimation->GetCurrentFrame().w, currentAnimation->GetCurrentFrame().h);
+			}
+		}
+
+		//Animation Reset to Idle
 		if (keyPressed == false)
 		{
 			speed.x = 0;
@@ -323,15 +361,35 @@ bool Player::Update(float dt)
 				{
 					isHit = false;
 					hit.Reset();
+					if (isJumping)
+					{
+						currentAnimation = &jumpMid;
+					}
 				}
 			}
-			else if (isJumping == false)
+			else if (isJumping == false && isAttacking == false)
 			{
 				run.Reset();
 				currentAnimation = &idle;
 			}
 		}
 
+		// Attack reset to animation
+		if (isAttacking)
+		{
+			if (currentAnimation->HasFinished())
+			{
+				isAttacking = false;
+				hurtBox->pendingToDelete = true;
+				attack.Reset();
+				if (isJumping)
+				{
+					currentAnimation = &jumpMid;
+				}
+			}
+		}
+		
+		// Jumping animation changes
 		if (isJumping == true)
 		{
 			if (currentAnimation->HasFinished())
@@ -512,8 +570,10 @@ bool Player::Update(float dt)
 				//LOG("BottomLeft - SOLID_AIR");
 			}
 		}
-
-		playerCollider->SetPos(playerRect.x, playerRect.y, currentAnimation->GetCurrentFrame().w, currentAnimation->GetCurrentFrame().h);
+		if (!isAttacking && currentAnimation != &attack)
+		{
+			playerCollider->SetPos(playerRect.x, playerRect.y, currentAnimation->GetCurrentFrame().w, currentAnimation->GetCurrentFrame().h);
+		}
 		LOG("x = %d, y = %d", playerCollider->rect.x, playerCollider->rect.y);
 
 		// Spawn change
@@ -575,6 +635,19 @@ bool Player::Update(float dt)
 				isHit = true;
 			}
 		}
+
+		if (hitCD != 0)
+		{
+			hitCD--;
+			if (invert)
+			{
+				playerRect.x += floor(250.0f*dt);
+			}
+			else
+			{
+				playerRect.x -= floor(250.0f*dt);
+			}
+		}
 	}
 
 	if (isDead)
@@ -606,7 +679,15 @@ bool Player::Update(float dt)
 
 bool Player::PostUpdate()
 {
-	app->render->DrawTexture(playerTex, playerRect.x, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
+	if (invert && currentAnimation == &attack) //If we want to correct all the animations, do a switch
+	{
+		app->render->DrawTexture(playerTex, playerRect.x - 56, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
+	}
+	else
+	{
+		app->render->DrawTexture(playerTex, playerRect.x, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
+	}
+
 	if (app->render->drawAll)
 	{
 		app->render->DrawRectangle({ playerRect.x, playerRect.y, 64, 64 }, 0, 255, 0, 100);
@@ -629,6 +710,7 @@ bool Player::CleanUp()
 	app->audio->UnloadFx(fruitFx);
 	app->audio->UnloadFx(jumpFx);
 	app->audio->UnloadFx(hitFx);
+	app->audio->UnloadFx(slashFx);
 	app->audio->UnloadFx(checkpointFx);
 
 	return true;
@@ -781,7 +863,20 @@ Player::CollisionType Player::GetCollisionType(int A, int B) const
 
 void Player::OnCollision(Collider* c1, Collider* c2)
 {
-	if (c2->type == Collider::Type::ENEMY) {
+	if (c2->type == Collider::Type::ENEMY && hitCD == 0 && !isAttacking)
+	{
 		LOG("Enemy collision!\n");
+		hitCD = 15;
+		lives--;
+		if (lives == 0)
+		{
+			isDead = true;
+		}
+		else
+		{
+			app->audio->PlayFx(hitFx);
+			currentAnimation = &hit;
+			isHit = true;
+		}
 	}
 }

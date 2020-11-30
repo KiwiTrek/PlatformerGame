@@ -22,6 +22,7 @@ public:
 		CHECKPOINT,
 		GOAL,
 		ENEMY,
+		ATTACK,
 		MAX
 	};
 

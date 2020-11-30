@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "EnemyGround.h"
 
 #include "App.h"
 #include "Collisions.h"
@@ -35,8 +36,14 @@ void Enemy::Draw()
 
 void Enemy::OnCollision(Collider* c1, Collider* c2)
 {
-	if (type == EnemyType::GROUND)
+	if (c2->type == Collider::Type::ATTACK)
 	{
-		LOG("Ground enemy collided!");
+		hurtChange = true;
+		collider->pendingToDelete = true;
+		app->audio->PlayFx(destroyedFx);
+	}
+	else
+	{
+		attackChange = true;
 	}
 }
