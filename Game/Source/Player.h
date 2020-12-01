@@ -37,6 +37,7 @@ public:
 	bool Save(pugi::xml_node&);
 
 	void OnCollision(Collider* c1, Collider* c2);
+	void resolveCollisions(iPoint nextFrame, bool goingDown);
 
 	SDL_Texture* playerTex;
 	SDL_Texture* playerHeart;
@@ -74,15 +75,13 @@ private:
 
 	Collider* playerCollider = nullptr;
 	Collider* hurtBox = nullptr;
-	bool positiveSpeedX;
 	bool positiveSpeedY;
-	// Returns the type of collision depending on two given tiles (movement collisions only)
-	CollisionType GetCollisionType(int A, int B) const;
 
 	bool changeSpawn;
 	iPoint prevPoint;
 
 	Physics playerPhysics;
+	iPoint nextFrame;
 	fPoint speed;
 	int jumpCounter;
 

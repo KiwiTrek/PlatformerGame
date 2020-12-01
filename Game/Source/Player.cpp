@@ -35,7 +35,7 @@ bool Player::Start()
 	{
 		spawnPoint = GetSpawnPoint();
 	}
-	playerRect = { spawnPoint.x, spawnPoint.y, idle.GetCurrentFrame().w, idle.GetCurrentFrame().h };
+	playerRect = { spawnPoint.x, spawnPoint.y, 64, 64 };
 	playerCollider = app->collisions->AddCollider(playerRect, Collider::Type::PLAYER, this);
 	prevPoint.x = 0;
 	prevPoint.y = 0;
@@ -56,7 +56,6 @@ bool Player::Start()
 	onceAnim = true;
 	playerPhysics.axisX = true;
 	playerPhysics.axisY = true;
-	positiveSpeedX = true;
 	positiveSpeedY = true;
 
 	SString tmp("%s%s", folderTexture.GetString(), "character_spritesheet.png");
@@ -191,6 +190,8 @@ bool Player::Update(float dt)
 	}
 	currentAnimation->Update();
 	keyPressed = false;
+	nextFrame.x = playerRect.x;
+	nextFrame.y = playerRect.y;
 
 	if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && currentAnimation == &idle)
 	{
@@ -221,35 +222,25 @@ bool Player::Update(float dt)
 		positiveSpeedY = false;
 	}
 
-	if (speed.x >= 0.0f)
-	{
-		positiveSpeedX = true;
-	}
-	else if (speed.x < 0.0f)
-	{
-		positiveSpeedX = false;
-	}
-
 	if (isDead == false)
 	{
 		if (godMode)
 		{
 			if (app->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 			{
-				playerRect.y -= floor(250.0f * dt);
+				nextFrame.y -= floor(250.0f * dt);
 				positiveSpeedY = false;
 				keyPressed = true;
 			}
 			if (app->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 			{
-				playerRect.y += floor(250.0f * dt);
+				nextFrame.y += floor(250.0f * dt);
 				positiveSpeedY = true;
 				keyPressed = true;
 			}
 			if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_D) != KEY_REPEAT)
 			{
-				playerRect.x -= floor(250.0f * dt);
-				positiveSpeedX = false;
+				nextFrame.x -= floor(250.0f * dt);
 				currentAnimation = &run;
 				if (invert == false)
 				{
@@ -259,8 +250,7 @@ bool Player::Update(float dt)
 			}
 			if (app->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_A) != KEY_REPEAT)
 			{
-				playerRect.x += floor(250.0f * dt);
-				positiveSpeedX = true;
+				nextFrame.x += floor(250.0f * dt);
 				currentAnimation = &run;
 				if (invert == true)
 				{
@@ -295,10 +285,8 @@ bool Player::Update(float dt)
 			{
 				if (currentAnimation != &wallJump)
 				{
-					// playerRect.x -= floor(250.0f * dt);
 					speed.x = -250.0f;
 				}
-				positiveSpeedX = false;
 				if (!isJumping)
 				{
 					currentAnimation = &run;
@@ -314,10 +302,8 @@ bool Player::Update(float dt)
 			{
 				if (currentAnimation != &wallJump)
 				{
-					// playerRect.x += floor(250.0f * dt);
 					speed.x = 250.0f;
 				}
-				positiveSpeedX = true;
 				if (!isJumping)
 				{
 					currentAnimation = &run;
@@ -354,7 +340,7 @@ bool Player::Update(float dt)
 		//Animation Reset to Idle
 		if (keyPressed == false)
 		{
-			speed.x = 0;
+			speed.x = 0.0f;
 			if (isHit)
 			{
 				if (currentAnimation->HasFinished())
@@ -409,167 +395,12 @@ bool Player::Update(float dt)
 		}
 
 		// Physics
-		playerPhysics.UpdatePhysics(playerRect.x, playerRect.y, speed.x, speed.y, dt);
+		playerPhysics.UpdatePhysics(nextFrame.x, nextFrame.y, speed.x, speed.y, dt);
 
 		// Collisions
-		int x = playerRect.x / 64;
-		int y = playerRect.y / 64;
-
-		// So it doesn't check for non-existant tiles
-		if (x < 0)
-		{
-			x = 0;
-		}
-		if (y < 0)
-		{
-			y = 0;
-		}
-		//LOG("%d,%d", x, y);
-
-		if (positiveSpeedX && positiveSpeedY)	// Bottom right corner
-		{
-			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y + 1, "CollisionId"), GetTileProperty(x + 1, y, "CollisionId"));
-			if (collisionType == CollisionType::DOUBLE_SOLID)
-			{
-				playerRect.y = y * 2 * 64 - playerRect.y;
-				speed.y = 0.0f;
-				if (isJumping)
-				{
-					currentAnimation = &jumpLand;
-				}
-				playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
-				speed.x = 0.0f;
-				//LOG("BottomRight - DOUBLE_SOLID");
-			}
-			else if (collisionType == CollisionType::AIR_SOLID)
-			{
-				speed.y -= 450.0f;
-				if (speed.y <= 0.0f)
-				{
-					speed.y = 0.0f;
-				}
-				jumpCounter = 1;
-				currentAnimation = &wallJump;
-				playerRect.x = 2 * 64 * (x + 1) - 64 * 2 - playerRect.x;
-				speed.x = 0.0f;
-				//LOG("BottomRight - AIR_SOLID");
-			}
-			else if (collisionType == CollisionType::SOLID_AIR)
-			{
-				prevPoint.x = playerRect.x - 64;
-				prevPoint.y = playerRect.y;
-				playerRect.y = y * 2 * 64 - playerRect.y;
-				speed.y = 0.0f;
-				speed.x = 0.0f;
-				if (isJumping)
-				{
-					currentAnimation = &jumpLand;
-				}
-				//LOG("BottomRight - SOLID_AIR");
-			}
-		}
-		else if (positiveSpeedX && !positiveSpeedY)	// Top right corner
-		{
-			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y, "CollisionId"), GetTileProperty(x + 1, y + 1, "CollisionId"));
-			if (collisionType == CollisionType::DOUBLE_SOLID)
-			{
-				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
-				speed.y = 0.0f;
-				playerRect.x = 2 * 64 * (x)-playerRect.x;
-				//LOG("TopRight - DOUBLE_SOLID");
-			}
-			else if (collisionType == CollisionType::AIR_SOLID)
-			{
-				speed.y -= 450.0f;
-				if (speed.y <= 0.0f)
-				{
-					speed.y = 0.0f;
-				}
-				jumpCounter = 1;
-				currentAnimation = &wallJump;
-				playerRect.x = 2 * 64 * (x)-playerRect.x;
-				speed.x = 0.0f;
-				//LOG("TopRight - AIR_SOLID");
-			}
-			else if (collisionType == CollisionType::SOLID_AIR)
-			{
-				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
-				speed.y = 0.0f;
-				//LOG("TopRight - SOLID_AIR");
-			}
-		}
-		else if (!positiveSpeedX && !positiveSpeedY)	// Left top corner
-		{
-			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y + 1, "CollisionId"), GetTileProperty(x + 1, y, "CollisionId"));
-			if (collisionType == CollisionType::DOUBLE_SOLID)
-			{
-				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
-				speed.y = 0.0f;
-				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-				//LOG("TopLeft - DOUBLE_SOLID");
-			}
-			else if (collisionType == CollisionType::AIR_SOLID)
-			{
-				playerRect.y = (y + 1) * 2 * 64 - playerRect.y;
-				speed.y = 0.0f;
-				//LOG("TopLeft - AIR_SOLID");
-			}
-			else if (collisionType == CollisionType::SOLID_AIR)
-			{
-				speed.y -= 450.0f;
-				if (speed.y <= 0.0f)
-				{
-					speed.y = 0.0f;
-				}
-				jumpCounter = 1;
-				currentAnimation = &wallJump;
-				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-				speed.x = 0.0f;
-				//LOG("TopLeft - SOLID_AIR");
-			}
-		}
-		else if (!positiveSpeedX && positiveSpeedY)	// Left bottom corner
-		{
-			CollisionType collisionType = GetCollisionType(GetTileProperty(x, y, "CollisionId"), GetTileProperty(x + 1, y + 1, "CollisionId"));
-			if (collisionType == CollisionType::DOUBLE_SOLID)
-			{
-				playerRect.y = y * 2 * 64 - playerRect.y;
-				speed.y = 0.0f;
-				if (isJumping)
-				{
-					currentAnimation = &jumpLand;
-				}
-				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-				speed.x = 0.0f;
-				//LOG("BottomLeft - DOUBLE_SOLID");
-			}
-			else if (collisionType == CollisionType::AIR_SOLID)
-			{
-				prevPoint.x = playerRect.x + 64;
-				prevPoint.y = playerRect.y;
-				playerRect.y = y * 2 * 64 - playerRect.y;
-				speed.y = 0.0f;
-				speed.x = 0.0f;
-				if (isJumping)
-				{
-					currentAnimation = &jumpLand;
-				}
-				//LOG("BottomLeft - AIR_SOLID");
-			}
-			else if (collisionType == CollisionType::SOLID_AIR)
-			{
-				speed.y -= 450.0f;
-				if (speed.y <= 0.0f)
-				{
-					speed.y = 0.0f;
-				}
-				jumpCounter = 1;
-				currentAnimation = &wallJump;
-				playerRect.x = 2 * 64 * (x + 1) - playerRect.x;
-				speed.x = 0.0f;
-				//LOG("BottomLeft - SOLID_AIR");
-			}
-		}
+		resolveCollisions(nextFrame, positiveSpeedY);
+		
+		// Attack
 		if (!isAttacking && currentAnimation != &attack)
 		{
 			playerCollider->SetPos(playerRect.x, playerRect.y, currentAnimation->GetCurrentFrame().w, currentAnimation->GetCurrentFrame().h);
@@ -577,7 +408,7 @@ bool Player::Update(float dt)
 		LOG("x = %d, y = %d", playerCollider->rect.x, playerCollider->rect.y);
 
 		// Spawn change
-		if (GetTileProperty(x, y, "CollisionId", true, true) == Collider::Type::CHECKPOINT)
+		if (GetTileProperty(playerRect.x / 64, playerRect.y / 64, "CollisionId", true, true) == Collider::Type::CHECKPOINT)
 		{
 			if (changeSpawn)
 			{
@@ -593,18 +424,18 @@ bool Player::Update(float dt)
 		}
 
 		// Fruit collection
-		if (GetTileProperty(x, y, "CollisionId", true, true) == Collider::Type::FRUIT)
+		if (GetTileProperty(playerRect.x / 64, playerRect.y / 64, "CollisionId", true, true) == Collider::Type::FRUIT)
 		{
-			if(GetTileProperty(x, y, "NoDraw", true, true) == 0)
+			if(GetTileProperty(playerRect.x / 64, playerRect.y / 64, "NoDraw", true, true) == 0)
 			{
 				lives++;
-				app->map->SetTileProperty(x, y, "NoDraw", 1, true, true);
+				app->map->SetTileProperty(playerRect.x / 64, playerRect.y / 64, "NoDraw", 1, true, true);
 				app->audio->PlayFx(fruitFx);
 			}
 		}
 
 		// Win condition
-		if (GetTileProperty(x, y, "CollisionId", true, true) == Collider::Type::GOAL)
+		if (GetTileProperty(playerRect.x / 64, playerRect.y / 64, "CollisionId", true, true) == Collider::Type::GOAL)
 		{
 			if (once)
 			{
@@ -617,7 +448,7 @@ bool Player::Update(float dt)
 		}
 
 		// Dead
-		if (GetTileProperty(x, y + 1, "CollisionId") == Collider::Type::SPIKE && !godMode)
+		if (GetTileProperty(playerRect.x / 64, playerRect.y / 64 + 1, "CollisionId") == Collider::Type::SPIKE && !godMode)
 		{
 			lives--;
 			if (lives == 0)
@@ -841,23 +672,84 @@ int Player::GetTileProperty(int x, int y, const char* property, bool notMovColli
 	return ret;
 }
 
-Player::CollisionType Player::GetCollisionType(int A, int B) const
+void Player::resolveCollisions(iPoint nextFrame, bool goingDown)
 {
-	if (A == Collider::Type::SOLID && B == Collider::Type::SOLID)
-	{
-		return CollisionType::DOUBLE_SOLID;
+	iPoint tiledPos(playerRect.x / 64, playerRect.y / 64);
+	bool collisionX = false;
+	bool collisionY = false;
+	iPoint correctedPos;
+	iPoint checkedPos;
+	//LOG("past: %d,%d current: %d,%d\n", playerRect.x, playerRect.y, nextFrame.x, nextFrame.y);
+
+	// X axis
+	if (!invert) { // right
+		tiledPos.x = (playerRect.x + playerRect.w) / 64;
+		int i = 0;
+		while (GetTileProperty(tiledPos.x + i, tiledPos.y, "CollisionId") == Collider::Type::AIR && i < 5) {
+			i++;
+		}
+		i--;
+		correctedPos.x = MIN(nextFrame.x - playerRect.x, (tiledPos.x + i) * 64 - playerRect.x);
 	}
-	else if (A == Collider::Type::SOLID && B == Collider::Type::AIR)
-	{
-		return CollisionType::SOLID_AIR;
+	else { // left
+		int i = 0;
+		while (GetTileProperty(tiledPos.x - i, tiledPos.y, "CollisionId") == Collider::Type::AIR && i < 5) {
+			i++;
+		}
+		i--;
+		correctedPos.x = -MIN(playerRect.x - nextFrame.x, playerRect.x - (tiledPos.x - i) * 64);
 	}
-	else if (A == Collider::Type::AIR && B == Collider::Type::AIR)
-	{
-		return CollisionType::DOUBLE_AIR;
+
+	// Y axis
+	if (goingDown) {
+		tiledPos.y = (playerRect.y + playerRect.h) / 64;
+		int i = 0;
+		while (GetTileProperty(tiledPos.x, tiledPos.y + i, "CollisionId") == Collider::Type::AIR && i < 5) {
+			i++;
+		}
+		i--;
+		correctedPos.y = MIN(nextFrame.y - playerRect.y, (tiledPos.y + i) * 64 - playerRect.y);
 	}
-	else if (A == Collider::Type::AIR && B == Collider::Type::SOLID)
+	else {
+		int i = 0;
+		while (GetTileProperty(tiledPos.x, tiledPos.y - i, "CollisionId") == Collider::Type::AIR && i < 5) {
+			i++;
+		}
+		i--;
+		correctedPos.y = -MIN(playerRect.y - nextFrame.y, playerRect.y - (tiledPos.y - i) * 64);
+	}
+
+	playerRect.x += correctedPos.x;
+	playerRect.y += correctedPos.y;
+
+	if (GetTileProperty(playerRect.x / 64 + 1, playerRect.y / 64, "CollisionId") == Collider::Type::SOLID
+		&& GetTileProperty(playerRect.x / 64, playerRect.y / 64 + 1, "CollisionId") != Collider::Type::SOLID
+		&& !invert)
 	{
-		return CollisionType::AIR_SOLID;
+		currentAnimation = &wallJump;
+		jumpCounter = 1;
+		playerRect.y -= correctedPos.y;
+		speed.x = 0.0f;
+		speed.y = 0.0f;
+	}
+	else if (GetTileProperty((playerRect.x - 1) / 64, playerRect.y / 64, "CollisionId") == Collider::Type::SOLID
+		&& GetTileProperty(playerRect.x / 64, playerRect.y / 64 + 1, "CollisionId") != Collider::Type::SOLID
+		&& invert)
+	{
+		currentAnimation = &wallJump;
+		jumpCounter = 1;
+		playerRect.y -= correctedPos.y;
+		speed.x = 0.0f;
+		speed.y = 0.0f;
+	}
+	else if (GetTileProperty(playerRect.x / 64, playerRect.y / 64 + 1, "CollisionId") == Collider::Type::SOLID) {
+		if (isJumping) {
+			currentAnimation = &jumpLand;
+		}
+		speed.y = 0.0f;
+	}
+	else if (GetTileProperty(playerRect.x / 64, playerRect.y / 64, "CollisionId") == Collider::Type::SOLID) {
+		speed.y = 0.0f;
 	}
 }
 
