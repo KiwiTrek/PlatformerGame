@@ -675,8 +675,6 @@ int Player::GetTileProperty(int x, int y, const char* property, bool notMovColli
 void Player::resolveCollisions(iPoint nextFrame, bool goingDown)
 {
 	iPoint tiledPos(playerRect.x / 64, playerRect.y / 64);
-	bool collisionX = false;
-	bool collisionY = false;
 	iPoint correctedPos;
 	iPoint checkedPos;
 	//LOG("past: %d,%d current: %d,%d\n", playerRect.x, playerRect.y, nextFrame.x, nextFrame.y);
