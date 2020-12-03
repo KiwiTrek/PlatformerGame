@@ -160,18 +160,16 @@ void EnemyManagement::SpawnEnemy(const EnemySpawnpoint& info)
 				enemies[i] = new EnemyGround(info.x, info.y, info.type);
 				enemies[i]->texture = ground;
 				enemies[i]->chasingFx = enemyGroundFx;
-				enemies[i]->enemyPhysics.axisX = true;
 				enemies[i]->enemyPhysics.axisY = true;
-				enemies[i]->enemyPhysics.positiveSpeedY = true;
 				break;
 			case EnemyType::FLYING:
 				enemies[i] = new EnemyFlying(info.x, info.y, info.type);
 				enemies[i]->texture = flying;
 				enemies[i]->chasingFx = enemyFlyingFx;
-				enemies[i]->enemyPhysics.axisX = true;
 				enemies[i]->enemyPhysics.axisY = false;
 				break;
 			}
+			enemies[i]->enemyPhysics.axisX = true;
 			enemies[i]->destroyedFx = enemyDestroyedFx;
 			app->audio->SetFxVolume(enemies[i]->destroyedFx);
 			break;

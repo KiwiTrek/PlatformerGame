@@ -23,6 +23,7 @@ class EnemyManagement;
 class Map;
 class Transition;
 class Collisions;
+class PathFinding;
 
 class Scene;
 class LogoScene;
@@ -101,6 +102,7 @@ public:
 	Map* map;
 	Transition* transition;
 	Collisions* collisions;
+	PathFinding* pathfinding;
 
 	Scene* scene;
 	LogoScene* logoScene;

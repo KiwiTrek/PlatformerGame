@@ -2,6 +2,8 @@
 
 #include "App.h"
 #include "Collisions.h"
+#include "PathFinding.h"
+#include "Player.h"
 
 #include "Log.h"
 
@@ -73,8 +75,48 @@ void EnemyGround::Update(float dt)
 		}
 	}
 
+	iPoint origin = { nextFrame.x / 64,nextFrame.y / 64 };
+	iPoint destination = { app->player->playerRect.x / 64,app->player->playerRect.y / 64 };
+	if (origin.x != destination.x || origin.y != destination.y)
+	{
+		app->pathfinding->path.Clear();
+		if (app->pathfinding->CreatePath(origin, destination) == 0)
+		{
+			LOG("origin: %d, %d destination: %d, %d\n", origin.x, origin.y, destination.x, destination.y);
+		}
+		const DynArray<iPoint>* path = app->pathfinding->GetPath();
+		iPoint pos = app->map->MapToWorld(path->At(0)->x, path->At(0)->y);
+		iPoint dest = app->map->MapToWorld(path->At(path->Count() - 1)->x, path->At(path->Count() - 1)->y);
+		iPoint dif = { dest.x - pos.x,dest.y - pos.y };
+		LOG("dif: %d, %d\n", dif.x, dif.y);
+		if (dif.x > 0)
+		{
+			// i do not agree with this
+			enemyPhysics.speed.x = 100.0f;
+			invert = false;
+		}
+		else if (dif.x < 0)
+		{
+			enemyPhysics.speed.x = -50.0f;
+			invert = true;
+		}
+
+		if (dif.y < 0)
+		{
+			if (enemyPhysics.speed.y == 0)
+			{
+				enemyPhysics.speed.y = -250.0f;
+			}
+			enemyPhysics.positiveSpeedY = false;
+		}
+		else if (dif.y > 0)
+		{
+			enemyPhysics.positiveSpeedY = true;
+		}
+	}
+	LOG("speed: %f, %f", enemyPhysics.speed.x, enemyPhysics.speed.y);
 	// Test speed
-	enemyPhysics.speed.x = 200.0f;
+	//enemyPhysics.speed.x = 200.0f;
 	
 	// Call to the base class. It must be called at the end
 	// It will update the collider depending on the position

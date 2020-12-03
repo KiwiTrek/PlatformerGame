@@ -11,6 +11,7 @@
 #include "Collisions.h"
 #include "Transition.h"
 #include "DeathScene.h"
+#include "PathFinding.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -54,7 +55,20 @@ bool Scene::Start()
 	mountainsFront = app->tex->Load(tmp.GetString());
 
 	app->map->Enable();
-	app->map->Load("level_1.tmx");
+	if (app->map->Load("level_1.tmx") == true)
+	{
+		int w, h;
+		uchar* data = NULL;
+
+		if (app->map->CreateWalkabilityMap(&w, &h, &data))
+		{
+			app->pathfinding->SetMap(w, h, data);
+		}
+
+		RELEASE_ARRAY(data);
+	}
+
+
 	app->render->SetBackgroundColor(app->map->data.backgroundColor);
 
 	app->render->camera.x = 0;

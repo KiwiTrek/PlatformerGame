@@ -9,6 +9,7 @@
 #include "Map.h"
 #include "Transition.h"
 #include "Collisions.h"
+#include "PathFinding.h"
 
 #include "Scene.h"
 #include "LogoScene.h"
@@ -39,6 +40,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	map = new Map();
 	transition = new Transition();
 	collisions = new Collisions();
+	pathfinding = new PathFinding();
 
 	scene = new Scene();
 	logoScene = new LogoScene();
@@ -51,6 +53,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(win);
 	AddModule(tex);
 	AddModule(audio);
+	AddModule(pathfinding);
 	AddModule(map);
 	AddModule(logoScene);
 	AddModule(titleScene);

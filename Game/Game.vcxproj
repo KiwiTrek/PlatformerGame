@@ -101,6 +101,7 @@
     <ClCompile Include="Source\Audio.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Map.cpp" />
+    <ClCompile Include="Source\PathFinding.cpp" />
     <ClCompile Include="Source\PerfTimer.cpp" />
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\Scene.cpp" />
@@ -114,6 +115,7 @@
     <ClInclude Include="Source\EnemyFlying.h" />
     <ClInclude Include="Source\EnemyGround.h" />
     <ClInclude Include="Source\EnemyManagement.h" />
+    <ClInclude Include="Source\PathFinding.h" />
     <ClInclude Include="Source\Queue.h" />
     <ClInclude Include="Source\Animation.h" />
     <ClInclude Include="Source\Collisions.h" />

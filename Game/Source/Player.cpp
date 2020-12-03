@@ -518,7 +518,7 @@ bool Player::Update(float dt)
 	{
 		playerRect.x -= floor(250.0f * dt);
 	}
-
+	//LOG("speed: %f, %f", playerPhysics.speed.x, playerPhysics.speed.y);
 	return true;
 }
 
