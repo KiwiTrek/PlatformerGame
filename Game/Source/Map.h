@@ -36,7 +36,6 @@ struct Properties
 		list.Clear();
 	}
 
-	// L06: TODO 7: Method to ask for the value of a custom property
 	int GetProperty(const char* name, int defaultValue = 0) const;
 	void SetProperty(const char* name, int value);
 

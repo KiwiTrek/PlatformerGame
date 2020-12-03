@@ -74,9 +74,6 @@ private:
 	Collider* playerCollider = nullptr;
 	Collider* hurtBox = nullptr;
 
-	bool changeSpawn;
-	iPoint prevPoint;
-
 	Physics playerPhysics;
 	iPoint nextFrame;
 	int jumpCounter;
@@ -102,6 +99,7 @@ private:
 	bool debugDraw = false;
 	bool once = true;
 	bool onceAnim = true;
+	bool onceCheckpoint = true;
 
 	SString folderTexture;
 	SString folderAudioFx;

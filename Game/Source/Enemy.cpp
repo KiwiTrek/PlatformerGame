@@ -12,7 +12,6 @@ Enemy::Enemy(int x, int y, EnemyType type) : enemyRect({ x, y, 64, 64 }), type(t
 {
 	spawnPos.x = enemyRect.x;
 	spawnPos.y = enemyRect.y;
-	LOG("Enemy Rect Origin: %d %d", enemyRect.x, enemyRect.y);
 }
 
 Enemy::~Enemy()
@@ -28,10 +27,6 @@ void Enemy::Update(float dt)
 
 	enemyPhysics.UpdatePhysics(nextFrame, dt);
 	enemyPhysics.ResolveCollisions(enemyRect, nextFrame, invert);
-	if (type == EnemyType::GROUND)
-	{
-		LOG("Position = %d %d", enemyRect.x, enemyRect.y);
-	}
 
 	if (collider != nullptr)
 		collider->SetPos(enemyRect.x, enemyRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);

@@ -111,10 +111,12 @@ bool Scene::Update(float dt)
 	//DEBUG
 	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
+		app->player->spawnPoint = { 0,0 };
 		app->transition->FadeEffect(this, (Module*)app->scene, false);
 	}
 	if (app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 	{
+		app->player->spawnPoint = { 0,0 };
 		app->transition->FadeEffect(this, this, false);
 	}
 

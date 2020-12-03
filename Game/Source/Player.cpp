@@ -30,15 +30,9 @@ void Player::Init()
 
 bool Player::Start()
 {
-	changeSpawn = false;
-	if (spawnPoint.IsZero())
-	{
-		spawnPoint = GetSpawnPoint();
-	}
+	spawnPoint = GetSpawnPoint();
 	playerRect = { spawnPoint.x, spawnPoint.y, 64, 64 };
 	playerCollider = app->collisions->AddCollider(playerRect, Collider::Type::PLAYER, this);
-	prevPoint.x = 0;
-	prevPoint.y = 0;
 	jumpCounter = 2;
 
 	lives = 3;
@@ -54,6 +48,7 @@ bool Player::Start()
 	debugDraw = false;
 	once = true;
 	onceAnim = true;
+	onceCheckpoint = true;
 
 	playerPhysics.axisX = true;
 	playerPhysics.axisY = true;
@@ -177,15 +172,14 @@ bool Player::Update(float dt)
 {
 	if(onceAnim)
 	{
-		// NEEDS FIXING (with framerate)
 		onceAnim = false;
-		idle.speed = 2.0f * dt;
-		run.speed = 2.0f * dt;
-		jumpPrep.speed = 2.0f * dt;
-		jumpMid.speed = 2.0f * dt;
-		jumpLand.speed = 5.0f * dt;
-		attack.speed = 2.0f * dt;
-		death.speed = 2.0f * dt;
+		idle.speed = 1.5f * dt;
+		run.speed = 1.5f * dt;
+		jumpPrep.speed = 1.5f * dt;
+		jumpMid.speed = 1.5f * dt;
+		jumpLand.speed = 4.0f * dt;
+		attack.speed = 1.5f * dt;
+		death.speed = 1.5f * dt;
 		hit.speed = 1.0f * dt;
 		wallJump.speed = 0.0f;
 	}
@@ -259,8 +253,6 @@ bool Player::Update(float dt)
 			{
 				if (app->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 				{
-					prevPoint.x = playerRect.x;
-					prevPoint.y = playerRect.y;
 					currentAnimation = &jumpPrep;
 					isJumping = true;
 					if (jumpCounter == 2)
@@ -281,7 +273,7 @@ bool Player::Update(float dt)
 				{
 					playerPhysics.speed.x = -250.0f;
 				}
-				if (!isJumping)
+				if (!isJumping && !isAttacking)
 				{
 					currentAnimation = &run;
 					isAttacking = false;
@@ -298,7 +290,7 @@ bool Player::Update(float dt)
 				{
 					playerPhysics.speed.x = 250.0f;
 				}
-				if (!isJumping)
+				if (!isJumping && !isAttacking)
 				{
 					currentAnimation = &run;
 					isAttacking = false;
@@ -311,7 +303,7 @@ bool Player::Update(float dt)
 			}
 		}
 
-		if (app->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN && currentAnimation != &run)
+		if (app->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)
 		{
 			currentAnimation = &attack;
 			app->audio->PlayFx(slashFx);
@@ -419,22 +411,21 @@ bool Player::Update(float dt)
 		{
 			playerCollider->SetPos(playerRect.x, playerRect.y, currentAnimation->GetCurrentFrame().w, currentAnimation->GetCurrentFrame().h);
 		}
-		LOG("x = %d, y = %d", playerCollider->rect.x, playerCollider->rect.y);
 
 		// Spawn change
 		if (app->map->GetTileProperty(playerRect.x / 64, playerRect.y / 64, "CollisionId", true, true) == Collider::Type::CHECKPOINT)
 		{
-			if (changeSpawn)
+			if (onceCheckpoint)
 			{
 				spawnPoint.x = playerRect.x;
 				spawnPoint.y = playerRect.y;
 				app->audio->PlayFx(checkpointFx);
-				changeSpawn = false;
+				onceCheckpoint = false;
 			}
 		}
 		else
 		{
-			changeSpawn = true;
+			onceCheckpoint = true;
 		}
 
 		// Fruit collection
@@ -471,8 +462,21 @@ bool Player::Update(float dt)
 			}
 			else
 			{
-				playerRect.x = prevPoint.x;
-				playerRect.y = prevPoint.y;
+				playerRect.x = spawnPoint.x;
+				playerRect.y = spawnPoint.y;
+				
+				//HHHHHHHHHHHHHH
+				/*app->render->camera.x = spawnPoint.x - app->render->camera.w / 2;
+				if (app->render->camera.x < 0)
+				{
+					app->render->camera.x = 0;
+				}
+				app->render->camera.y = spawnPoint.y - app->render->camera.h / 2;
+				if (app->render->camera.y < 0)
+				{
+					app->render->camera.y = 0;
+				}*/
+
 				playerPhysics.speed.x = 0.0f;
 				playerPhysics.speed.y = 0.0f;
 				app->audio->PlayFx(hitFx);

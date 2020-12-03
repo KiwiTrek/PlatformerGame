@@ -14,28 +14,24 @@ EnemyGround::EnemyGround(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, type
 		idle.PushBack({ i * enemySize,enemySize,enemySize,enemySize });
 	}
 	idle.loop = true;
-	idle.speed = 0.1f;
 
 	for (int i = 0; i != 8; ++i)
 	{
 		walking.PushBack({ i * enemySize,enemySize * 2,enemySize,enemySize });
 	}
 	walking.loop = true;
-	walking.speed = 0.1f;
 
 	for (int i = 0; i != 11; ++i)
 	{
 		hurt.PushBack({ i * enemySize, enemySize * 3, enemySize, enemySize });
 	}
 	hurt.loop = false;
-	hurt.speed = 0.3f;
 
 	for (int i = 0; i != 8; ++i)
 	{
 		attack.PushBack({ i * enemySize,0, enemySize, enemySize });
 	}
 	attack.loop = false;
-	attack.speed = 0.3f;
 
 	currentAnim = &idle;
 	collider = app->collisions->AddCollider({ enemyRect.x, enemyRect.y, 64, 64 }, Collider::Type::ENEMY, (Module*)app->enemies);
@@ -48,6 +44,15 @@ EnemyGround::EnemyGround(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, type
 
 void EnemyGround::Update(float dt)
 {
+	if (onceAnim)
+	{
+		onceAnim = false;
+		idle.speed = 0.5f * dt;
+		walking.speed = 0.5f * dt;
+		hurt.speed = 3.0f * dt;
+		attack.speed = 3.0f * dt;
+	}
+
 	nextFrame.x = enemyRect.x;
 	nextFrame.y = enemyRect.y;
 	enemyPhysics.CheckDirection();
@@ -56,22 +61,33 @@ void EnemyGround::Update(float dt)
 	{
 		currentAnim = &attack;
 	}
-	if (hurtChange)
+	else if (hurtChange)
 	{
 		currentAnim = &hurt;
 	}
-
-	if (currentAnim->HasFinished())
+	else if (enemyPhysics.speed.x != 0)
 	{
-		if (currentAnim == &attack)
-		{
-			currentAnim = &idle;
-			attackChange = false;
-			attack.Reset();
-		}
-		else if (currentAnim == &hurt)
+		currentAnim = &walking;
+	}
+
+	if (currentAnim->HasFinished() || enemyPhysics.speed.x == 0)
+	{
+		if (currentAnim == &hurt)
 		{
 			pendingToDelete = true;
+		}
+		else
+		{
+			if (currentAnim == &attack)
+			{
+				attackChange = false;
+				attack.Reset();
+			}
+			else if (currentAnim == &walking)
+			{
+				walking.Reset();
+			}
+			currentAnim = &idle;
 		}
 	}
 
@@ -114,9 +130,6 @@ void EnemyGround::Update(float dt)
 			enemyPhysics.positiveSpeedY = true;
 		}
 	}
-	LOG("speed: %f, %f", enemyPhysics.speed.x, enemyPhysics.speed.y);
-	// Test speed
-	//enemyPhysics.speed.x = 200.0f;
 	
 	// Call to the base class. It must be called at the end
 	// It will update the collider depending on the position
