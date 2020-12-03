@@ -37,7 +37,7 @@ public:
 	bool Save(pugi::xml_node&);
 
 	void OnCollision(Collider* c1, Collider* c2);
-	void resolveCollisions(iPoint nextFrame, bool goingDown);
+	void ResolveCollisions(iPoint nextFrame, bool goingDown);
 
 	SDL_Texture* playerTex;
 	SDL_Texture* playerHeart;
@@ -68,21 +68,17 @@ private:
 
 	Animation* currentAnimation = &idle;
 
-	// Gets the value of a property in a given tile
-	int GetTileProperty(int x, int y, const char* property, bool notMovCollision = false, bool isObject = false) const;
 	// Gets the coordinates of the spawn point
 	iPoint GetSpawnPoint();
 
 	Collider* playerCollider = nullptr;
 	Collider* hurtBox = nullptr;
-	bool positiveSpeedY;
 
 	bool changeSpawn;
 	iPoint prevPoint;
 
 	Physics playerPhysics;
 	iPoint nextFrame;
-	fPoint speed;
 	int jumpCounter;
 
 	unsigned int deadFx;

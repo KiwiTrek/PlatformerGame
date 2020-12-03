@@ -138,6 +138,10 @@ public:
 	// Changes property to value assigned
 	void SetTileProperty(int x, int y, const char* property, int value, bool notMovCollision = false, bool isObject = false);
 
+	// Gets the value of a property in a given tile
+	int GetTileProperty(int x, int y, const char* property, bool notMovCollision = false, bool isObject = false) const;
+
+
 	MapData data;
 
 private:

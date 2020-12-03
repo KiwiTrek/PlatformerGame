@@ -29,7 +29,7 @@ EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, type
 	attack.speed = 0.25f;
 
 	currentAnim = &flying;
-	collider = app->collisions->AddCollider({ position.x, position.y, 64, 64 }, Collider::Type::ENEMY, (Module*)app->enemies);
+	collider = app->collisions->AddCollider({ enemyRect.x, enemyRect.y, 64, 64 }, Collider::Type::ENEMY, (Module*)app->enemies);
 
 	flying.Reset();
 	hurt.Reset();
@@ -38,6 +38,10 @@ EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, type
 
 void EnemyFlying::Update(float dt)
 {
+	nextFrame.x = enemyRect.x;
+	nextFrame.y = enemyRect.y;
+	enemyPhysics.CheckDirection();
+
 	if (attackChange)
 	{
 		currentAnim = &attack;

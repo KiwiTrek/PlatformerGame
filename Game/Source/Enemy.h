@@ -3,6 +3,7 @@
 
 #include "Point.h"
 #include "Animation.h"
+#include "Physics.h"
 
 struct SDL_Texture;
 class Collider;
@@ -38,7 +39,7 @@ public:
 
 public:
 	// The current position in the world
-	iPoint position;
+	SDL_Rect enemyRect;
 
 	// The enemy's texture
 	SDL_Texture* texture = nullptr;
@@ -49,6 +50,10 @@ public:
 	// The enemy's collider
 	Collider* collider = nullptr;
 
+	// The enemy's physics
+	Physics enemyPhysics;
+	iPoint nextFrame;
+
 	// Sound fx when destroyed
 	int chasingFx = 0;
 	int destroyedFx = 0;
@@ -56,6 +61,7 @@ public:
 protected:
 	// A ptr to the current animation
 	Animation* currentAnim = nullptr;
+	bool invert = false;
 	int enemySize = 64;
 
 	EnemyType type = EnemyType::NO_TYPE;

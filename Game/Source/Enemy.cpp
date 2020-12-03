@@ -8,9 +8,11 @@
 
 #include "Log.h"
 
-Enemy::Enemy(int x, int y, EnemyType type) : position(x, y), type(type)
+Enemy::Enemy(int x, int y, EnemyType type) : enemyRect({ x, y, 64, 64 }), type(type)
 {
-	spawnPos = position;
+	spawnPos.x = enemyRect.x;
+	spawnPos.y = enemyRect.y;
+	LOG("Enemy Rect Origin: %d %d", enemyRect.x, enemyRect.y);
 }
 
 Enemy::~Enemy()
@@ -24,14 +26,22 @@ void Enemy::Update(float dt)
 	if (currentAnim != nullptr)
 		currentAnim->Update();
 
+	enemyPhysics.UpdatePhysics(nextFrame, dt);
+	enemyPhysics.ResolveCollisions(enemyRect, nextFrame, invert);
+	if (type == EnemyType::GROUND)
+	{
+		LOG("Position = %d %d", enemyRect.x, enemyRect.y);
+	}
+
 	if (collider != nullptr)
-		collider->SetPos(position.x, position.y,currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
+		collider->SetPos(enemyRect.x, enemyRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
+
 }
 
 void Enemy::Draw()
 {
 	if (currentAnim != nullptr)
-		app->render->DrawTexture(texture, position.x, position.y, false, &(currentAnim->GetCurrentFrame()));
+		app->render->DrawTexture(texture, enemyRect.x, enemyRect.y, false, &(currentAnim->GetCurrentFrame()));
 }
 
 void Enemy::OnCollision(Collider* c1, Collider* c2)

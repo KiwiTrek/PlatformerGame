@@ -518,3 +518,58 @@ void Map::SetTileProperty(int x, int y, const char* property, int value, bool no
 	Tile* currentTile = tileSet->data->GetPropList(id);
 	currentTile->properties.SetProperty(property, value);
 }
+
+int Map::GetTileProperty(int x, int y, const char* property, bool notMovCollision, bool isObject) const
+{
+	int ret;
+	// MapLayer
+	ListItem<MapLayer*>* mapLayer = data.mapLayer.start;
+	SString layerName;
+	if (isObject)
+	{
+		layerName = "Objects";
+	}
+	else
+	{
+		layerName = "Collisions";
+	}
+	while (mapLayer != NULL)
+	{
+		if (mapLayer->data->name == layerName)
+		{
+			break;
+		}
+		mapLayer = mapLayer->next;
+	}
+
+	// TileSet
+	ListItem<TileSet*>* tileSet = data.tileSets.start;
+	SString tileSetName;
+	if (notMovCollision)
+	{
+		tileSetName = "level_1_tileset";
+	}
+	else
+	{
+		tileSetName = "meta_data";
+	}
+	while (tileSet != NULL)
+	{
+		if (tileSet->data->name == tileSetName)
+		{
+			break;
+		}
+		tileSet = tileSet->next;
+	}
+
+	// Gets CollisionId
+	int id = (int)(mapLayer->data->Get(x, y) - tileSet->data->firstgId);
+	if (id < 0)
+	{
+		ret = 0;
+		return ret;
+	}
+	Tile* currentTile = tileSet->data->GetPropList(id);
+	ret = currentTile->properties.GetProperty(property, 0);
+	return ret;
+}
