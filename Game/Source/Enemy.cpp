@@ -32,6 +32,11 @@ void Enemy::Update(float dt)
 
 	if (collider != nullptr)
 		collider->SetPos(enemyRect.x, enemyRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
+
+	if (app->render->drawAll)
+	{
+		app->pathfinding->DrawPath();
+	}
 }
 
 void Enemy::Draw()

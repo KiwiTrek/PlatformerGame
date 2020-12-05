@@ -78,9 +78,9 @@ bool Scene::Start()
 
 	app->player->Enable();
 
-	/*app->enemies->Enable();
+	app->enemies->Enable();
 	app->enemies->AddEnemy(EnemyType::FLYING, app->map->data.tileWidth * 103, app->map->data.tileHeight * 3);
-	app->enemies->AddEnemy(EnemyType::GROUND, app->map->data.tileWidth * 37, app->map->data.tileHeight * 12);*/
+	app->enemies->AddEnemy(EnemyType::GROUND, app->map->data.tileWidth * 37, app->map->data.tileHeight * 12);
 
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioMusic.GetString(), "level_1.ogg");

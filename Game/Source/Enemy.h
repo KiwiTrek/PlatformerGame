@@ -48,6 +48,8 @@ public:
 	// Add to despawn queue
 	bool pendingToDelete = false;
 
+	int pathCount = 0;
+
 	// The enemy's collider
 	Collider* collider = nullptr;
 
@@ -71,9 +73,9 @@ protected:
 	iPoint spawnPos;
 
 	iPoint pastDest;
-	int i, j;
+	int i;
 
-	DynArray<iPoint> currentPath;
+	//DynArray<iPoint> currentPath;
 
 	// State changes
 	bool attackChange = false;

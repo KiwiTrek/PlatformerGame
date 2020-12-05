@@ -39,7 +39,7 @@ public:
 	int CreatePath(const iPoint& origin, const iPoint& destination);
 
 	// To request all tiles involved in the last generated path
-	const DynArray<iPoint>* GetPath() const;
+	//const DynArray<iPoint>* GetPath() const;
 
 	// Utility: return true if pos is inside the map boundaries
 	bool CheckBoundaries(const iPoint& pos) const;
@@ -50,7 +50,7 @@ public:
 	// Utility: return the walkability value of a tile
 	uchar GetTileCost(const iPoint& pos) const;
 
-	void DrawPath(const DynArray<iPoint>* currentPath);
+	void DrawPath();
 
 private:
 	// texture to draw the path

@@ -71,16 +71,16 @@ uchar PathFinding::GetTileCost(const iPoint& pos) const
 }
 
 // To request all tiles involved in the last generated path
-const DynArray<iPoint>* PathFinding::GetPath() const
-{
-	return &path;
-}
+//const DynArray<iPoint>* PathFinding::GetPath() const
+//{
+//	return &path;
+//}
 
-void PathFinding::DrawPath(const DynArray<iPoint>* currentPath)
+void PathFinding::DrawPath()
 {
-	for (uint i = 0; i < currentPath->Count(); ++i)
+	for (uint i = 0; i < path.Count(); ++i)
 	{
-		iPoint pos = app->map->MapToWorld(currentPath->At(i)->x, currentPath->At(i)->y);
+		iPoint pos = app->map->MapToWorld(path.At(i)->x, path.At(i)->y);
 		app->render->DrawTexture(debugPath, pos.x, pos.y);
 	}
 }
@@ -203,15 +203,17 @@ int PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 
 		if (close.list.end->data.pos == destination)
 		{
+			int counter = 1;
 			PathNode backtrack = close.list.end->data;
 			path.PushBack(backtrack.pos);
 			do
 			{
+				counter++;
 				backtrack = close.Find(backtrack.parent->pos)->data;
 				path.PushBack(backtrack.pos);
 			} while (backtrack.parent != nullptr);
 			path.Flip();
-			return 0;
+			return counter;
 		}
 
 		PathList adjNodes;
