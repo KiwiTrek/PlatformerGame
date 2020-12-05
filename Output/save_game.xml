@@ -6,15 +6,322 @@
 	<audio>
 		<volume value="64" />
 	</audio>
-	<map />
+	<pathfinding />
 	<logoScene />
 	<titleScene />
 	<deathScene />
 	<scene />
+	<map />
 	<player>
-		<coordinates x="645" y="704" />
+		<coordinates x="1734" y="512" />
 	</player>
-	<enemyManagement />
+	<fonts />
+	<enemyManagement>
+		<enemy>
+			<coordinates x="6592" y="192" />
+			<type value="2" />
+			<destroyed value="false" />
+		</enemy>
+		<enemy>
+			<coordinates x="2368" y="768" />
+			<type value="1" />
+			<destroyed value="false" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+		<enemy>
+			<destroyed value="true" />
+		</enemy>
+	</enemyManagement>
 	<collisions />
 	<transition />
 	<renderer />

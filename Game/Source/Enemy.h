@@ -53,6 +53,8 @@ public:
 	// The enemy's collider
 	Collider* collider = nullptr;
 
+	EnemyType type = EnemyType::NO_TYPE;
+
 	// The enemy's path
 	DynArray<iPoint> path;
 
@@ -69,8 +71,6 @@ protected:
 	Animation* currentAnim = nullptr;
 	bool invert = false;
 	int enemySize = 64;
-
-	EnemyType type = EnemyType::NO_TYPE;
 
 	// Original spawn position. Stored for movement calculations
 	iPoint spawnPos;

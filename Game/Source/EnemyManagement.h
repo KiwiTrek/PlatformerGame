@@ -52,7 +52,7 @@ public:
 	void OnCollision(Collider* c1, Collider* c2);
 
 	// Add an enemy into the queue to be spawned later
-	bool AddEnemy(EnemyType type, int x, int y);
+	bool AddEnemy(EnemyType type, int x, int y, uint i = -1);
 
 	// Iterates the queue and checks for camera position
 	void HandleEnemiesSpawn();
