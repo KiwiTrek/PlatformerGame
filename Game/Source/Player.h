@@ -44,6 +44,9 @@ public:
 	SDL_Rect playerRect;
 	iPoint spawnPoint;
 
+	//Score
+	int score = 0;
+
 private:
 
 	// Different collision types

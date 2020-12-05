@@ -1,6 +1,7 @@
 #include "App.h"
 #include "Input.h"
 #include "Textures.h"
+#include "Fonts.h"
 #include "Audio.h"
 #include "Render.h"
 #include "Window.h"
@@ -68,7 +69,6 @@ bool Scene::Start()
 		RELEASE_ARRAY(data);
 	}
 
-
 	app->render->SetBackgroundColor(app->map->data.backgroundColor);
 
 	app->render->camera.x = 0;
@@ -78,13 +78,17 @@ bool Scene::Start()
 
 	app->player->Enable();
 
-	app->enemies->Enable();
+	/*app->enemies->Enable();
 	app->enemies->AddEnemy(EnemyType::FLYING, app->map->data.tileWidth * 103, app->map->data.tileHeight * 3);
-	app->enemies->AddEnemy(EnemyType::GROUND, app->map->data.tileWidth * 37, app->map->data.tileHeight * 12);
+	app->enemies->AddEnemy(EnemyType::GROUND, app->map->data.tileWidth * 37, app->map->data.tileHeight * 12);*/
 
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioMusic.GetString(), "level_1.ogg");
 	app->audio->PlayMusic(tmp.GetString(), 0.0f);
+
+	tmp.Clear();
+	tmp.Create("%s%s", folderTexture.GetString(), "score_font.png");
+	font = app->fonts->Load(tmp.GetString(), "0123456789", 1);
 
 	return true;
 }
@@ -186,6 +190,10 @@ bool Scene::PostUpdate()
 	}
 
 	app->map->Draw();
+
+	sprintf_s(score, 8, "%d", app->player->score);
+	iPoint tmp(-app->render->camera.x, -app->render->camera.y);
+	app->fonts->DrawText(tmp.x, tmp.y + 56, font, score);
 
 	return true;
 }

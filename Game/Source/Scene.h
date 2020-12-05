@@ -41,6 +41,11 @@ private:
 	SDL_Texture* mountainsFront;
 	SString folderTexture;
 	SString folderAudioMusic;
+
+	// Score Handling
+	int font = -1;
+
+	char score[8] = { "\0" };
 };
 
 #endif // __SCENE_H__

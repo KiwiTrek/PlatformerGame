@@ -17,6 +17,7 @@ class Window;
 class Input;
 class Render;
 class Textures;
+class Fonts;
 class Audio;
 class Player;
 class EnemyManagement;
@@ -98,6 +99,7 @@ public:
 	Input* input;
 	Render* render;
 	Textures* tex;
+	Fonts* fonts;
 	Audio* audio;
 	Player* player;
 	EnemyManagement* enemies;

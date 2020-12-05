@@ -39,6 +39,8 @@ bool Player::Start()
 	isDead = false;
 	hitCD = 0;
 
+	score = 0;
+
 	godMode = false;
 	keyPressed = false;
 	isJumping = false;
@@ -435,6 +437,7 @@ bool Player::Update(float dt)
 				lives++;
 				app->map->SetTileProperty(playerRect.x / 64, playerRect.y / 64, "NoDraw", 1, true, true);
 				app->audio->PlayFx(fruitFx);
+				score += 100;
 			}
 		}
 

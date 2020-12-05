@@ -3,6 +3,7 @@
 #include "Input.h"
 #include "Render.h"
 #include "Textures.h"
+#include "Fonts.h"
 #include "Audio.h"
 #include "Player.h"
 #include "EnemyManagement.h"
@@ -34,6 +35,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	win = new Window();
 	render = new Render();
 	tex = new Textures();
+	fonts = new Fonts();
 	audio = new Audio();
 	player = new Player();
 	enemies = new EnemyManagement();
@@ -60,6 +62,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(scene);
 	AddModule(map);
 	AddModule(player);
+	AddModule(fonts);
 	AddModule(enemies);
 	AddModule(collisions);
 	AddModule(transition);

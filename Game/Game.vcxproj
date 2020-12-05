@@ -95,6 +95,7 @@
     <ClCompile Include="Source\EnemyFlying.cpp" />
     <ClCompile Include="Source\EnemyGround.cpp" />
     <ClCompile Include="Source\EnemyManagement.cpp" />
+    <ClCompile Include="Source\Fonts.cpp" />
     <ClCompile Include="Source\LogoScene.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\App.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="Source\EnemyFlying.h" />
     <ClInclude Include="Source\EnemyGround.h" />
     <ClInclude Include="Source\EnemyManagement.h" />
+    <ClInclude Include="Source\Fonts.h" />
     <ClInclude Include="Source\PathFinding.h" />
     <ClInclude Include="Source\Queue.h" />
     <ClInclude Include="Source\Animation.h" />
