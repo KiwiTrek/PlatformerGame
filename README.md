@@ -1,5 +1,5 @@
 # Adventure in Dreamworld
-![TitleScreen](https://github.com/WillyTrek19/PlatformerGame/blob/master/Output/Assets/textures/titleScreen.png)
+![TitleScreen](https://github.com/WillyTrek19/PlatformerGame/blob/master/Output/Assets/Textures/title_screen.png)
 ## Description
 
 Venture forth an incredible adventure crossing from the deepest of seas to the mysterious floating islands. Grab fruits along the way to challenge your skills of jumping, double jumping and wall jumping. And, at the end of the day, reach the camp in the middle of the floating islands for a well deserved rest!
@@ -39,7 +39,7 @@ Venture forth an incredible adventure crossing from the deepest of seas to the m
  - Guillem Álava Burgueño ([Github](https://github.com/WillyTrek19)) - Level Designer & Programer
  - Sergi Colomer Ferrer ([Github](https://github.com/Lladruc37)) - Programer
  
- ![Our Logo](https://github.com/WillyTrek19/PlatformerGame/blob/master/Output/Assets/textures/logoScreen.jpg)
+ ![Our Logo](https://github.com/WillyTrek19/PlatformerGame/blob/master/Output/Assets/Textures/logo_screen.jpg)
  
 ## License
 
