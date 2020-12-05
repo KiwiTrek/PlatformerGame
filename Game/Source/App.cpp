@@ -266,9 +266,17 @@ void App::FinishUpdate()
 	framesOnLastUpdate = prevLastSecFrameCount;
 
 	static char title[256];
+	static char vsyncStr[4];
 
-	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %I64u ",
-		averageFps, lastFrameMs, framesOnLastUpdate, dt, secondsSinceStartup, frameCount);
+	if (vsync)
+	{
+		sprintf_s(vsyncStr, "on");
+	}
+	else
+	{
+		sprintf_s(vsyncStr, "off");
+	}
+	sprintf_s(title, 256, "Last sec frames: %i Av.FPS: %.2f Last Frame Ms: %02u Vsync: %s", framesOnLastUpdate, averageFps, lastFrameMs, vsyncStr);
 	app->win->SetTitle(title);
 
 	// Use SDL_Delay to make sure you get your capped framerate

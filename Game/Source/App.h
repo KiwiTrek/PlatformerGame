@@ -113,6 +113,8 @@ public:
 	TitleScene* titleScene;
 	DeathScene* deathScene;
 
+	bool vsync = false;
+
 private:
 
 	int argc;

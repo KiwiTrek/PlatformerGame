@@ -53,6 +53,9 @@ public:
 	// The enemy's collider
 	Collider* collider = nullptr;
 
+	// The enemy's path
+	DynArray<iPoint> path;
+
 	// The enemy's physics
 	Physics enemyPhysics;
 	iPoint nextFrame;

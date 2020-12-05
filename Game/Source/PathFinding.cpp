@@ -7,7 +7,7 @@
 #include "Defs.h"
 #include "Log.h"
 
-PathFinding::PathFinding() : Module(), map(NULL), path(DEFAULT_PATH_LENGTH), width(0), height(0)
+PathFinding::PathFinding() : Module(), map(NULL), width(0), height(0)
 {
 	name.Create("pathfinding");
 }
@@ -30,7 +30,6 @@ bool PathFinding::CleanUp()
 {
 	LOG("Freeing pathfinding library");
 
-	path.Clear();
 	RELEASE_ARRAY(map);
 
 	return true;
@@ -76,11 +75,11 @@ uchar PathFinding::GetTileCost(const iPoint& pos) const
 //	return &path;
 //}
 
-void PathFinding::DrawPath()
+void PathFinding::DrawPath(DynArray<iPoint>* path)
 {
-	for (uint i = 0; i < path.Count(); ++i)
+	for (uint i = 0; i < path->Count(); ++i)
 	{
-		iPoint pos = app->map->MapToWorld(path.At(i)->x, path.At(i)->y);
+		iPoint pos = app->map->MapToWorld(path->At(i)->x, path->At(i)->y);
 		app->render->DrawTexture(debugPath, pos.x, pos.y);
 	}
 }
@@ -186,7 +185,7 @@ int PathNode::CalculateTotalCost(const iPoint& destination)
 // ----------------------------------------------------------------------------------
 // Actual A* algorithm: return number of steps in the creation of the path or -1 ----
 // ----------------------------------------------------------------------------------
-int PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
+int PathFinding::CreatePath(DynArray<iPoint>& path, const iPoint& origin, const iPoint& destination)
 {
 	if (!IsWalkable(origin) || !IsWalkable(destination))
 	{

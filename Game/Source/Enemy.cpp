@@ -13,13 +13,14 @@ Enemy::Enemy(int x, int y, EnemyType type) : enemyRect({ x, y, 64, 64 }), type(t
 {
 	spawnPos.x = enemyRect.x;
 	spawnPos.y = enemyRect.y;
+	path.Create(DEFAULT_PATH_LENGTH);
 }
 
 Enemy::~Enemy()
 {
 	if (collider != nullptr)
 		collider->pendingToDelete = true;
-	app->pathfinding->path.Clear();
+	path.Clear();
 }
 
 void Enemy::Update(float dt)
@@ -35,7 +36,7 @@ void Enemy::Update(float dt)
 
 	if (app->render->drawAll)
 	{
-		app->pathfinding->DrawPath();
+		app->pathfinding->DrawPath(&path);
 	}
 }
 
@@ -43,7 +44,7 @@ void Enemy::Draw()
 {
 	if (currentAnim != nullptr)
 	{
-		app->render->DrawTexture(texture, enemyRect.x, enemyRect.y, false, &(currentAnim->GetCurrentFrame()));
+		app->render->DrawTexture(texture, enemyRect.x, enemyRect.y, false, &(currentAnim->GetCurrentFrame()), invert);
 	}
 
 	if (app->render->drawAll)

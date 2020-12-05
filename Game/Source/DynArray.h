@@ -40,6 +40,14 @@ public:
 		return data[index];
 	}
 
+	void Create(unsigned int capacity)
+	{
+		memCapacity = 0;
+		numElements = 0;
+		data = NULL;
+		Alloc(capacity);
+	}
+
 	const VALUE& operator[](unsigned int index) const
 	{
 		assert(index < numElements);

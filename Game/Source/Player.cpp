@@ -265,7 +265,7 @@ bool Player::Update(float dt)
 						app->audio->PlayFx(doubleJumpFx);
 					}
 					--jumpCounter;
-					playerPhysics.speed.y = -450.0f;
+					playerPhysics.speed.y = -400.0f;
 				}
 			}
 			if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_D) != KEY_REPEAT)
@@ -467,17 +467,8 @@ bool Player::Update(float dt)
 				playerRect.x = spawnPoint.x;
 				playerRect.y = spawnPoint.y;
 				
-				//HHHHHHHHHHHHHH
-				/*app->render->camera.x = spawnPoint.x - app->render->camera.w / 2;
-				if (app->render->camera.x < 0)
-				{
-					app->render->camera.x = 0;
-				}
-				app->render->camera.y = spawnPoint.y - app->render->camera.h / 2;
-				if (app->render->camera.y < 0)
-				{
-					app->render->camera.y = 0;
-				}*/
+				app->render->camera.x = -(spawnPoint.x - app->render->camera.w / 2);
+				app->render->camera.y = -(spawnPoint.y - app->render->camera.h / 2 - 64);
 
 				playerPhysics.speed.x = 0.0f;
 				playerPhysics.speed.y = 0.0f;
@@ -549,7 +540,7 @@ bool Player::PostUpdate()
 	if (app->render->drawAll)
 	{
 		app->render->DrawRectangle({ playerRect.x, playerRect.y, 64, 64 }, 0, 255, 0, 100);
-		if (hurtBox != nullptr)
+		if (hurtBox != nullptr && isAttacking)
 		{
 			app->render->DrawRectangle(hurtBox->rect, 255, 0, 255, 100);
 		}

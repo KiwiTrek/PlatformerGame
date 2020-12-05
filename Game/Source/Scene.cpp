@@ -71,8 +71,9 @@ bool Scene::Start()
 
 	app->render->SetBackgroundColor(app->map->data.backgroundColor);
 
-	app->render->camera.x = 0;
-	app->render->camera.y = app->map->data.tileHeight * -2; // -128
+	app->render->camera.x = -(app->player->spawnPoint.x - app->render->camera.w / 2);
+	app->render->camera.y = -(app->player->spawnPoint.y - app->render->camera.h / 2);
+
 
 	app->collisions->Enable();
 
@@ -145,7 +146,7 @@ bool Scene::Update(float dt)
 	// Map borders
 	if (app->render->camera.x >= 0)
 	{
-		app->render->camera.x -= floor(250.0f * dt);
+		app->render->camera.x = 0;
 	}
 	if ((app->render->camera.w - app->render->camera.x) > (app->map->data.width * app->map->data.tileWidth))
 	{
@@ -153,7 +154,7 @@ bool Scene::Update(float dt)
 	}
 	if (app->render->camera.y >= 0)
 	{
-		app->render->camera.y -= floor(250.0f * dt);
+		app->render->camera.y = 0;
 	}
 	if ((app->render->camera.h - app->render->camera.y) > (app->map->data.height * app->map->data.tileHeight))
 	{

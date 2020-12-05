@@ -44,6 +44,9 @@ public:
 	// Destroys all active enemies left in the array
 	bool CleanUp() override;
 
+	bool Load(pugi::xml_node&);
+	bool Save(pugi::xml_node&);
+
 	// Called when an enemi collider hits another collider
 	// The enemy is destroyed and an explosion particle is fired
 	void OnCollision(Collider* c1, Collider* c2);

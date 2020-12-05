@@ -36,10 +36,7 @@ public:
 	void SetMap(uint width, uint height, uchar* data);
 
 	// Main function to request a path from A to B
-	int CreatePath(const iPoint& origin, const iPoint& destination);
-
-	// To request all tiles involved in the last generated path
-	//const DynArray<iPoint>* GetPath() const;
+	int CreatePath(DynArray<iPoint>& path, const iPoint& origin, const iPoint& destination);
 
 	// Utility: return true if pos is inside the map boundaries
 	bool CheckBoundaries(const iPoint& pos) const;
@@ -50,7 +47,7 @@ public:
 	// Utility: return the walkability value of a tile
 	uchar GetTileCost(const iPoint& pos) const;
 
-	void DrawPath();
+	void DrawPath(DynArray<iPoint>* path);
 
 private:
 	// texture to draw the path
@@ -62,10 +59,6 @@ private:
 
 	// all map walkability values [0..255]
 	uchar* map;
-
-public:
-	// we store the created path here
-	DynArray<iPoint> path;
 };
 
 // forward declaration

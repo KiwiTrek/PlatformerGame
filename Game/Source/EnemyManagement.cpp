@@ -97,6 +97,35 @@ bool EnemyManagement::CleanUp()
 	return true;
 }
 
+bool EnemyManagement::Load(pugi::xml_node& save)
+{
+	LOG("Loading enemy data");
+	bool ret = true;
+	for (uint i = 0; i < MAX_ENEMIES; ++i)
+	{
+		if (enemies[i] != nullptr)
+		{
+			enemies[i]->enemyRect.x = save.child("enemy").attribute("x").as_int();
+			enemies[i]->enemyRect.y = save.child("enemy").attribute("y").as_int();
+			enemies[i]->pendingToDelete = save.child("enemy").attribute("destroyed").as_bool();
+		}
+	}
+
+	return ret;
+}
+
+bool EnemyManagement::Save(pugi::xml_node& save)
+{
+	LOG("Saving enemy data");
+	bool ret = true;
+
+	//pugi::xml_node player = save.append_child("coordinates");
+	//player.append_attribute("x").set_value(playerRect.x);
+	//player.append_attribute("y").set_value(playerRect.y);
+
+	return ret;
+}
+
 bool EnemyManagement::AddEnemy(EnemyType type, int x, int y)
 {
 	bool ret = false;

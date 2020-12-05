@@ -7,8 +7,6 @@
 #include "Defs.h"
 #include "Log.h"
 
-#define VSYNC true
-
 Render::Render() : Module()
 {
 	name.Create("renderer");
@@ -34,6 +32,7 @@ bool Render::Awake(pugi::xml_node& config)
 	{
 		flags |= SDL_RENDERER_PRESENTVSYNC;
 		LOG("Using vsync");
+		app->vsync = true;
 	}
 
 	renderer = SDL_CreateRenderer(app->win->window, -1, flags);

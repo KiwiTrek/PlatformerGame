@@ -52,6 +52,7 @@ void EnemyGround::Update(float dt)
 {
 	nextFrame.x = enemyRect.x;
 	nextFrame.y = enemyRect.y;
+	enemyPhysics.speed.x = 0;
 	enemyPhysics.CheckDirection();
 
 	if (attackChange)
@@ -67,7 +68,7 @@ void EnemyGround::Update(float dt)
 		currentAnim = &walking;
 	}
 
-	if (currentAnim->HasFinished() || enemyPhysics.speed.x == 0)
+	if (currentAnim->HasFinished() && enemyPhysics.speed.x == 0)
 	{
 		if (currentAnim == &hurt)
 		{
@@ -106,8 +107,8 @@ void EnemyGround::Update(float dt)
 		pastDest = destination;
 		if (origin.x != destination.x || origin.y != destination.y)
 		{
-			app->pathfinding->path.Clear();
-			pathCount = app->pathfinding->CreatePath(origin, destination);
+			path.Clear();
+			pathCount = app->pathfinding->CreatePath(path, origin, destination);
 			if (pathCount != -1)
 			{
 				LOG("origin: %d, %d destination: %d, %d\n", origin.x, origin.y, destination.x, destination.y);
@@ -116,36 +117,30 @@ void EnemyGround::Update(float dt)
 		}
 	}
 
-	if (pathCount < 12 && pathCount > 1)
+	if (pathCount < 12 && pathCount > 1 && !hurtChange)
 	{
 		if (i >= (pathCount - 2))
 		{
 			i = pathCount - 2;
 		}
 
-		iPoint pos = app->map->MapToWorld(app->pathfinding->path.At(i)->x, app->pathfinding->path.At(i)->y);
-		iPoint dest = app->map->MapToWorld(app->pathfinding->path.At(i+1)->x, app->pathfinding->path.At(i+1)->y);
+		iPoint pos = app->map->MapToWorld(path.At(i)->x, path.At(i)->y);
+		iPoint dest = app->map->MapToWorld(path.At(i+1)->x, path.At(i+1)->y);
 		iPoint dif = { dest.x - pos.x,dest.y - pos.y };
 		LOG("dif: %d, %d\n", dif.x, dif.y);
 		if (dif.x > 0)
 		{
 			// i do not agree with this
-			enemyPhysics.speed.x = 100.0f;
+			currentAnim = &walking;
+			enemyPhysics.speed.x = 150.0f;
 			invert = false;
-			if (origin.x <= dest.x)
-			{
-				i++;
-			}
 		}
 		else if (dif.x < 0)
 		{
+			currentAnim = &walking;
 			origin.x = (nextFrame.x + enemyRect.w) / 64;
-			enemyPhysics.speed.x = -50.0f;
+			enemyPhysics.speed.x = -75.0f;
 			invert = true;
-			if (origin.x >= dest.x)
-			{
-				i++;
-			}
 		}
 
 		if (dif.y < 0)

@@ -44,6 +44,7 @@ void EnemyFlying::Update(float dt)
 {
 	nextFrame.x = enemyRect.x;
 	nextFrame.y = enemyRect.y;
+	enemyPhysics.speed.x = 0;
 	enemyPhysics.CheckDirection();
 
 	if (attackChange)
@@ -87,8 +88,8 @@ void EnemyFlying::Update(float dt)
 		pastDest = destination;
 		if (origin.x != destination.x || origin.y != destination.y)
 		{
-			app->pathfinding->path.Clear();
-			pathCount = app->pathfinding->CreatePath(origin, destination);
+			path.Clear();
+			pathCount = app->pathfinding->CreatePath(path, origin, destination);
 			if (pathCount != -1)
 			{
 				LOG("origin: %d, %d destination: %d, %d\n", origin.x, origin.y, destination.x, destination.y);
@@ -97,42 +98,53 @@ void EnemyFlying::Update(float dt)
 		}
 	}
 
-	if (pathCount < 12 && pathCount > 1)
+	if (pathCount < 12 && pathCount > 1 && !hurtChange)
 	{
 		if (i >= (pathCount - 2))
 		{
 			i = pathCount - 2;
 		}
 
-		iPoint pos = app->map->MapToWorld(app->pathfinding->path.At(i)->x, app->pathfinding->path.At(i)->y);
-		iPoint dest = app->map->MapToWorld(app->pathfinding->path.At(i + 1)->x, app->pathfinding->path.At(i + 1)->y);
+		iPoint pos = app->map->MapToWorld(path.At(i)->x, path.At(i)->y);
+		iPoint dest = app->map->MapToWorld(path.At(i + 1)->x, path.At(i + 1)->y);
 		iPoint dif = { dest.x - pos.x,dest.y - pos.y };
 		LOG("dif: %d, %d\n", dif.x, dif.y);
 		if (dif.x > 0)
 		{
 			// i do not agree with this
-			enemyPhysics.speed.x = 100.0f;
+			enemyPhysics.speed.x = 170.0f;
+			if (origin.x <= dest.x)
+			{
+				i++;
+			}
 			invert = false;
 		}
 		else if (dif.x < 0)
 		{
 			origin.x = (nextFrame.x + enemyRect.w) / 64;
-			enemyPhysics.speed.x = -50.0f;
+			enemyPhysics.speed.x = -75.0f;
 			invert = true;
+			if (origin.x >= dest.x)
+			{
+				i++;
+			}
 		}
 		else if (dif.y < 0)
 		{
 			origin.y = (nextFrame.y + enemyRect.h) / 64;
 			nextFrame.y -= floor(150.0f * dt);
+			if (origin.y >= dest.y)
+			{
+				i++;
+			}
 		}
 		else if (dif.y > 0)
 		{
 			nextFrame.y += floor(150.0f * dt);
-		}
-
-		if (origin.x == dest.x && origin.y == dest.y)
-		{
-			i++;
+			if (origin.y <= dest.y)
+			{
+				i++;
+			}
 		}
 	}
 
