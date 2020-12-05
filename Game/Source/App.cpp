@@ -54,11 +54,11 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(tex);
 	AddModule(audio);
 	AddModule(pathfinding);
-	AddModule(map);
 	AddModule(logoScene);
 	AddModule(titleScene);
 	AddModule(deathScene);
 	AddModule(scene);
+	AddModule(map);
 	AddModule(player);
 	AddModule(enemies);
 	AddModule(collisions);
@@ -113,7 +113,7 @@ bool App::Awake()
 		organization.Create(configApp.child("organization").child_value());
 
 		// Read from config file your framerate cap
-		int cap = configApp.attribute("framerate_cap").as_int(-1); // -1 = No cap
+		cap = configApp.attribute("framerate_cap").as_int(-1); // -1 = No cap
 
 		if (cap > 0) cappedMs = 1000 / cap;
 	}
@@ -230,6 +230,11 @@ void App::FinishUpdate()
 	{
 		saveRequest = !saveRequest;
 		SaveGame();
+	}
+	else if (capRequest)
+	{
+		capRequest = !capRequest;
+		ChangeCap();
 	}
 
 	// Framerate calculations------------------------------------------
@@ -397,6 +402,12 @@ void App::SaveRequest()
 	saveRequest = true;
 }
 
+// ---------------------------------------
+void App::CapRequest()
+{
+	capRequest = true;
+}
+
 bool App::LoadGame()
 {
 	bool ret = true;
@@ -442,6 +453,27 @@ bool App::SaveGame()
 	}
 
 	newSaveFile.save_file("save_game.xml");
+
+	return ret;
+}
+
+bool App::ChangeCap()
+{
+	bool ret = true;
+
+	switch (cap)
+	{
+	case 60:
+		cap = 30;
+		break;
+	case 30:
+		cap = 60;
+		break;
+	default:
+		break;
+	}
+
+	if (cap > 0) cappedMs = 1000 / cap;
 
 	return ret;
 }

@@ -64,6 +64,7 @@ public:
 	//Request to save & load
 	void LoadRequest();
 	void SaveRequest();
+	void CapRequest();
 
 private:
 
@@ -88,6 +89,7 @@ private:
 	// Load & save inside an XML file
 	bool LoadGame();
 	bool SaveGame();
+	bool ChangeCap();
 
 public:
 
@@ -118,7 +120,7 @@ private:
 
 	List<Module *> modules;
 
-	bool saveRequest, loadRequest;
+	bool saveRequest, loadRequest, capRequest;
 	pugi::xml_document saveFile;
 	pugi::xml_node save;
 
@@ -133,6 +135,7 @@ private:
 	uint32 prevLastSecFrameCount = 0;
 	float dt = 0.0f;
 	float cappedMs = -1;
+	int cap = 0;
 };
 
 extern App* app;

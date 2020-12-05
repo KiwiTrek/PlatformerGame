@@ -1,5 +1,8 @@
 #include "App.h"
 #include "PathFinding.h"
+#include "Map.h"
+#include "Render.h"
+#include "Textures.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -13,6 +16,13 @@ PathFinding::PathFinding() : Module(), map(NULL), path(DEFAULT_PATH_LENGTH), wid
 PathFinding::~PathFinding()
 {
 	RELEASE_ARRAY(map);
+}
+
+bool PathFinding::Start()
+{
+	debugPath = app->tex->Load("Assets/Textures/path_meta_data.png");
+
+	return true;
 }
 
 // Called before quitting
@@ -64,6 +74,15 @@ uchar PathFinding::GetTileCost(const iPoint& pos) const
 const DynArray<iPoint>* PathFinding::GetPath() const
 {
 	return &path;
+}
+
+void PathFinding::DrawPath(const DynArray<iPoint>* currentPath)
+{
+	for (uint i = 0; i < currentPath->Count(); ++i)
+	{
+		iPoint pos = app->map->MapToWorld(currentPath->At(i)->x, currentPath->At(i)->y);
+		app->render->DrawTexture(debugPath, pos.x, pos.y);
+	}
 }
 
 // PathList ------------------------------------------------------------------------

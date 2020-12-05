@@ -21,9 +21,9 @@ public:
 	{
 		return !loop && loopCount > 0;
 	}
-	void Update()
+	void Update(float dt)
 	{
-		currentFrame += speed;
+		currentFrame += speed * dt;
 		if (currentFrame >= totalFrames)
 		{
 			if (loop)

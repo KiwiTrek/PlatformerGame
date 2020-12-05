@@ -21,8 +21,6 @@ private:
 	Animation flying;
 	Animation hurt;
 	Animation attack;
-	bool onceAnim;
-
 };
 
 #endif // __ENEMY_GROUND_H__

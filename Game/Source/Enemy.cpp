@@ -5,6 +5,7 @@
 #include "Collisions.h"
 #include "Audio.h"
 #include "Render.h"
+#include "PathFinding.h"
 
 #include "Log.h"
 
@@ -18,25 +19,32 @@ Enemy::~Enemy()
 {
 	if (collider != nullptr)
 		collider->pendingToDelete = true;
+	app->pathfinding->path.Clear();
 }
 
 void Enemy::Update(float dt)
 {
 	if (currentAnim != nullptr)
-		currentAnim->Update();
+		currentAnim->Update(dt);
 
 	enemyPhysics.UpdatePhysics(nextFrame, dt);
 	enemyPhysics.ResolveCollisions(enemyRect, nextFrame, invert);
 
 	if (collider != nullptr)
 		collider->SetPos(enemyRect.x, enemyRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
-
 }
 
 void Enemy::Draw()
 {
 	if (currentAnim != nullptr)
+	{
 		app->render->DrawTexture(texture, enemyRect.x, enemyRect.y, false, &(currentAnim->GetCurrentFrame()));
+	}
+
+	if (app->render->drawAll)
+	{
+		app->render->DrawRectangle({ enemyRect.x, enemyRect.y, 64,64 }, 255, 255, 0, 100);
+	}
 }
 
 void Enemy::OnCollision(Collider* c1, Collider* c2)

@@ -7,6 +7,8 @@
 #include "DynArray.h"
 #include "List.h"
 
+#include "SDL/include/SDL.h"
+
 #define DEFAULT_PATH_LENGTH 50
 #define INVALID_WALK_CODE 255
 
@@ -24,6 +26,8 @@ public:
 
 	// Destructor
 	~PathFinding();
+
+	bool Start();
 
 	// Called before quitting
 	bool CleanUp();
@@ -46,7 +50,11 @@ public:
 	// Utility: return the walkability value of a tile
 	uchar GetTileCost(const iPoint& pos) const;
 
+	void DrawPath(const DynArray<iPoint>* currentPath);
+
 private:
+	// texture to draw the path
+	SDL_Texture* debugPath;
 
 	// size of the map
 	uint width;

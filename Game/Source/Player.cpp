@@ -47,7 +47,6 @@ bool Player::Start()
 	invert = false;
 	debugDraw = false;
 	once = true;
-	onceAnim = true;
 	onceCheckpoint = true;
 
 	playerPhysics.axisX = true;
@@ -115,49 +114,58 @@ bool Player::Awake(pugi::xml_node& config)
 	{
 		idle.PushBack({ 10 + (playerSize * i),1329,56,73 });
 	}
+	idle.speed = 15.0f;
 	idle.loop = true;
 
 	for (int i = 0; i != 8; ++i)
 	{
 		run.PushBack({ 10 + (playerSize * i),1202,62,82 });
 	}
+	run.speed = 15.0f;
 	run.loop = true;
 
 	for (int i = 0; i != 2; ++i)
 	{
 		jumpPrep.PushBack({ 10 + (playerSize * i), 812, 60, 90 });
 	}
+	jumpPrep.speed = 15.0f;
 	jumpPrep.loop = false;
 
 	for (int i = 0; i != 4; ++i)
 	{
 		jumpMid.PushBack({ 10 + (2 * playerSize) + (playerSize * i),812,60,80 });
 	}
+	jumpMid.speed = 15.0f;
 	jumpMid.loop = true;
 
 	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
 	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
+	jumpLand.speed = 40.0f;
 	jumpLand.loop = false;
 
 	for (int i = 0; i != 7; ++i)
 	{
 		attack.PushBack({ (playerSize * i), 434, 104, 72 });
 	}
+	attack.speed = 15.0f;
 	attack.loop = false;
 
 	for (int i = 0; i != 3; ++i)
 	{
 		hit.PushBack({ 10 + (playerSize * i),52,56,73 });
 	}
+	hit.speed = 10.0f;
 	hit.loop = false;
 
 	for (int i = 0; i != 5; ++i)
 	{
 		death.PushBack({ 10 + (playerSize * i),192,88,66 });
 	}
+	death.speed = 15.0f;
 	death.loop = false;
 
 	wallJump.PushBack({ 630,170,73,79 });
+	wallJump.speed = 0.0f;
 	wallJump.loop = false;
 
 	return true;
@@ -170,20 +178,7 @@ bool Player::PreUpdate()
 
 bool Player::Update(float dt)
 {
-	if(onceAnim)
-	{
-		onceAnim = false;
-		idle.speed = 1.5f * dt;
-		run.speed = 1.5f * dt;
-		jumpPrep.speed = 1.5f * dt;
-		jumpMid.speed = 1.5f * dt;
-		jumpLand.speed = 4.0f * dt;
-		attack.speed = 1.5f * dt;
-		death.speed = 1.5f * dt;
-		hit.speed = 1.0f * dt;
-		wallJump.speed = 0.0f;
-	}
-	currentAnimation->Update();
+	currentAnimation->Update(dt);
 	keyPressed = false;
 	nextFrame.x = playerRect.x;
 	nextFrame.y = playerRect.y;
@@ -205,6 +200,10 @@ bool Player::Update(float dt)
 		godMode = !godMode;
 		playerPhysics.axisX = !playerPhysics.axisX;
 		playerPhysics.axisY = !playerPhysics.axisY;
+	}
+	if (app->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
+	{
+		app->CapRequest();
 	}
 
 	// To know what direction the velocity is going
@@ -315,7 +314,7 @@ bool Player::Update(float dt)
 		{
 			if (invert && currentAnimation == &attack)
 			{
-				hurtBox->SetPos(playerRect.x - 56, playerRect.y, currentAnimation->GetCurrentFrame().w, currentAnimation->GetCurrentFrame().h);
+				hurtBox->SetPos(playerRect.x - 40, playerRect.y, currentAnimation->GetCurrentFrame().w, currentAnimation->GetCurrentFrame().h);
 			}
 			else
 			{
@@ -528,9 +527,16 @@ bool Player::Update(float dt)
 
 bool Player::PostUpdate()
 {
-	if (invert && currentAnimation == &attack) //If we want to correct all the animations, do a switch
+	if (invert) //If we want to correct all the animations, do a switch
 	{
-		app->render->DrawTexture(playerTex, playerRect.x - 56, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
+		if (isAttacking)
+		{
+			app->render->DrawTexture(playerTex, playerRect.x - 40, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
+		}
+		else
+		{
+			app->render->DrawTexture(playerTex, playerRect.x + 8, playerRect.y, false, &currentAnimation->GetCurrentFrame(), invert);
+		}
 	}
 	else
 	{
@@ -540,10 +546,15 @@ bool Player::PostUpdate()
 	if (app->render->drawAll)
 	{
 		app->render->DrawRectangle({ playerRect.x, playerRect.y, 64, 64 }, 0, 255, 0, 100);
+		if (hurtBox != nullptr)
+		{
+			app->render->DrawRectangle(hurtBox->rect, 255, 0, 255, 100);
+		}
 	}
 
 	iPoint tmp(-app->render->camera.x, -app->render->camera.y);
-	for (int i = lives; i > 0; i--) {
+	for (int i = lives; i > 0; i--)
+	{
 		app->render->DrawTexture(playerHeart, tmp.x + (i*68) - 64, tmp.y);
 	}
 

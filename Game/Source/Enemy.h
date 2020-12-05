@@ -4,6 +4,7 @@
 #include "Point.h"
 #include "Animation.h"
 #include "Physics.h"
+#include "DynArray.h"
 
 struct SDL_Texture;
 class Collider;
@@ -68,6 +69,11 @@ protected:
 
 	// Original spawn position. Stored for movement calculations
 	iPoint spawnPos;
+
+	iPoint pastDest;
+	int i, j;
+
+	DynArray<iPoint> currentPath;
 
 	// State changes
 	bool attackChange = false;

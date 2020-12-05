@@ -98,7 +98,6 @@ private:
 	bool invert = false;
 	bool debugDraw = false;
 	bool once = true;
-	bool onceAnim = true;
 	bool onceCheckpoint = true;
 
 	SString folderTexture;
