@@ -18,9 +18,20 @@ PathFinding::~PathFinding()
 	RELEASE_ARRAY(map);
 }
 
+bool PathFinding::Awake(pugi::xml_node& config)
+{
+	LOG("Loading PathFinder");
+	bool ret = true;
+
+	folderTexture.Create(config.child("folderTexture").child_value());
+
+	return ret;
+}
+
 bool PathFinding::Start()
 {
-	debugPath = app->tex->Load("Assets/Textures/path_meta_data.png");
+	SString tmp("%s%s", folderTexture.GetString(), "path_meta_data.png");
+	debugPath = app->tex->Load(tmp.GetString());
 
 	return true;
 }
@@ -57,7 +68,7 @@ bool PathFinding::CheckBoundaries(const iPoint& pos) const
 bool PathFinding::IsWalkable(const iPoint& pos) const
 {
 	uchar t = GetTileCost(pos);
-	return t != INVALID_WALK_CODE && t > 0;
+	return t != INVALID_WALK_CODE && t >= 0 && t != 254;
 }
 
 // Utility: return the walkability value of a tile

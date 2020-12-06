@@ -29,6 +29,9 @@ public:
 
 	bool Start();
 
+	// Called before render is available
+	bool Awake(pugi::xml_node& config);
+
 	// Called before quitting
 	bool CleanUp();
 
@@ -51,6 +54,7 @@ public:
 
 private:
 	// texture to draw the path
+	SString folderTexture;
 	SDL_Texture* debugPath;
 
 	// size of the map

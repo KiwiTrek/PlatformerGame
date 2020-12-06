@@ -31,7 +31,7 @@ void Player::Init()
 bool Player::Start()
 {
 	spawnPoint = GetSpawnPoint();
-	playerRect = { spawnPoint.x, spawnPoint.y, 64, 64 };
+	playerRect = { spawnPoint.x, spawnPoint.y, app->generalTileSize, app->generalTileSize };
 	playerCollider = app->collisions->AddCollider(playerRect, Collider::Type::PLAYER, this);
 	jumpCounter = 2;
 
@@ -54,6 +54,7 @@ bool Player::Start()
 	playerPhysics.axisX = true;
 	playerPhysics.axisY = true;
 	playerPhysics.positiveSpeedY = true;
+	playerPhysics.verlet = true;
 
 	SString tmp("%s%s", folderTexture.GetString(), "character_spritesheet.png");
 	playerTex = app->tex->Load(tmp.GetString());
@@ -387,22 +388,24 @@ bool Player::Update(float dt)
 		// Collisions
 		playerPhysics.ResolveCollisions(playerRect, nextFrame, invert);
 
+		iPoint currentFrameTile = { playerRect.x / app->generalTileSize, playerRect.y / app->generalTileSize };
+
 		// Animation correction
-		if (app->map->GetTileProperty(playerRect.x / 64 + 1, playerRect.y / 64, "CollisionId") == Collider::Type::SOLID
-			&& app->map->GetTileProperty(playerRect.x / 64, playerRect.y / 64 + 1, "CollisionId") != Collider::Type::SOLID
+		if (app->map->GetTileProperty(currentFrameTile.x + 1, currentFrameTile.y, "CollisionId") == Collider::Type::SOLID
+			&& app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y + 1, "CollisionId") != Collider::Type::SOLID
 			&& !invert)
 		{
 			currentAnimation = &wallJump;
 			jumpCounter = 1;
 		}
-		else if (app->map->GetTileProperty((playerRect.x - 1) / 64, playerRect.y / 64, "CollisionId") == Collider::Type::SOLID
-			&& app->map->GetTileProperty(playerRect.x / 64, playerRect.y / 64 + 1, "CollisionId") != Collider::Type::SOLID
+		else if (app->map->GetTileProperty((playerRect.x - 1) / app->generalTileSize, currentFrameTile.y, "CollisionId") == Collider::Type::SOLID
+			&& app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y + 1, "CollisionId") != Collider::Type::SOLID
 			&& invert)
 		{
 			currentAnimation = &wallJump;
 			jumpCounter = 1;
 		}
-		else if (app->map->GetTileProperty(playerRect.x / 64, playerRect.y / 64 + 1, "CollisionId") == Collider::Type::SOLID && isJumping)
+		else if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y + 1, "CollisionId") == Collider::Type::SOLID && isJumping)
 		{
 			currentAnimation = &jumpLand;
 		}
@@ -414,7 +417,7 @@ bool Player::Update(float dt)
 		}
 
 		// Spawn change
-		if (app->map->GetTileProperty(playerRect.x / 64, playerRect.y / 64, "CollisionId", true, true) == Collider::Type::CHECKPOINT)
+		if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId", true, true) == Collider::Type::CHECKPOINT)
 		{
 			if (onceCheckpoint)
 			{
@@ -430,19 +433,19 @@ bool Player::Update(float dt)
 		}
 
 		// Fruit collection
-		if (app->map->GetTileProperty(playerRect.x / 64, playerRect.y / 64, "CollisionId", true, true) == Collider::Type::FRUIT)
+		if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId", true, true) == Collider::Type::FRUIT)
 		{
-			if(app->map->GetTileProperty(playerRect.x / 64, playerRect.y / 64, "NoDraw", true, true) == 0)
+			if(app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "NoDraw", true, true) == 0)
 			{
 				lives++;
-				app->map->SetTileProperty(playerRect.x / 64, playerRect.y / 64, "NoDraw", 1, true, true);
+				app->map->SetTileProperty(playerRect.x / app->generalTileSize, playerRect.y / app->generalTileSize, "NoDraw", 1, true, true);
 				app->audio->PlayFx(fruitFx);
 				score += 100;
 			}
 		}
 
 		// Win condition
-		if (app->map->GetTileProperty(playerRect.x / 64, playerRect.y / 64, "CollisionId", true, true) == Collider::Type::GOAL)
+		if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId", true, true) == Collider::Type::GOAL)
 		{
 			if (once)
 			{
@@ -455,7 +458,7 @@ bool Player::Update(float dt)
 		}
 
 		// Dead
-		if (app->map->GetTileProperty(playerRect.x / 64, playerRect.y / 64 + 1, "CollisionId") == Collider::Type::SPIKE && !godMode)
+		if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y + 1, "CollisionId") == Collider::Type::SPIKE && !godMode)
 		{
 			lives--;
 			if (lives == 0)
@@ -468,7 +471,7 @@ bool Player::Update(float dt)
 				playerRect.y = spawnPoint.y;
 				
 				app->render->camera.x = -(spawnPoint.x - app->render->camera.w / 2);
-				app->render->camera.y = -(spawnPoint.y - app->render->camera.h / 2 - 64);
+				app->render->camera.y = -(spawnPoint.y - app->render->camera.h / 2 - app->generalTileSize);
 
 				playerPhysics.speed.x = 0.0f;
 				playerPhysics.speed.y = 0.0f;
@@ -539,7 +542,7 @@ bool Player::PostUpdate()
 
 	if (app->render->drawAll)
 	{
-		app->render->DrawRectangle({ playerRect.x, playerRect.y, 64, 64 }, 0, 255, 0, 100);
+		app->render->DrawRectangle({ playerRect.x, playerRect.y, app->generalTileSize, app->generalTileSize }, 0, 255, 0, 100);
 		if (hurtBox != nullptr && isAttacking)
 		{
 			app->render->DrawRectangle(hurtBox->rect, 255, 0, 255, 100);
@@ -549,7 +552,7 @@ bool Player::PostUpdate()
 	iPoint tmp(-app->render->camera.x, -app->render->camera.y);
 	for (int i = lives; i > 0; i--)
 	{
-		app->render->DrawTexture(playerHeart, tmp.x + (i*68) - 64, tmp.y);
+		app->render->DrawTexture(playerHeart, tmp.x + (i*68) - app->generalTileSize, tmp.y);
 	}
 
 	return true;
@@ -630,8 +633,8 @@ iPoint Player::GetSpawnPoint()
 			id = (int)(mapLayer->data->Get(x, y) - tileSet->data->firstgId);
 			if (id == 28)
 			{
-				ret.x = x * 64;
-				ret.y = y * 64;
+				ret.x = x * app->generalTileSize;
+				ret.y = y * app->generalTileSize;
 				return ret;
 			}
 		}

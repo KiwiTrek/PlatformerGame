@@ -11,6 +11,7 @@
 
 EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, typeOfEnemy)
 {
+	enemySize = app->generalTileSize;
 	for (int i = 0; i != 7; ++i)
 	{
 		flying.PushBack({ i * enemySize,enemySize,enemySize,enemySize });
@@ -33,7 +34,7 @@ EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, type
 	attack.loop = false;
 
 	currentAnim = &flying;
-	collider = app->collisions->AddCollider({ enemyRect.x, enemyRect.y, 64, 64 }, Collider::Type::ENEMY, (Module*)app->enemies);
+	collider = app->collisions->AddCollider({ enemyRect.x, enemyRect.y, app->generalTileSize, app->generalTileSize }, Collider::Type::ENEMY, (Module*)app->enemies);
 
 	flying.Reset();
 	hurt.Reset();
@@ -70,15 +71,15 @@ void EnemyFlying::Update(float dt)
 		}
 	}
 
-	if (app->map->GetTileProperty(nextFrame.x / 64, nextFrame.y / 64 + 1, "CollisionId") == Collider::Type::SPIKE)
+	if (app->map->GetTileProperty(nextFrame.x / app->generalTileSize, nextFrame.y / app->generalTileSize + 1, "CollisionId") == Collider::Type::SPIKE)
 	{
 		hurtChange = true;
 		collider->pendingToDelete = true;
 		app->audio->PlayFx(destroyedFx);
 	}
 
-	iPoint origin = { nextFrame.x / 64,nextFrame.y / 64 };
-	iPoint destination = { app->player->playerRect.x / 64,app->player->playerRect.y / 64 };
+	iPoint origin = { nextFrame.x / app->generalTileSize,nextFrame.y / app->generalTileSize };
+	iPoint destination = { app->player->playerRect.x / app->generalTileSize,app->player->playerRect.y / app->generalTileSize };
 	if (destination.y < 0)
 	{
 		destination.y = 0;
@@ -92,7 +93,7 @@ void EnemyFlying::Update(float dt)
 			pathCount = app->pathfinding->CreatePath(path, origin, destination);
 			if (pathCount != -1)
 			{
-				LOG("origin: %d, %d destination: %d, %d\n", origin.x, origin.y, destination.x, destination.y);
+				//LOG("origin: %d, %d destination: %d, %d\n", origin.x, origin.y, destination.x, destination.y);
 				i = 0;
 			}
 		}
@@ -108,43 +109,43 @@ void EnemyFlying::Update(float dt)
 		iPoint pos = app->map->MapToWorld(path.At(i)->x, path.At(i)->y);
 		iPoint dest = app->map->MapToWorld(path.At(i + 1)->x, path.At(i + 1)->y);
 		iPoint dif = { dest.x - pos.x,dest.y - pos.y };
-		LOG("dif: %d, %d\n", dif.x, dif.y);
+		//LOG("dif: %d, %d\n", dif.x, dif.y);
 		if (dif.x > 0)
 		{
 			// i do not agree with this
-			enemyPhysics.speed.x = 170.0f;
-			if (origin.x <= dest.x)
-			{
-				i++;
-			}
+			enemyPhysics.speed.x = 150.0f;
+			//if (origin.x <= dest.x)
+			//{
+			//	i++;
+			//}
 			invert = false;
 		}
 		else if (dif.x < 0)
 		{
-			origin.x = (nextFrame.x + enemyRect.w) / 64;
+			origin.x = (nextFrame.x + enemyRect.w) / app->generalTileSize;
 			enemyPhysics.speed.x = -75.0f;
 			invert = true;
-			if (origin.x >= dest.x)
-			{
-				i++;
-			}
+			//if (origin.x >= dest.x)
+			//{
+			//	i++;
+			//}
 		}
 		else if (dif.y < 0)
 		{
-			origin.y = (nextFrame.y + enemyRect.h) / 64;
-			nextFrame.y -= floor(150.0f * dt);
-			if (origin.y >= dest.y)
-			{
-				i++;
-			}
+			origin.y = (nextFrame.y + enemyRect.h) / app->generalTileSize;
+			enemyPhysics.speed.y = -75.0f;
+			//if (origin.y >= dest.y)
+			//{
+			//	i++;
+			//}
 		}
 		else if (dif.y > 0)
 		{
-			nextFrame.y += floor(150.0f * dt);
-			if (origin.y <= dest.y)
-			{
-				i++;
-			}
+			enemyPhysics.speed.y = 150.0f;
+			//if (origin.y <= dest.y)
+			//{
+			//	i++;
+			//}
 		}
 	}
 

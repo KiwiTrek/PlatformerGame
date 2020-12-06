@@ -75,9 +75,10 @@ private:
 	SDL_Texture* ground = nullptr;
 	SDL_Texture* flying = nullptr;
 
+	SString folderTexture;
+	SString folderAudioFx;
+
 	// The audio fx for destroying an enemy
-	int enemyGroundFx = 0;
-	int enemyFlyingFx = 0;
 	int enemyDestroyedFx = 0;
 };
 

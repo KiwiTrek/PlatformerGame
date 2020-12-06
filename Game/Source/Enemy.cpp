@@ -9,7 +9,7 @@
 
 #include "Log.h"
 
-Enemy::Enemy(int x, int y, EnemyType type) : enemyRect({ x, y, 64, 64 }), type(type)
+Enemy::Enemy(int x, int y, EnemyType type) : enemyRect({ x, y, app->generalTileSize, app->generalTileSize }), type(type)
 {
 	spawnPos.x = enemyRect.x;
 	spawnPos.y = enemyRect.y;
@@ -33,11 +33,6 @@ void Enemy::Update(float dt)
 
 	if (collider != nullptr)
 		collider->SetPos(enemyRect.x, enemyRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
-
-	if (app->render->drawAll)
-	{
-		app->pathfinding->DrawPath(&path);
-	}
 }
 
 void Enemy::Draw()
@@ -49,7 +44,8 @@ void Enemy::Draw()
 
 	if (app->render->drawAll)
 	{
-		app->render->DrawRectangle({ enemyRect.x, enemyRect.y, 64,64 }, 255, 255, 0, 100);
+		app->render->DrawRectangle({ enemyRect.x, enemyRect.y, app->generalTileSize,app->generalTileSize }, 255, 255, 0, 100);
+		app->pathfinding->DrawPath(&path);
 	}
 }
 

@@ -18,14 +18,10 @@
 	<fonts />
 	<enemyManagement>
 		<enemy>
-			<coordinates x="6592" y="192" />
-			<type value="2" />
-			<destroyed value="false" />
+			<destroyed value="true" />
 		</enemy>
 		<enemy>
-			<coordinates x="2368" y="768" />
-			<type value="1" />
-			<destroyed value="false" />
+			<destroyed value="true" />
 		</enemy>
 		<enemy>
 			<destroyed value="true" />

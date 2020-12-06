@@ -114,6 +114,7 @@ bool App::Awake()
 
 		title.Create(configApp.child("title").child_value());
 		organization.Create(configApp.child("organization").child_value());
+		generalTileSize = configApp.child("generalTileSize").attribute("value").as_int(64);
 
 		// Read from config file your framerate cap
 		cap = configApp.attribute("framerate_cap").as_int(-1); // -1 = No cap
@@ -155,6 +156,8 @@ bool App::Start()
 		}
 		item = item->next;
 	}
+
+	capRequest = false;
 
 	PERF_PEEK(ptimer);
 
@@ -276,7 +279,7 @@ void App::FinishUpdate()
 	{
 		sprintf_s(vsyncStr, "off");
 	}
-	sprintf_s(title, 256, "Last sec frames: %i Av.FPS: %.2f Last Frame Ms: %02u Vsync: %s", framesOnLastUpdate, averageFps, lastFrameMs, vsyncStr);
+	sprintf_s(title, 256, "FPS: %i Av.FPS: %.2f Last Frame Ms: %02u Vsync: %s", framesOnLastUpdate, averageFps, lastFrameMs, vsyncStr);
 	app->win->SetTitle(title);
 
 	// Use SDL_Delay to make sure you get your capped framerate

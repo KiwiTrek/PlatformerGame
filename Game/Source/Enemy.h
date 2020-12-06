@@ -63,14 +63,13 @@ public:
 	iPoint nextFrame;
 
 	// Sound fx when destroyed
-	int chasingFx = 0;
 	int destroyedFx = 0;
 
 protected:
 	// A ptr to the current animation
 	Animation* currentAnim = nullptr;
 	bool invert = false;
-	int enemySize = 64;
+	int enemySize;
 
 	// Original spawn position. Stored for movement calculations
 	iPoint spawnPos;

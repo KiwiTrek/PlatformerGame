@@ -11,6 +11,7 @@
 
 EnemyGround::EnemyGround(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, typeOfEnemy)
 {
+	enemySize = app->generalTileSize;
 	for (int i = 0; i != 11; ++i)
 	{
 		idle.PushBack({ i * enemySize,enemySize,enemySize,enemySize });
@@ -40,7 +41,7 @@ EnemyGround::EnemyGround(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, type
 	attack.loop = false;
 
 	currentAnim = &idle;
-	collider = app->collisions->AddCollider({ enemyRect.x, enemyRect.y, 64, 64 }, Collider::Type::ENEMY, (Module*)app->enemies);
+	collider = app->collisions->AddCollider({ enemyRect.x, enemyRect.y, app->generalTileSize, app->generalTileSize }, Collider::Type::ENEMY, (Module*)app->enemies);
 	
 	idle.Reset();
 	walking.Reset();
@@ -89,15 +90,15 @@ void EnemyGround::Update(float dt)
 		}
 	}
 
-	if (app->map->GetTileProperty(nextFrame.x / 64, nextFrame.y / 64 + 1, "CollisionId") == Collider::Type::SPIKE)
+	if (app->map->GetTileProperty(nextFrame.x / app->generalTileSize, nextFrame.y / app->generalTileSize + 1, "CollisionId") == Collider::Type::SPIKE)
 	{
 		hurtChange = true;
 		collider->pendingToDelete = true;
 		app->audio->PlayFx(destroyedFx);
 	}
 
-	iPoint origin = { nextFrame.x / 64,nextFrame.y / 64 };
-	iPoint destination = { app->player->playerRect.x / 64,app->player->playerRect.y / 64 };
+	iPoint origin = { nextFrame.x / app->generalTileSize,nextFrame.y / app->generalTileSize };
+	iPoint destination = { app->player->playerRect.x / app->generalTileSize,app->player->playerRect.y / app->generalTileSize };
 	if (destination.y < 0)
 	{
 		destination.y = 0;
@@ -111,7 +112,7 @@ void EnemyGround::Update(float dt)
 			pathCount = app->pathfinding->CreatePath(path, origin, destination);
 			if (pathCount != -1)
 			{
-				LOG("origin: %d, %d destination: %d, %d\n", origin.x, origin.y, destination.x, destination.y);
+				//LOG("origin: %d, %d destination: %d, %d\n", origin.x, origin.y, destination.x, destination.y);
 				i = 0;
 			}
 		}
@@ -127,7 +128,7 @@ void EnemyGround::Update(float dt)
 		iPoint pos = app->map->MapToWorld(path.At(i)->x, path.At(i)->y);
 		iPoint dest = app->map->MapToWorld(path.At(i+1)->x, path.At(i+1)->y);
 		iPoint dif = { dest.x - pos.x,dest.y - pos.y };
-		LOG("dif: %d, %d\n", dif.x, dif.y);
+		//LOG("dif: %d, %d\n", dif.x, dif.y);
 		if (dif.x > 0)
 		{
 			// i do not agree with this
@@ -138,7 +139,7 @@ void EnemyGround::Update(float dt)
 		else if (dif.x < 0)
 		{
 			currentAnim = &walking;
-			origin.x = (nextFrame.x + enemyRect.w) / 64;
+			origin.x = (nextFrame.x + enemyRect.w) / app->generalTileSize;
 			enemyPhysics.speed.x = -75.0f;
 			invert = true;
 		}

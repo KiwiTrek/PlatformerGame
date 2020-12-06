@@ -38,16 +38,25 @@ void EnemyManagement::Init()
 
 bool EnemyManagement::Awake(pugi::xml_node& config)
 {
-	return true;
+	LOG("Loading Enemies");
+	bool ret = true;
+
+	folderTexture.Create(config.child("folderTexture").child_value());
+	folderAudioFx.Create(config.child("folderAudioFx").child_value());
+
+	return ret;
 }
 
 bool EnemyManagement::Start()
 {
-	ground = app->tex->Load("Assets/Textures/enemy_ground_spritesheet.png");
-	flying = app->tex->Load("Assets/Textures/enemy_flying_spritesheet.png");
-	enemyGroundFx = app->audio->LoadFx("Assets/Audio/Fx/ground_chasing.wav");
-	enemyFlyingFx = app->audio->LoadFx("Assets/Audio/Fx/flying_chasing.wav");
-	enemyDestroyedFx = app->audio->LoadFx("Assets/Audio/Fx/enemy_death.wav");
+	SString tmp("%s%s", folderTexture.GetString(), "enemy_ground_spritesheet.png");
+	ground = app->tex->Load(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderTexture.GetString(), "enemy_flying_spritesheet.png");
+	flying = app->tex->Load(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudioFx.GetString(), "enemy_death.wav");
+	enemyDestroyedFx = app->audio->LoadFx(tmp.GetString());
 
 	return true;
 }
@@ -248,17 +257,16 @@ void EnemyManagement::SpawnEnemy(const EnemySpawnpoint& info)
 			case EnemyType::GROUND:
 				enemies[i] = new EnemyGround(info.x, info.y, info.type);
 				enemies[i]->texture = ground;
-				enemies[i]->chasingFx = enemyGroundFx;
-				enemies[i]->enemyPhysics.axisY = true;
+				enemies[i]->enemyPhysics.verlet = true;
 				break;
 			case EnemyType::FLYING:
 				enemies[i] = new EnemyFlying(info.x, info.y, info.type);
 				enemies[i]->texture = flying;
-				enemies[i]->chasingFx = enemyFlyingFx;
-				enemies[i]->enemyPhysics.axisY = false;
+				enemies[i]->enemyPhysics.verlet = false;
 				break;
 			}
 			enemies[i]->enemyPhysics.axisX = true;
+			enemies[i]->enemyPhysics.axisY = true;
 			enemies[i]->destroyedFx = enemyDestroyedFx;
 			app->audio->SetFxVolume(enemies[i]->destroyedFx);
 			break;

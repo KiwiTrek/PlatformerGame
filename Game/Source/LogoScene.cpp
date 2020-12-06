@@ -64,12 +64,13 @@ bool LogoScene::Update(float dt)
 		app->transition->FadeEffect(nullptr, this, true, floor(80.0f * dt));
 	}
 
-	if (timer < 200)
+	if (timer < (15000 * dt))
 	{
 		timer++;
-		if (timer == 100)
+		if (timer >= (7500 * dt) && onceTimer)
 		{
 			app->audio->PlayFx(logoFx);
+			onceTimer = false;
 		}
 	}
 	else

@@ -1,22 +1,23 @@
 <!-- Config file for the game -->
 
 <config>
-  <app framerate_cap="60">
-    <title>Adventure in Dream World (ALPHA)</title>
-    <organization>UPC CITM</organization>
-  </app>
+    <app framerate_cap="60">
+        <title>Adventure in Dream World (ALPHA)</title>
+        <organization>UPC CITM</organization>
+        <generalTileSize value="64"/>
+    </app>
 
-  <renderer>
-    <vsync value="false"/>
-  </renderer>
+    <renderer>
+        <vsync value="false"/>
+    </renderer>
 
-  <window>
-    <resolution width="1280" height="720" scale="1"/>
-    <fullscreen value="false"/>
-    <borderless value="false"/>
-    <resizable value="false"/>
-    <fullscreen_window value="false"/>
-  </window>
+    <window>
+        <resolution width="1280" height="720" scale="1"/>
+        <fullscreen value="false"/>
+        <borderless value="false"/>
+        <resizable value="false"/>
+        <fullscreen_window value="false"/>
+    </window>
 
     <player>
         <playerSize value ="128"/>
@@ -46,7 +47,7 @@
 
     <scene>
         <camera x ="0" y="-128"/>
-        <folderTexture>Assets/Textures/Background/</folderTexture>
+        <folderTexture>Assets/Textures/Scene/</folderTexture>
         <folderAudioMusic>Assets/Audio/Music/</folderAudioMusic>
     </scene>
 
@@ -54,4 +55,13 @@
         <folderTexture>Assets/Textures/</folderTexture>
         <folderAudioMusic>Assets/Audio/Music/</folderAudioMusic>
     </titleScene>
+
+    <enemyManagement>
+        <folderTexture>Assets/Textures/</folderTexture>
+        <folderAudioFx>Assets/Audio/Fx/</folderAudioFx>
+    </enemyManagement>
+
+    <pathfinding>
+        <folderTexture>Assets/Maps/</folderTexture>
+    </pathfinding>
 </config>

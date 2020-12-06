@@ -114,6 +114,7 @@ public:
 	DeathScene* deathScene;
 
 	bool vsync = false;
+	int generalTileSize = 64;
 
 private:
 

@@ -42,6 +42,7 @@ private:
 	SString folderTexture;
 	SString folderAudioFx;
 	bool once = true;
+	bool onceTimer = true;
 };
 
 #endif // __LOGO_SCENE_H__

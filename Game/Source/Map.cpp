@@ -342,7 +342,19 @@ bool Map::CreateWalkabilityMap(int* width, int* height, uchar** buffer) const
 
 				if (tileset != NULL)
 				{
-					map[i] = (tileId - tileset->firstgId) > 0 ? (uchar)0 : (uchar)1;
+					switch (tileId - tileset->firstgId)
+					{
+					case 0:
+						map[i] = (uchar)254;
+						break;
+					case 1:
+						map[i] = (uchar)0;
+						break;
+					default:
+						map[i] = (uchar)0;
+						break;
+					}
+					//map[i] = (tileId - tileset->firstgId) > 0 ? (uchar)0 : (uchar)1;
 				}
 			}
 		}
