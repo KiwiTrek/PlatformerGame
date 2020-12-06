@@ -15,7 +15,7 @@ class SString
 private:
 
 	char* str;
-	unsigned int size;
+	uint size;
 
 public:
 
@@ -26,7 +26,7 @@ public:
 		Clear();
 	}
 
-	SString(unsigned int size)
+	SString(uint size)
 	{
 		if(size > 0)
 			Alloc(size);
@@ -175,7 +175,7 @@ public:
 
 	const SString& operator+= (const SString& string)
 	{
-		unsigned int need_size = string.Length() + Length() + 1;
+		uint need_size = string.Length() + Length() + 1;
 
 		if(need_size > size)
 		{
@@ -194,7 +194,7 @@ public:
 	{
 		if(string != NULL)
 		{
-			unsigned int need_size = strlen(string) + Length() + 1;
+			uint need_size = strlen(string) + Length() + 1;
 
 			if(need_size > size)
 			{
@@ -211,7 +211,7 @@ public:
 	}
 
 	// Utils
-	unsigned int Length() const
+	uint Length() const
 	{
 		return strlen(str);
 	}
@@ -226,12 +226,12 @@ public:
 		return str;
 	}
 
-	unsigned int GetCapacity() const
+	uint GetCapacity() const
 	{
 		return size;
 	}
 
-	bool Cut(unsigned int begin, unsigned int end = 0)
+	bool Cut(uint begin, uint end = 0)
 	{
 		uint len = Length();
 
@@ -332,7 +332,7 @@ public:
 	}
 
 	// Paste a substring into buffer
-	uint SubString(unsigned int start, unsigned int end, SString& buffer) const
+	uint SubString(uint start, uint end, SString& buffer) const
 	{
 		if (str != NULL)
 		{
@@ -357,7 +357,7 @@ public:
 
 private:
 
-	void Alloc(unsigned int requieredMemory)
+	void Alloc(uint requieredMemory)
 	{
 		size = requieredMemory;
 		str = new char[size];

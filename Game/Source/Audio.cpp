@@ -4,13 +4,8 @@
 #include "Defs.h"
 #include "Log.h"
 
-// NOTE: Recommended using: Additional Include Directories,
-// instead of 'hardcoding' library location path in code logic
-#include "SDL/include/SDL.h"
-#include "SDL_mixer/include/SDL_mixer.h"
-
-// NOTE: Library linkage is configured in Linker Options
-//#pragma comment(lib, "../Game/Source/External/SDL_mixer/libx86/SDL2_mixer.lib")
+#include "SDL.h"
+#include "SDL_mixer.h"
 
 Audio::Audio() : Module()
 {
@@ -167,9 +162,9 @@ bool Audio::PlayMusic(const char* path, float fade_time)
 }
 
 // Load WAV
-unsigned int Audio::LoadFx(const char* path)
+uint Audio::LoadFx(const char* path)
 {
-	unsigned int ret = 0;
+	uint ret = 0;
 
 	if(!active)
 		return 0;
@@ -189,7 +184,7 @@ unsigned int Audio::LoadFx(const char* path)
 	return ret;
 }
 
-bool Audio::UnloadFx(unsigned int index)
+bool Audio::UnloadFx(uint index)
 {
 	ListItem<Mix_Chunk*>* s = fx.At(index - 1);
 	if (s != nullptr)
@@ -203,7 +198,7 @@ bool Audio::UnloadFx(unsigned int index)
 }
 
 // Play WAV
-bool Audio::PlayFx(unsigned int id, int repeat)
+bool Audio::PlayFx(uint id, int repeat)
 {
 	bool ret = false;
 
@@ -218,7 +213,7 @@ bool Audio::PlayFx(unsigned int id, int repeat)
 	return ret;
 }
 
-bool Audio::SetFxVolume(unsigned int index)
+bool Audio::SetFxVolume(uint index)
 {
 	ListItem<Mix_Chunk*>* s = fx.At(index - 1);
 	if (s != nullptr)

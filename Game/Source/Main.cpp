@@ -4,7 +4,7 @@
 #include "Log.h"
 
 // NOTE: SDL redefines main function
-#include "SDL/include/SDL.h"
+#include "SDL.h"
 
 // NOTE: Library linkage is configured in Linker Options
 //#pragma comment(lib, "../game/source/external/sdl/libx86/sdl2.lib")

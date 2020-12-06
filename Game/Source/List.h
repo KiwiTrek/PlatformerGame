@@ -33,7 +33,7 @@ public:
 
 private:
 
-	unsigned int size;
+	uint size;
 
 public:
 
@@ -51,7 +51,7 @@ public:
 	}
 
 	// Get Size
-	unsigned int Count() const
+	uint Count() const
 	{
 		return size;
 	}
@@ -136,7 +136,7 @@ public:
 	}
 
 	// Read/write operator access directly to a position in the list
-	tdata& operator [](const unsigned int index)
+	tdata& operator [](const uint index)
 	{
 		long pos;
 		ListItem<tdata>* pItem;
@@ -160,7 +160,7 @@ public:
 	/**
 	* const read operator access directly to a position in the list
 	*/
-	const tdata& operator [](const unsigned int index) const
+	const tdata& operator [](const uint index) const
 	{
 		long pos;
 		ListItem<tdata>* pItem;
@@ -202,7 +202,7 @@ public:
 	/**
 	* const access to a node in a position in the list
 	*/
-	const ListItem<tdata>* At(unsigned int index) const
+	const ListItem<tdata>* At(uint index) const
 	{
 		long pos = 0;
 		ListItem<tdata>* pItem = start;
@@ -221,7 +221,7 @@ public:
 	/**
 	* access to a node in a position in the list
 	*/
-	ListItem<tdata>* At(unsigned int index)
+	ListItem<tdata>* At(uint index)
 	{
 		long pos = 0;
 		ListItem<tdata>* pItem = start;

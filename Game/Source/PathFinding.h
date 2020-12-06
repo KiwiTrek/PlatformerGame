@@ -7,7 +7,7 @@
 #include "DynArray.h"
 #include "List.h"
 
-#include "SDL/include/SDL.h"
+#include "SDL.h"
 
 #define DEFAULT_PATH_LENGTH 50
 #define INVALID_WALK_CODE 255

@@ -5,7 +5,7 @@
 #include "Animation.h"
 #include "Physics.h"
 
-#include "SDL/include/SDL.h"
+#include "SDL.h"
 
 struct Collider;
 class Player : public Module
@@ -81,13 +81,13 @@ private:
 	iPoint nextFrame;
 	int jumpCounter;
 
-	unsigned int deadFx;
-	unsigned int jumpFx;
-	unsigned int doubleJumpFx;
-	unsigned int fruitFx;
-	unsigned int hitFx;
-	unsigned int slashFx;
-	unsigned int checkpointFx;
+	uint deadFx;
+	uint jumpFx;
+	uint doubleJumpFx;
+	uint fruitFx;
+	uint hitFx;
+	uint slashFx;
+	uint checkpointFx;
 
 	bool isDead = false;
 	int hitCD = 5;

@@ -6,31 +6,31 @@
 #include "Collisions.h"
 #include "Map.h"
 
-#include "SDL/include/SDL.h"
+#include "SDL.h"
 
 class Collider;
 
 struct Physics
 {
 public:
-	void UpdatePhysics(iPoint& pos, float deltaTime)
+	void UpdatePhysics(iPoint& pos, float dt)
 	{
 		if (axisX)
 		{
-			pos.x = pos.x + speed.x * deltaTime;
+			pos.x = pos.x + speed.x * dt;
 		}
 		if (axisY)
 		{
 			//Euler
 			if (verlet == false)
 			{
-				pos.y = pos.y + speed.y * deltaTime;
+				pos.y = pos.y + speed.y * dt;
 			}
 			// Verlet
 			else
 			{
-				pos.y = pos.y + speed.y * deltaTime + (gravity * deltaTime * deltaTime * 0.5);
-				speed.y = speed.y + gravity * deltaTime;
+				pos.y = pos.y + speed.y * dt + (gravity * dt * dt * 0.5);
+				speed.y = speed.y + gravity * dt;
 			}
 		}
 	}

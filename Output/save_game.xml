@@ -13,7 +13,9 @@
 	<scene />
 	<map />
 	<player>
-		<coordinates x="6611" y="384" />
+		<coordinates x="196" y="704" />
+		<score value="0" />
+		<life value="3" />
 	</player>
 	<fonts />
 	<enemyManagement>

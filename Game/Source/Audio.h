@@ -27,12 +27,12 @@ public:
 	bool PlayMusic(const char* path, float fadeTime = DEFAULT_MUSIC_FADE_TIME);
 
 	// Load/Unload a WAV in memory
-	unsigned int LoadFx(const char* path);
-	bool UnloadFx(unsigned int index);
-	bool SetFxVolume(unsigned int index);
+	uint LoadFx(const char* path);
+	bool UnloadFx(uint index);
+	bool SetFxVolume(uint index);
 
 	// Play a previously loaded WAV
-	bool PlayFx(unsigned int fx, int repeat = 0);
+	bool PlayFx(uint fx, int repeat = 0);
 
 	// Set volume to 0
 	void MuteVolume();

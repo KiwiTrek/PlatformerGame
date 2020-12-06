@@ -20,8 +20,8 @@
 #include "Defs.h"
 #include "Log.h"
 
-#include "Optick/include/optick.h"
-#include "Optick/include/optick.config.h"
+#include "optick.h"
+#include "optick.config.h"
 
 #include <iostream>
 #include <sstream>
@@ -29,7 +29,7 @@
 // Constructor
 App::App(int argc, char* args[]) : argc(argc), args(args)
 {
-	PERF_START(ptimer);
+	PERF_START(pTimer);
 
 	input = new Input();
 	win = new Window();
@@ -70,7 +70,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	// render last to swap buffer
 	AddModule(render);
 
-	PERF_PEEK(ptimer);
+	PERF_PEEK(pTimer);
 }
 
 // Destructor
@@ -97,7 +97,7 @@ void App::AddModule(Module* module)
 // Called before render is available
 bool App::Awake()
 {
-	PERF_START(ptimer);
+	PERF_START(pTimer);
 
 	pugi::xml_document configFile;
 	pugi::xml_node config;
@@ -117,7 +117,7 @@ bool App::Awake()
 		generalTileSize = configApp.child("generalTileSize").attribute("value").as_int(64);
 
 		// Read from config file your framerate cap
-		cap = configApp.attribute("framerate_cap").as_int(-1); // -1 = No cap
+		cap = configApp.attribute("framerateCap").as_int(-1);
 
 		if (cap > 0) cappedMs = 1000 / cap;
 	}
@@ -134,7 +134,7 @@ bool App::Awake()
 		}
 	}
 
-	PERF_PEEK(ptimer);
+	PERF_PEEK(pTimer);
 
 	return ret;
 }
@@ -142,7 +142,7 @@ bool App::Awake()
 // Called before the first frame
 bool App::Start()
 {
-	PERF_START(ptimer);
+	PERF_START(pTimer);
 
 	bool ret = true;
 	ListItem<Module*>* item;
@@ -159,7 +159,7 @@ bool App::Start()
 
 	capRequest = false;
 
-	PERF_PEEK(ptimer);
+	PERF_PEEK(pTimer);
 
 	return ret;
 }
@@ -283,14 +283,14 @@ void App::FinishUpdate()
 	app->win->SetTitle(title);
 
 	// Use SDL_Delay to make sure you get your capped framerate
-	PERF_START(ptimer);
+	PERF_START(pTimer);
 	if (cappedMs > lastFrameMs)
 	{
 		SDL_Delay(cappedMs - lastFrameMs);
 	}
 
 	// Measure accurately the amount of time SDL_Delay() actually waits compared to what was expected
-	PERF_PEEK(ptimer);
+	PERF_PEEK(pTimer);
 }
 
 // Call modules before each loop iteration

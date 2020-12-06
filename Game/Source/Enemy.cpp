@@ -6,6 +6,7 @@
 #include "Audio.h"
 #include "Render.h"
 #include "PathFinding.h"
+#include "Player.h"
 
 #include "Log.h"
 
@@ -56,6 +57,7 @@ void Enemy::OnCollision(Collider* c1, Collider* c2)
 		hurtChange = true;
 		collider->pendingToDelete = true;
 		app->audio->PlayFx(destroyedFx);
+		app->player->score += 100;
 	}
 	else
 	{

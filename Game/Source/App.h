@@ -9,7 +9,7 @@
 
 #include "PugiXml/src/pugixml.hpp"
 
-#define CONFIG_FILENAME		"config.xml"
+#define CONFIG_FILENAME "config.xml"
 #define SAVE_STATE_FILENAME "save_game.xml"
 
 // Modules
@@ -130,7 +130,7 @@ private:
 	pugi::xml_node save;
 
 	// Frame variables
-	PerfTimer ptimer;
+	PerfTimer pTimer;
 	uint64 frameCount = 0;
 
 	Timer startupTime;

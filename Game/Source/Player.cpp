@@ -307,8 +307,11 @@ bool Player::Update(float dt)
 
 		if (app->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)
 		{
+			if (currentAnimation != &attack)
+			{
+				app->audio->PlayFx(slashFx);
+			}
 			currentAnimation = &attack;
-			app->audio->PlayFx(slashFx);
 			hurtBox = app->collisions->AddCollider(currentAnimation->GetCurrentFrame(), Collider::Type::ATTACK, this);
 			isAttacking = true;
 		}
@@ -440,7 +443,7 @@ bool Player::Update(float dt)
 				lives++;
 				app->map->SetTileProperty(playerRect.x / app->generalTileSize, playerRect.y / app->generalTileSize, "NoDraw", 1, true, true);
 				app->audio->PlayFx(fruitFx);
-				score += 100;
+				score += 50;
 			}
 		}
 
@@ -580,6 +583,8 @@ bool Player::Load(pugi::xml_node& save)
 
 	playerRect.x = save.child("coordinates").attribute("x").as_int();
 	playerRect.y = save.child("coordinates").attribute("y").as_int();
+	score = save.child("score").attribute("value").as_int(0);
+	lives = save.child("life").attribute("value").as_int(3);
 
 	return ret;
 }
@@ -592,6 +597,8 @@ bool Player::Save(pugi::xml_node& save)
 	pugi::xml_node player = save.append_child("coordinates");
 	player.append_attribute("x").set_value(playerRect.x);
 	player.append_attribute("y").set_value(playerRect.y);
+	save.append_child("score").append_attribute("value").set_value(score);
+	save.append_child("life").append_attribute("value").set_value(lives);
 
 	return ret;
 }

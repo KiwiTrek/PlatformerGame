@@ -38,7 +38,7 @@ private:
 
 	SDL_Texture* logo;
 	int timer = 0;
-	unsigned int logoFx;
+	uint logoFx;
 	SString folderTexture;
 	SString folderAudioFx;
 	bool once = true;

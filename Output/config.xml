@@ -1,7 +1,7 @@
 <!-- Config file for the game -->
 
 <config>
-    <app framerate_cap="60">
+    <app framerateCap="60">
         <title>Adventure in Dream World (ALPHA)</title>
         <organization>UPC CITM</organization>
         <generalTileSize value="64"/>
