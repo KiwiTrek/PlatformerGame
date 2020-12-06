@@ -6,6 +6,7 @@
 
 #define MAX_ENEMIES 100
 
+// Needed to spawn enemies
 struct EnemySpawnpoint
 {
 	EnemyType type = EnemyType::NO_TYPE;
@@ -25,22 +26,23 @@ public:
 	// Destructor
 	~EnemyManagement();
 
+	// Called when program is executed
 	void Init();
 
 	// Called before render is available
 	bool Awake(pugi::xml_node& config);
 
-	// Called when the module is activated
+	// Called before the first frame
 	// Loads the necessary textures for the enemies
 	bool Start() override;
 
 	// Called each loop iteration
 	bool Update(float dt);
 
-	// Called before all Updates
+	// Called after all Updates
 	bool PostUpdate();
 
-	// Called on application exit
+	// Called before quitting
 	// Destroys all active enemies left in the array
 	bool CleanUp() override;
 

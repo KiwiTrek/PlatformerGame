@@ -7,6 +7,7 @@
 
 #include "PugiXml\src\pugixml.hpp"
 
+// Map Types enum
 enum MapTypes
 {
 	MAPTYPE_UNKNOWN = 0,
@@ -23,6 +24,7 @@ struct Properties
 		int value;
 	};
 
+	// Destructor
 	~Properties()
 	{
 		ListItem<Property*>* item;
@@ -39,7 +41,8 @@ struct Properties
 	int GetProperty(const char* name, int defaultValue = 0) const;
 	void SetProperty(const char* name, int value);
 
-	List<Property *> list;
+	// List of properties
+	List<Property*> list;
 };
 
 struct Tile
@@ -64,7 +67,7 @@ struct TileSet
 	int	offsetX;
 	int	offsetY;
 
-	List<Tile *> tileSetPropList;
+	List<Tile*> tileSetPropList;
 
 	// Receives a tile id and returns it's Rect position on the tileset
 	SDL_Rect GetTileRect(int id) const;
@@ -79,12 +82,13 @@ struct MapLayer
 	int width;
 	int height;
 	uint* data;
-
 	Properties properties;
 
+	// Constructor
 	MapLayer() : data(NULL)
 	{}
 
+	// Destructor
 	~MapLayer()
 	{
 		RELEASE(data);
@@ -104,19 +108,20 @@ struct MapData
 	int tileWidth, tileHeight;
 	SDL_Color backgroundColor;
 	MapTypes type;
-	List<TileSet *> tileSets;
-	List<MapLayer *> mapLayer;
+	List<TileSet*> tileSets;
+	List<MapLayer*> mapLayer;
 };
 
 class Map : public Module
 {
 public:
-
+	// Constructor
 	Map();
 
 	// Destructor
 	virtual ~Map();
 
+	// Called when program is executed
 	void Init();
 
 	// Called before render is available
@@ -134,6 +139,7 @@ public:
 	// Translates map position to world position
 	iPoint MapToWorld(int x, int y) const;
 
+	// Creates the data required to check the walkability of the whole map for pathfinding
 	bool CreateWalkabilityMap(int* width, int* height, uchar** buffer) const;
 
 	// Changes property to value assigned
@@ -142,11 +148,10 @@ public:
 	// Gets the value of a property in a given tile
 	int GetTileProperty(int x, int y, const char* property, bool notMovCollision = false, bool isObject = false) const;
 
-
+	// Stores the data of the whole map
 	MapData data;
 
 private:
-
 	bool LoadMap();
 	bool LoadTileSetDetails(pugi::xml_node& node, TileSet* set);
 	bool LoadTileSetImage(pugi::xml_node& node, TileSet* set);
@@ -154,9 +159,7 @@ private:
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
 	bool LoadProperties(pugi::xml_node& node, Properties& properties);
 	MapTypes StrToMapType(SString str);
-
 	TileSet* GetTileSetFromTileId(int id) const;
-
 	bool StoreId(pugi::xml_node& node, MapLayer* layer, int index);
 	void LogInfo();
 

@@ -8,12 +8,13 @@ struct SDL_Texture;
 class DeathScene : public Module
 {
 public:
-
+	// Constructor
 	DeathScene();
 
 	// Destructor
 	virtual ~DeathScene();
 
+	// Called when program is executed
 	void Init();
 
 	// Called before render is available
@@ -28,14 +29,13 @@ public:
 	// Called each loop iteration
 	bool Update(float dt);
 
-	// Called before all Updates
+	// Called after all Updates
 	bool PostUpdate();
 
 	// Called before quitting
 	bool CleanUp();
 
 private:
-
 	SDL_Texture* deathScreen;
 	SString folderTexture;
 	SString folderAudioMusic;

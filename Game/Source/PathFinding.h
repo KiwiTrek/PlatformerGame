@@ -12,21 +12,16 @@
 #define DEFAULT_PATH_LENGTH 50
 #define INVALID_WALK_CODE 255
 
-// --------------------------------------------------
-// Recommended reading:
-// Intro: http://www.raywenderlich.com/4946/introduction-to-a-pathfinding
-// Details: http://theory.stanford.edu/~amitp/GameProgramming/
-// --------------------------------------------------
-
 class PathFinding : public Module
 {
 public:
-
+	// Constructor
 	PathFinding();
 
 	// Destructor
 	~PathFinding();
 
+	// Called before the first frame
 	bool Start();
 
 	// Called before render is available
@@ -38,71 +33,73 @@ public:
 	// Sets up the walkability map
 	void SetMap(uint width, uint height, uchar* data);
 
-	// Main function to request a path from A to B
+	// Main function to request a path from origin to destination
 	int CreatePath(DynArray<iPoint>& path, const iPoint& origin, const iPoint& destination);
 
-	// Utility: return true if pos is inside the map boundaries
+	// Returns true if pos is inside the map boundaries
 	bool CheckBoundaries(const iPoint& pos) const;
 
-	// Utility: returns true is the tile is walkable
+	// Returns true if the tile is walkable
 	bool IsWalkable(const iPoint& pos) const;
 
-	// Utility: return the walkability value of a tile
+	// Returns the walkability value of a tile
 	uchar GetTileCost(const iPoint& pos) const;
 
+	// Draws the given path
 	void DrawPath(DynArray<iPoint>* path);
 
 private:
-	// texture to draw the path
+	// Walkability values of the whole map
+	uchar* map;
+
 	SString folderTexture;
 	SDL_Texture* debugPath;
-
-	// size of the map
 	uint width;
 	uint height;
-
-	// all map walkability values [0..255]
-	uchar* map;
 };
 
-// forward declaration
 struct PathList;
 
-// ---------------------------------------------------------------------
-// Pathnode: Helper struct to represent a node in the path creation
-// ---------------------------------------------------------------------
+// Struct to represent a node in the path creation
 struct PathNode
 {
-	int costSoFar;
-	int heuristic;
-	iPoint pos;
-	const PathNode* parent; // needed to reconstruct the path in the end
-
-	// Convenient constructors
+	// Constructors
 	PathNode();
 	PathNode(int costSoFar, int heuristic, const iPoint& pos, const PathNode* parent);
 	PathNode(const PathNode& node);
 
-	// Fills a list (PathList) of all valid adjacent pathnodes
+	// Fills a list of all valid adjacent pathnodes
 	uint FindWalkableAdjacents(PathList& list_to_fill);
-	// Calculates this tile score
+
+	// Calculates the score for a tile
 	int Score() const;
-	// Calculate the F for a specific destination tile
+
+	// Calculate the costSoFar and heuristic for a tile
 	int CalculateTotalCost(const iPoint& destination);
+
+	// Cost from origin to tile
+	int costSoFar;
+
+	// Cost from tile to destination
+	int heuristic;
+
+	// Position of the tile
+	iPoint pos;
+
+	// needed to reconstruct the path in the end
+	const PathNode* parent;
 };
 
-// ---------------------------------------------------------------------
-// Helper struct to include a list of path nodes
-// ---------------------------------------------------------------------
+// Struct to include a list of path nodes
 struct PathList
 {
-	// Looks for a node in this list and returns it's list node or NULL
+	// Looks for a node in the list and returns it's list node or NULL
 	const ListItem<PathNode>* Find(const iPoint& point) const;
 
 	// Returns the Pathnode with lowest score in this list or NULL if empty
 	ListItem<PathNode>* GetNodeLowestScore() const;
 
-	// The list itself, note they are not pointers!
+	// The list itself
 	List<PathNode> list;
 };
 

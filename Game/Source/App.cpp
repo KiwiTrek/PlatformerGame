@@ -26,7 +26,6 @@
 #include <iostream>
 #include <sstream>
 
-// Constructor
 App::App(int argc, char* args[]) : argc(argc), args(args)
 {
 	PERF_START(pTimer);
@@ -73,7 +72,6 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	PERF_PEEK(pTimer);
 }
 
-// Destructor
 App::~App()
 {
 	// Release modules
@@ -94,7 +92,6 @@ void App::AddModule(Module* module)
 	modules.Add(module);
 }
 
-// Called before render is available
 bool App::Awake()
 {
 	PERF_START(pTimer);
@@ -119,7 +116,10 @@ bool App::Awake()
 		// Read from config file your framerate cap
 		cap = configApp.attribute("framerateCap").as_int(-1);
 
-		if (cap > 0) cappedMs = 1000 / cap;
+		if (cap > 0)
+		{
+			cappedMs = 1000 / cap;
+		}
 	}
 
 	if (ret == true)
@@ -139,7 +139,6 @@ bool App::Awake()
 	return ret;
 }
 
-// Called before the first frame
 bool App::Start()
 {
 	PERF_START(pTimer);
@@ -164,7 +163,6 @@ bool App::Start()
 	return ret;
 }
 
-// Called each loop iteration
 bool App::Update()
 {
 	bool ret = true;
@@ -203,13 +201,18 @@ pugi::xml_node App::LoadConfig(pugi::xml_document& configFile) const
 
 	pugi::xml_parse_result result = configFile.load_file(CONFIG_FILENAME);
 
-	if (result == NULL) LOG("Could not load xml file: %s. pugi error: %s", CONFIG_FILENAME, result.description());
-	else ret = configFile.child("config");
+	if (result == NULL)
+	{
+		LOG("Could not load xml file: %s. pugi error: %s", CONFIG_FILENAME, result.description());
+	}
+	else
+	{
+		ret = configFile.child("config");
+	}
 
 	return ret;
 }
 
-// ---------------------------------------------
 void App::PrepareUpdate()
 {
 	OPTICK_CATEGORY("PrepareUpdate", Optick::Category::Debug);
@@ -223,7 +226,6 @@ void App::PrepareUpdate()
 	PERF_START(frameTime);
 }
 
-// ---------------------------------------------
 void App::FinishUpdate()
 {
 	OPTICK_CATEGORY("FinishUpdate", Optick::Category::Wait);
@@ -293,7 +295,6 @@ void App::FinishUpdate()
 	PERF_PEEK(pTimer);
 }
 
-// Call modules before each loop iteration
 bool App::PreUpdate()
 {
 	bool ret = true;
@@ -316,7 +317,6 @@ bool App::PreUpdate()
 	return ret;
 }
 
-// Call modules on each loop iteration
 bool App::DoUpdate()
 {
 	bool ret = true;
@@ -339,7 +339,6 @@ bool App::DoUpdate()
 	return ret;
 }
 
-// Call modules after each loop iteration
 bool App::PostUpdate()
 {
 	bool ret = true;
@@ -361,7 +360,6 @@ bool App::PostUpdate()
 	return ret;
 }
 
-// Called before quitting
 bool App::CleanUp()
 {
 	bool ret = true;
@@ -377,46 +375,43 @@ bool App::CleanUp()
 	return ret;
 }
 
-// ---------------------------------------
 int App::GetArgc() const
 {
 	return argc;
 }
 
-// ---------------------------------------
 const char* App::GetArgv(int index) const
 {
-	if(index < argc)
+	if (index < argc)
+	{
 		return args[index];
+	}
 	else
+	{
 		return NULL;
+	}
 }
 
-// ---------------------------------------
 const char* App::GetTitle() const
 {
 	return title.GetString();
 }
 
-// ---------------------------------------
 const char* App::GetOrganization() const
 {
 	return organization.GetString();
 }
 
-// ---------------------------------------
 void App::LoadRequest()
 {
 	loadRequest = true;
 }
 
-// ---------------------------------------
 void App::SaveRequest()
 {
 	saveRequest = true;
 }
 
-// ---------------------------------------
 void App::CapRequest()
 {
 	capRequest = true;
@@ -487,7 +482,10 @@ bool App::ChangeCap()
 		break;
 	}
 
-	if (cap > 0) cappedMs = 1000 / cap;
+	if (cap > 0)
+	{
+		cappedMs = 1000 / cap;
+	}
 
 	return ret;
 }

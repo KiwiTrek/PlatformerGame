@@ -1,6 +1,6 @@
 #pragma once
 #include "Module.h"
-#include "SDL\include\SDL_pixels.h"
+#include "SDL_pixels.h"
 
 #define MAX_FONTS 10
 #define MAX_FONT_CHARS 256
@@ -10,30 +10,39 @@ struct SDL_Texture;
 struct Font
 {
 public:
-    // Lookup table. All characters displayed in the same order as the texture
+    // Lookup table
+    // All characters displayed in the same order as the texture
     char table[MAX_FONT_CHARS];
 
     // The font texture
     SDL_Texture* texture = nullptr;
 
-    // Font setup data
+    // Length of the lookup table
     uint totalLength;
+
+    // Number of rows per table
     uint rows;
+
+    // Amount of chars per row of the texture
     uint columns;
-    uint char_w;
-    uint char_h;
+
+    // Width of each character
+    uint charW;
+
+    // Height of each character
+    uint charH;
 };
 
 class Fonts : public Module
 {
 public:
-
     // Constructor
     Fonts();
 
     // Destructor
     ~Fonts();
 
+    // Called when program is executed
     void Init();
 
     // Loads a font file from a texture

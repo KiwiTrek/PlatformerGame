@@ -139,7 +139,8 @@ bool Collisions::PreUpdate()
 		c1 = colliders[i];
 
 		// avoid checking collisions already checked
-		for (uint k = i + 1; k < MAX_COLLIDERS; ++k) {
+		for (uint k = i + 1; k < MAX_COLLIDERS; ++k)
+		{
 			// skip empty colliders
 			if (colliders[k] == nullptr)
 			{

@@ -11,7 +11,7 @@ struct SDL_Surface;
 class Textures : public Module
 {
 public:
-
+	// Constructor
 	Textures();
 
 	// Destructor
@@ -26,16 +26,14 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	// Load Texture
+	// Load/Unload Texture functions
 	SDL_Texture* const Load(const char* path);
 	SDL_Texture* const LoadSurface(SDL_Surface* surface);
 	bool UnLoad(SDL_Texture* texture);
 	void GetSize(const SDL_Texture* texture, uint& width, uint& height) const;
 
 public:
-
 	List<SDL_Texture*> textures;
 };
-
 
 #endif // __TEXTURES_H__

@@ -101,16 +101,15 @@ bool Player::Start()
 	spawnPoint = GetSpawnPoint();
 	playerRect = { spawnPoint.x, spawnPoint.y, app->generalTileSize, app->generalTileSize };
 	playerCollider = app->collisions->AddCollider(playerRect, Collider::Type::PLAYER, this);
-	jumpCounter = 2;
-
-	lives = 3;
-	isDead = false;
-	hitCD = 0;
 
 	score = 0;
+	jumpCounter = 2;
+	lives = 3;
+	hitCD = 0;
 
-	godMode = false;
 	keyPressed = false;
+	godMode = false;
+	isDead = false;
 	isJumping = false;
 	isHit = false;
 	isAttacking = false;
@@ -174,11 +173,6 @@ bool Player::Start()
 	return true;
 }
 
-bool Player::PreUpdate()
-{
-	return true;
-}
-
 bool Player::Update(float dt)
 {
 	currentAnimation->Update(dt);
@@ -209,7 +203,6 @@ bool Player::Update(float dt)
 		app->CapRequest();
 	}
 
-	// To know what direction the velocity is going
 	playerPhysics.CheckDirection();
 
 	if (isDead == false)
@@ -328,7 +321,7 @@ bool Player::Update(float dt)
 			}
 		}
 
-		//Animation Reset to Idle
+		//Animation reset to idle
 		if (keyPressed == false)
 		{
 			playerPhysics.speed.x = 0.0f;
@@ -365,7 +358,7 @@ bool Player::Update(float dt)
 				}
 			}
 		}
-		
+
 		// Jumping animation changes
 		if (isJumping == true)
 		{
@@ -385,10 +378,8 @@ bool Player::Update(float dt)
 			}
 		}
 
-		// Physics
+		// Physics & Collisions
 		playerPhysics.UpdatePhysics(nextFrame, dt);
-
-		// Collisions
 		playerPhysics.ResolveCollisions(playerRect, nextFrame, invert);
 
 		iPoint currentFrameTile = { playerRect.x / app->generalTileSize, playerRect.y / app->generalTileSize };
@@ -412,14 +403,14 @@ bool Player::Update(float dt)
 		{
 			currentAnimation = &jumpLand;
 		}
-		
+
 		// Attack
 		if (!isAttacking && currentAnimation != &attack)
 		{
 			playerCollider->SetPos(playerRect.x, playerRect.y, currentAnimation->GetCurrentFrame().w, currentAnimation->GetCurrentFrame().h);
 		}
 
-		// Spawn change
+		// Checkpoint
 		if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId", true, true) == Collider::Type::CHECKPOINT)
 		{
 			if (onceCheckpoint)
@@ -438,7 +429,7 @@ bool Player::Update(float dt)
 		// Fruit collection
 		if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId", true, true) == Collider::Type::FRUIT)
 		{
-			if(app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "NoDraw", true, true) == 0)
+			if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "NoDraw", true, true) == 0)
 			{
 				lives++;
 				app->map->SetTileProperty(playerRect.x / app->generalTileSize, playerRect.y / app->generalTileSize, "NoDraw", 1, true, true);
@@ -472,7 +463,7 @@ bool Player::Update(float dt)
 			{
 				playerRect.x = spawnPoint.x;
 				playerRect.y = spawnPoint.y;
-				
+
 				app->render->camera.x = -(spawnPoint.x - app->render->camera.w / 2);
 				app->render->camera.y = -(spawnPoint.y - app->render->camera.h / 2 - app->generalTileSize);
 
@@ -484,20 +475,22 @@ bool Player::Update(float dt)
 			}
 		}
 
+		// Hit cooldown
 		if (hitCD != 0)
 		{
 			hitCD--;
 			if (invert)
 			{
-				playerRect.x += floor(250.0f*dt);
+				playerRect.x += floor(250.0f * dt);
 			}
 			else
 			{
-				playerRect.x -= floor(250.0f*dt);
+				playerRect.x -= floor(250.0f * dt);
 			}
 		}
 	}
 
+	// Game over
 	if (isDead)
 	{
 		currentAnimation = &death;
@@ -521,13 +514,12 @@ bool Player::Update(float dt)
 	{
 		playerRect.x -= floor(250.0f * dt);
 	}
-	//LOG("speed: %f, %f", playerPhysics.speed.x, playerPhysics.speed.y);
 	return true;
 }
 
 bool Player::PostUpdate()
 {
-	if (invert) //If we want to correct all the animations, do a switch
+	if (invert)
 	{
 		if (isAttacking)
 		{
@@ -555,7 +547,7 @@ bool Player::PostUpdate()
 	iPoint tmp(-app->render->camera.x, -app->render->camera.y);
 	for (int i = lives; i > 0; i--)
 	{
-		app->render->DrawTexture(playerHeart, tmp.x + (i*68) - app->generalTileSize, tmp.y);
+		app->render->DrawTexture(playerHeart, tmp.x + (i * 68) - app->generalTileSize, tmp.y);
 	}
 
 	return true;

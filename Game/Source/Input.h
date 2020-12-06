@@ -28,7 +28,7 @@ enum KeyState
 class Input : public Module
 {
 public:
-
+	// Constructor
 	Input();
 
 	// Destructor
@@ -40,18 +40,19 @@ public:
 	// Called before the first frame
 	bool Start();
 
-	// Called each loop iteration
+	// Called before all Updates
 	bool PreUpdate();
 
 	// Called before quitting
 	bool CleanUp();
 
-	// Check key states (includes mouse and joy buttons)
+	// Check key states
 	KeyState GetKey(int id) const
 	{
 		return keyboard[id];
 	}
 
+	// Check mouse button states
 	KeyState GetMouseButtonDown(int id) const
 	{
 		return mouseButtons[id - 1];
@@ -65,7 +66,6 @@ public:
 	void GetMouseMotion(int& x, int& y);
 
 private:
-
 	bool windowEvents[WE_COUNT];
 	KeyState* keyboard;
 	KeyState mouseButtons[NUM_MOUSE_BUTTONS];

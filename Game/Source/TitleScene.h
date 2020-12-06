@@ -8,12 +8,13 @@ struct SDL_Texture;
 class TitleScene : public Module
 {
 public:
-
+	// Constructor
 	TitleScene();
 
 	// Destructor
 	virtual ~TitleScene();
 
+	// Called when program is executed
 	void Init();
 
 	// Called before render is available
@@ -28,14 +29,13 @@ public:
 	// Called each loop iteration
 	bool Update(float dt);
 
-	// Called before all Updates
+	// Called after all Updates
 	bool PostUpdate();
 
 	// Called before quitting
 	bool CleanUp();
 
 private:
-
 	SDL_Texture* titleScreen;
 	SString folderTexture;
 	SString folderAudioMusic;

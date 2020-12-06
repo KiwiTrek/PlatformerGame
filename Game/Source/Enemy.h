@@ -9,6 +9,7 @@
 struct SDL_Texture;
 class Collider;
 
+// Enemy Type enum
 enum EnemyType
 {
 	NO_TYPE,
@@ -20,62 +21,48 @@ class Enemy
 {
 public:
 	// Constructor
-	// Saves the spawn position for later movement calculations
 	Enemy(int x, int y, EnemyType type);
 
 	// Destructor
 	virtual ~Enemy();
 
 	// Called from inhering enemies' Udpate
-	// Updates animation and collider position
 	virtual void Update(float dt);
 
 	// Called from ModuleEnemies' Update
 	virtual void Draw();
 
 	// Collision response
-	// Triggers an animation and a sound fx
-	
 	void OnCollision(Collider* c1, Collider* c2);
 
 public:
 	// The current position in the world
 	SDL_Rect enemyRect;
 
-	// The enemy's texture
-	SDL_Texture* texture = nullptr;
+	// Enemy physics related variables
+	Physics enemyPhysics;
+	iPoint nextFrame;
+
+	// Path related variables
+	DynArray<iPoint> path;
+	int pathCount = 0;
 
 	// Add to despawn queue
 	bool pendingToDelete = false;
 
-	int pathCount = 0;
-
-	// The enemy's collider
+	SDL_Texture* texture = nullptr;
+	EnemyType type = EnemyType::NO_TYPE;
+	int destroyedFx = 0;
 	Collider* collider = nullptr;
 
-	EnemyType type = EnemyType::NO_TYPE;
-
-	// The enemy's path
-	DynArray<iPoint> path;
-
-	// The enemy's physics
-	Physics enemyPhysics;
-	iPoint nextFrame;
-
-	// Sound fx when destroyed
-	int destroyedFx = 0;
-
 protected:
-	// A ptr to the current animation
-	Animation* currentAnim = nullptr;
-	bool invert = false;
+	// General enemy size
 	int enemySize;
 
-
-	// Original spawn position. Stored for movement calculations
+	// Original spawn position
 	iPoint spawnPos;
 
-	//Pathfinding stuff
+	//Pathfinding related variables
 	iPoint pastDest;
 	int i;
 	int counterTile;
@@ -83,6 +70,10 @@ protected:
 	// State changes
 	bool attackChange = false;
 	bool hurtChange = false;
+
+	// Animation related variables
+	Animation* currentAnim = nullptr;
+	bool invert = false;
 };
 
 #endif // __ENEMY_H__

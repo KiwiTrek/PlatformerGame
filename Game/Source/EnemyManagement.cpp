@@ -17,19 +17,18 @@
 
 #define SPAWN_MARGIN 50
 
-
 EnemyManagement::EnemyManagement()
 {
 	for (uint i = 0; i < MAX_ENEMIES; ++i)
+	{
 		enemies[i] = nullptr;
+	}
 
 	name.Create("enemyManagement");
 }
 
 EnemyManagement::~EnemyManagement()
-{
-
-}
+{}
 
 void EnemyManagement::Init()
 {
@@ -83,7 +82,9 @@ bool EnemyManagement::PostUpdate()
 	for (uint i = 0; i < MAX_ENEMIES; ++i)
 	{
 		if (enemies[i] != nullptr)
+		{
 			enemies[i]->Draw();
+		}
 	}
 
 	return true;
@@ -214,7 +215,6 @@ bool EnemyManagement::AddEnemy(EnemyType type, int x, int y, uint i)
 
 void EnemyManagement::HandleEnemiesSpawn()
 {
-	// Iterate all the enemies queue
 	for (uint i = 0; i < MAX_ENEMIES; ++i)
 	{
 		if (spawnQueue[i].type != EnemyType::NO_TYPE)
@@ -228,12 +228,10 @@ void EnemyManagement::HandleEnemiesSpawn()
 
 void EnemyManagement::HandleEnemiesDespawn()
 {
-	// Iterate existing enemies
 	for (uint i = 0; i < MAX_ENEMIES; ++i)
 	{
 		if (enemies[i] != nullptr)
 		{
-			// Delete the enemy when it has reached the end of the screen
 			if (enemies[i]->pendingToDelete)
 			{
 				LOG("DeSpawning enemy at %d", enemies[i]->enemyRect.x * app->win->GetScale());
@@ -247,7 +245,6 @@ void EnemyManagement::HandleEnemiesDespawn()
 
 void EnemyManagement::SpawnEnemy(const EnemySpawnpoint& info)
 {
-	// Find an empty slot in the enemies array
 	for (uint i = 0; i < MAX_ENEMIES; ++i)
 	{
 		if (enemies[i] == nullptr)
@@ -280,7 +277,7 @@ void EnemyManagement::OnCollision(Collider* c1, Collider* c2)
 	{
 		if (enemies[i] != nullptr && enemies[i]->collider == c1)
 		{
-			enemies[i]->OnCollision(c1, c2); //Notify the enemy of a collision
+			enemies[i]->OnCollision(c1, c2);
 		}
 	}
 }

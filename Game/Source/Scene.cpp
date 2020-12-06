@@ -75,7 +75,7 @@ bool Scene::Start()
 
 	app->player->Enable();
 	app->render->camera.x = -(app->player->spawnPoint.x - app->render->camera.w / 2);
-	app->render->camera.y = -(app->player->spawnPoint.y - app->render->camera.h / 2);
+	app->render->camera.y = -(app->player->spawnPoint.y - app->render->camera.h / 2 - 64);
 
 	app->enemies->Enable();
 	app->enemies->AddEnemy(EnemyType::FLYING, app->map->data.tileWidth * 103, app->map->data.tileHeight * 3);

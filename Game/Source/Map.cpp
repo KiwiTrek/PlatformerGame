@@ -13,7 +13,6 @@ Map::Map() : Module(), mapLoaded(false)
 	name.Create("map");
 }
 
-// Destructor
 Map::~Map()
 {}
 
@@ -22,7 +21,6 @@ void Map::Init()
 	active = false;
 }
 
-// Called before render is available
 bool Map::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Map Parser");
@@ -68,7 +66,6 @@ void Map::Draw()
 	}
 }
 
-// Translates map position to world position
 iPoint Map::MapToWorld(int x, int y) const
 {
 	iPoint ret;
@@ -78,8 +75,6 @@ iPoint Map::MapToWorld(int x, int y) const
 	return ret;
 }
 
-
-// Get relative Tile rectangle
 SDL_Rect TileSet::GetTileRect(int id) const
 {
 	SDL_Rect rect = { 0 };
@@ -93,7 +88,6 @@ SDL_Rect TileSet::GetTileRect(int id) const
 	return rect;
 }
 
-// Called before quitting
 bool Map::CleanUp()
 {
 	LOG("Unloading map");
@@ -123,7 +117,6 @@ bool Map::CleanUp()
 	return true;
 }
 
-// Load new map
 bool Map::Load(const char* filename)
 {
 	bool ret = true;
@@ -146,11 +139,11 @@ bool Map::Load(const char* filename)
 		for (pugi::xml_node tileSet = mapFile.child("map").child("tileset"); tileSet && ret; tileSet = tileSet.next_sibling("tileset"))
 		{
 			TileSet* set = new TileSet();
-			if(ret == true)
+			if (ret == true)
 			{
 				ret = LoadTileSetDetails(tileSet, set);
 			}
-			if(ret == true)
+			if (ret == true)
 			{
 				ret = LoadTileSetImage(tileSet, set);
 			}
@@ -254,7 +247,7 @@ bool Map::LoadTileSetProperties(pugi::xml_node& node, TileSet* set)
 	{
 		Tile* tileProperties = new Tile;
 		tileProperties->id = tileNode.attribute("id").as_int();
-		ret = LoadProperties(tileNode.child("properties"),tileProperties->properties);
+		ret = LoadProperties(tileNode.child("properties"), tileProperties->properties);
 		set->tileSetPropList.Add(tileProperties);
 	}
 	return ret;
@@ -288,9 +281,9 @@ bool Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	}
 
 	LOG("Layer [%s] has loaded %d tiles", layer->name.GetString(), i);
-	
+
 	ret = LoadProperties(node.child("properties"), layer->properties);
-	
+
 	return ret;
 }
 
@@ -309,11 +302,9 @@ bool Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 		properties.list.Add(prop);
 	}
 
-
 	return ret;
 }
 
-// Create walkability map for pathfinding
 bool Map::CreateWalkabilityMap(int* width, int* height, uchar** buffer) const
 {
 	bool ret = false;
@@ -354,16 +345,13 @@ bool Map::CreateWalkabilityMap(int* width, int* height, uchar** buffer) const
 						map[i] = (uchar)0;
 						break;
 					}
-					//map[i] = (tileId - tileset->firstgId) > 0 ? (uchar)0 : (uchar)1;
 				}
 			}
 		}
-
 		*buffer = map;
 		*width = data.width;
 		*height = data.height;
 		ret = true;
-
 		break;
 	}
 	return ret;
@@ -493,7 +481,6 @@ int Properties::GetProperty(const char* value, int defaultValue) const
 
 	while (property != NULL)
 	{
-		//LOG("Checking property: %s", P->data->name.GetString());         //<- checks the property
 		if (property->data->name == prop)
 		{
 			return property->data->value;
@@ -513,7 +500,6 @@ void Properties::SetProperty(const char* name, int value)
 
 	while (property != NULL)
 	{
-		//LOG("Checking property: %s", P->data->name.GetString());
 		if (property->data->name == prop)
 		{
 			property->data->value = value;

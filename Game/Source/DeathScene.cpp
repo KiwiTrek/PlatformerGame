@@ -17,7 +17,6 @@ DeathScene::DeathScene() : Module()
 	name.Create("deathScene");
 }
 
-// Destructor
 DeathScene::~DeathScene()
 {}
 
@@ -26,7 +25,6 @@ void DeathScene::Init()
 	active = false;
 }
 
-// Called before render is available
 bool DeathScene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
@@ -38,7 +36,6 @@ bool DeathScene::Awake(pugi::xml_node& config)
 	return ret;
 }
 
-// Called before the first frame
 bool DeathScene::Start()
 {
 	app->render->SetBackgroundColor({ 0,0,0,0 });
@@ -51,13 +48,11 @@ bool DeathScene::Start()
 	return true;
 }
 
-// Called each loop iteration
 bool DeathScene::PreUpdate()
 {
 	return true;
 }
 
-// Called each loop iteration
 bool DeathScene::Update(float dt)
 {
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
@@ -67,20 +62,20 @@ bool DeathScene::Update(float dt)
 	return true;
 }
 
-// Called each loop iteration
 bool DeathScene::PostUpdate()
 {
 	bool ret = true;
 
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	{
 		ret = false;
+	}
 
 	app->render->DrawTexture(deathScreen, NULL, NULL, true);
 
 	return ret;
 }
 
-// Called before quitting
 bool DeathScene::CleanUp()
 {
 	LOG("Freeing scene");

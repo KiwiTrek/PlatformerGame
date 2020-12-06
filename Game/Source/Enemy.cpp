@@ -20,20 +20,26 @@ Enemy::Enemy(int x, int y, EnemyType type) : enemyRect({ x, y, app->generalTileS
 Enemy::~Enemy()
 {
 	if (collider != nullptr)
+	{
 		collider->pendingToDelete = true;
+	}
 	path.Clear();
 }
 
 void Enemy::Update(float dt)
 {
 	if (currentAnim != nullptr)
+	{
 		currentAnim->Update(dt);
+	}
 
 	enemyPhysics.UpdatePhysics(nextFrame, dt);
 	enemyPhysics.ResolveCollisions(enemyRect, nextFrame, invert);
 
 	if (collider != nullptr)
+	{
 		collider->SetPos(enemyRect.x, enemyRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
+	}
 }
 
 void Enemy::Draw()

@@ -11,10 +11,11 @@ class Collider;
 class Module
 {
 public:
-
+	// Constructor
 	Module() : active(false)
 	{}
 
+	// Called when program is executed
 	virtual void Init()
 	{
 		active = true;
@@ -32,7 +33,7 @@ public:
 		return true;
 	}
 
-	// Called each loop iteration
+	// Called before all Updates
 	virtual bool PreUpdate()
 	{
 		return true;
@@ -44,7 +45,7 @@ public:
 		return true;
 	}
 
-	// Called each loop iteration
+	// Called after all Updates
 	virtual bool PostUpdate()
 	{
 		return true;
@@ -56,16 +57,19 @@ public:
 		return true;
 	}
 
+	// Load
 	virtual bool Load(pugi::xml_node&)
 	{
 		return true;
 	}
 
+	// Save
 	virtual bool Save(pugi::xml_node&)
 	{
 		return true;
 	}
 
+	// Enable module
 	virtual void Enable()
 	{
 		if (!active)
@@ -75,6 +79,7 @@ public:
 		}
 	}
 
+	// Disable module
 	virtual void Disable()
 	{
 		if (active)
@@ -84,10 +89,10 @@ public:
 		}
 	}
 
+	// Collision response
 	virtual void OnCollision(Collider* c1, Collider* c2){}
 
 public:
-
 	SString name;
 	bool active;
 

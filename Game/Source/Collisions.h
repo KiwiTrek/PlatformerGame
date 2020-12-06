@@ -10,7 +10,7 @@
 class Collider
 {
 public:
-
+	// Collision Type enum
 	enum Type
 	{
 		NONE = -1,
@@ -26,11 +26,14 @@ public:
 		MAX
 	};
 
+	// Constructor
 	Collider(SDL_Rect rect, Type type, Module* listener = nullptr) : rect(rect), type(type), listener(listener)
 	{}
 
+	// Sets the position of the construct
 	void SetPos(int x, int y, int w, int h);
 
+	// Checks if two rects are intersecting
 	bool Intersects(const SDL_Rect& r) const;
 
 	SDL_Rect rect;
@@ -42,9 +45,10 @@ public:
 class Collisions : public Module
 {
 public:
-
+	// Constructor
 	Collisions();
 
+	// Called when program is executed
 	void Init();
 
 	// Destructor
@@ -62,6 +66,7 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	// Save/Load
 	bool Load(pugi::xml_node&);
 	bool Save(pugi::xml_node&);
 
@@ -70,11 +75,10 @@ public:
 
 private:
 	// All existing colliders in the scene
-	// maybe change to a list
 	Collider* colliders[MAX_COLLIDERS] = { nullptr };
 
 	// The collision matrix. Defines the interaction for two collider types
-	// If set two false, collider 1 will ignore collider 2
+	// If set to false, collider 1 will ignore collider 2
 	bool matrix[Collider::Type::MAX][Collider::Type::MAX];
 };
 

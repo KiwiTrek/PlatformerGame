@@ -3,10 +3,10 @@
 
 #include "Defs.h"
 
+// Fast timer with milisecons precision
 class Timer
 {
 public:
-
 	// Constructor
 	Timer();
 

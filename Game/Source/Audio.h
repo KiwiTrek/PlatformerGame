@@ -11,7 +11,7 @@ struct Mix_Chunk;
 class Audio : public Module
 {
 public:
-
+	// Constructor
 	Audio();
 
 	// Destructor
@@ -37,11 +37,11 @@ public:
 	// Set volume to 0
 	void MuteVolume();
 
+	// Save/Load
 	bool Load(pugi::xml_node&);
 	bool Save(pugi::xml_node&);
 
 private:
-
 	_Mix_Music* music;
 	List<Mix_Chunk *> fx;
 

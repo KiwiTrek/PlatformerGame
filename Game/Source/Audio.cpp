@@ -13,11 +13,9 @@ Audio::Audio() : Module()
 	name.Create("audio");
 }
 
-// Destructor
 Audio::~Audio()
 {}
 
-// Called before render is available
 bool Audio::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Audio Mixer");
@@ -59,11 +57,12 @@ bool Audio::Awake(pugi::xml_node& config)
 	return ret;
 }
 
-// Called before quitting
 bool Audio::CleanUp()
 {
-	if(!active)
+	if (!active)
+	{
 		return true;
+	}
 
 	LOG("Freeing sound FX, closing Mixer and Audio subsystem");
 
@@ -108,17 +107,18 @@ bool Audio::Save(pugi::xml_node& save)
 	return ret;
 }
 
-// Play a music file
 bool Audio::PlayMusic(const char* path, float fade_time)
 {
 	bool ret = true;
 
-	if(!active)
-		return false;
-
-	if(music != NULL)
+	if (!active)
 	{
-		if(fade_time > 0.0f)
+		return false;
+	}
+
+	if (music != NULL)
+	{
+		if (fade_time > 0.0f)
 		{
 			Mix_FadeOutMusic(int(fade_time * 1000.0f));
 		}
@@ -132,16 +132,16 @@ bool Audio::PlayMusic(const char* path, float fade_time)
 
 	music = Mix_LoadMUS(path);
 
-	if(music == NULL)
+	if (music == NULL)
 	{
 		LOG("Cannot load music %s. Mix_GetError(): %s\n", path, Mix_GetError());
 		ret = false;
 	}
 	else
 	{
-		if(fade_time > 0.0f)
+		if (fade_time > 0.0f)
 		{
-			if(Mix_FadeInMusic(music, -1, (int) (fade_time * 1000.0f)) < 0)
+			if (Mix_FadeInMusic(music, -1, (int)(fade_time * 1000.0f)) < 0)
 			{
 				LOG("Cannot fade in music %s. Mix_GetError(): %s", path, Mix_GetError());
 				ret = false;
@@ -161,17 +161,18 @@ bool Audio::PlayMusic(const char* path, float fade_time)
 	return ret;
 }
 
-// Load WAV
 uint Audio::LoadFx(const char* path)
 {
 	uint ret = 0;
 
-	if(!active)
+	if (!active)
+	{
 		return 0;
+	}
 
 	Mix_Chunk* chunk = Mix_LoadWAV(path);
 
-	if(chunk == NULL)
+	if (chunk == NULL)
 	{
 		LOG("Cannot load wav %s. Mix_GetError(): %s", path, Mix_GetError());
 	}
@@ -197,15 +198,16 @@ bool Audio::UnloadFx(uint index)
 	return false;
 }
 
-// Play WAV
 bool Audio::PlayFx(uint id, int repeat)
 {
 	bool ret = false;
 
-	if(!active)
+	if (!active)
+	{
 		return false;
+	}
 
-	if(id > 0 && id <= fx.Count())
+	if (id > 0 && id <= fx.Count())
 	{
 		Mix_PlayChannel(-1, fx[id - 1], repeat);
 	}
@@ -225,7 +227,6 @@ bool Audio::SetFxVolume(uint index)
 	return false;
 }
 
-// Set volume to 0
 void Audio::MuteVolume()
 {
 	if (Mix_VolumeMusic(-1) == 0)

@@ -11,9 +11,10 @@ struct Collider;
 class Player : public Module
 {
 public:
-
+	// Constructor
 	Player();
 
+	// Called when program is executed
 	void Init();
 
 	// Destructor
@@ -26,39 +27,54 @@ public:
 	bool Start();
 
 	// Called each loop iteration
-	bool PreUpdate();
 	bool Update(float dt);
+
+	// Called after all Updates
 	bool PostUpdate();
 
 	// Called before quitting
 	bool CleanUp();
 
-	bool Load(pugi::xml_node&);
+	// Save/Load
 	bool Save(pugi::xml_node&);
+	bool Load(pugi::xml_node&);
 
+	// Collision response
 	void OnCollision(Collider* c1, Collider* c2);
-	void ResolveCollisions(iPoint nextFrame, bool goingDown);
 
 	SDL_Texture* playerTex;
 	SDL_Texture* playerHeart;
 	SDL_Rect playerRect;
 	iPoint spawnPoint;
-
-	//Score
 	int score = 0;
 
 private:
+	// Gets the coordinates of the spawn point
+	iPoint GetSpawnPoint();
 
-	// Different collision types
-	enum CollisionType
-	{
-		DOUBLE_AIR,
-		DOUBLE_SOLID,
-		SOLID_AIR,
-		AIR_SOLID
-	};
+	Animation* currentAnimation = &idle;
 
+	Collider* playerCollider = nullptr;
+	Collider* hurtBox = nullptr;
+
+	Physics playerPhysics;
+	iPoint nextFrame;
+	int jumpCounter;
+	int hitCD = 5;
+	int lives = 3;
 	int playerSize;
+
+	bool keyPressed = false;
+	bool godMode = false;
+	bool isDead = false;
+	bool isJumping = false;
+	bool isHit = false;
+	bool isAttacking = false;
+	bool invert = false;
+	bool debugDraw = false;
+	bool once = true;
+	bool onceCheckpoint = true;
+
 	Animation idle;
 	Animation run;
 	Animation jumpPrep;
@@ -69,18 +85,6 @@ private:
 	Animation death;
 	Animation wallJump;
 
-	Animation* currentAnimation = &idle;
-
-	// Gets the coordinates of the spawn point
-	iPoint GetSpawnPoint();
-
-	Collider* playerCollider = nullptr;
-	Collider* hurtBox = nullptr;
-
-	Physics playerPhysics;
-	iPoint nextFrame;
-	int jumpCounter;
-
 	uint deadFx;
 	uint jumpFx;
 	uint doubleJumpFx;
@@ -88,20 +92,6 @@ private:
 	uint hitFx;
 	uint slashFx;
 	uint checkpointFx;
-
-	bool isDead = false;
-	int hitCD = 5;
-	int lives = 3;
-
-	bool godMode = false;
-	bool keyPressed = false;
-	bool isJumping = false;
-	bool isHit = false;
-	bool isAttacking = false;
-	bool invert = false;
-	bool debugDraw = false;
-	bool once = true;
-	bool onceCheckpoint = true;
 
 	SString folderTexture;
 	SString folderAudioFx;

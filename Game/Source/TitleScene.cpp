@@ -16,7 +16,6 @@ TitleScene::TitleScene() : Module()
 	name.Create("titleScene");
 }
 
-// Destructor
 TitleScene::~TitleScene()
 {}
 
@@ -25,7 +24,6 @@ void TitleScene::Init()
 	active = false;
 }
 
-// Called before render is available
 bool TitleScene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
@@ -36,7 +34,6 @@ bool TitleScene::Awake(pugi::xml_node& config)
 	return ret;
 }
 
-// Called before the first frame
 bool TitleScene::Start()
 {
 	app->render->SetBackgroundColor({ 0,0,0,0 });
@@ -49,13 +46,11 @@ bool TitleScene::Start()
 	return true;
 }
 
-// Called each loop iteration
 bool TitleScene::PreUpdate()
 {
 	return true;
 }
 
-// Called each loop iteration
 bool TitleScene::Update(float dt)
 {
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
@@ -65,20 +60,20 @@ bool TitleScene::Update(float dt)
 	return true;
 }
 
-// Called each loop iteration
 bool TitleScene::PostUpdate()
 {
 	bool ret = true;
 
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	{
 		ret = false;
+	}
 
 	app->render->DrawTexture(titleScreen, NULL, NULL, true);
 
 	return ret;
 }
 
-// Called before quitting
 bool TitleScene::CleanUp()
 {
 	LOG("Freeing scene");

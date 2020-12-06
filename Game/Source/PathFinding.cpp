@@ -12,7 +12,6 @@ PathFinding::PathFinding() : Module(), map(NULL), width(0), height(0)
 	name.Create("pathfinding");
 }
 
-// Destructor
 PathFinding::~PathFinding()
 {
 	RELEASE_ARRAY(map);
@@ -36,7 +35,6 @@ bool PathFinding::Start()
 	return true;
 }
 
-// Called before quitting
 bool PathFinding::CleanUp()
 {
 	LOG("Freeing pathfinding library");
@@ -46,7 +44,6 @@ bool PathFinding::CleanUp()
 	return true;
 }
 
-// Sets up the walkability map
 void PathFinding::SetMap(uint width, uint height, uchar* data)
 {
 	this->width = width;
@@ -57,34 +54,26 @@ void PathFinding::SetMap(uint width, uint height, uchar* data)
 	memcpy(map, data, width * height);
 }
 
-// Utility: return true if pos is inside the map boundaries
 bool PathFinding::CheckBoundaries(const iPoint& pos) const
 {
-	return (pos.x >= 0 && pos.x <= (int)width &&
-		pos.y >= 0 && pos.y <= (int)height);
+	return (pos.x >= 0 && pos.x <= (int)width && pos.y >= 0 && pos.y <= (int)height);
 }
 
-// Utility: returns true is the tile is walkable
 bool PathFinding::IsWalkable(const iPoint& pos) const
 {
 	uchar t = GetTileCost(pos);
 	return t != INVALID_WALK_CODE && t >= 0 && t != 254;
 }
 
-// Utility: return the walkability value of a tile
 uchar PathFinding::GetTileCost(const iPoint& pos) const
 {
 	if (CheckBoundaries(pos))
+	{
 		return map[(pos.y * width) + pos.x];
+	}
 
 	return INVALID_WALK_CODE;
 }
-
-// To request all tiles involved in the last generated path
-//const DynArray<iPoint>* PathFinding::GetPath() const
-//{
-//	return &path;
-//}
 
 void PathFinding::DrawPath(DynArray<iPoint>* path)
 {
@@ -95,24 +84,20 @@ void PathFinding::DrawPath(DynArray<iPoint>* path)
 	}
 }
 
-// PathList ------------------------------------------------------------------------
-// Looks for a node in this list and returns it's list node or NULL
-// ---------------------------------------------------------------------------------
 const ListItem<PathNode>* PathList::Find(const iPoint& point) const
 {
 	ListItem<PathNode>* item = list.start;
 	while (item)
 	{
 		if (item->data.pos == point)
+		{
 			return item;
+		}
 		item = item->next;
 	}
 	return NULL;
 }
 
-// PathList ------------------------------------------------------------------------
-// Returns the Pathnode with lowest score in this list or NULL if empty
-// ---------------------------------------------------------------------------------
 ListItem<PathNode>* PathList::GetNodeLowestScore() const
 {
 	ListItem<PathNode>* ret = NULL;
@@ -131,9 +116,6 @@ ListItem<PathNode>* PathList::GetNodeLowestScore() const
 	return ret;
 }
 
-// PathNode -------------------------------------------------------------------------
-// Convenient constructors
-// ----------------------------------------------------------------------------------
 PathNode::PathNode() : costSoFar(-1), heuristic(-1), pos(-1, -1), parent(NULL)
 {}
 
@@ -143,9 +125,6 @@ PathNode::PathNode(int costSoFar, int heuristic, const iPoint& pos, const PathNo
 PathNode::PathNode(const PathNode& node) : costSoFar(node.costSoFar), heuristic(node.heuristic), pos(node.pos), parent(node.parent)
 {}
 
-// PathNode -------------------------------------------------------------------------
-// Fills a list (PathList) of all valid adjacent pathnodes
-// ----------------------------------------------------------------------------------
 uint PathNode::FindWalkableAdjacents(PathList& listToFill)
 {
 	iPoint cell;
@@ -154,37 +133,39 @@ uint PathNode::FindWalkableAdjacents(PathList& listToFill)
 	// north
 	cell.Create(pos.x, pos.y + 1);
 	if (app->pathfinding->IsWalkable(cell))
+	{
 		listToFill.list.Add(PathNode(-1, -1, cell, this));
+	}
 
 	// south
 	cell.Create(pos.x, pos.y - 1);
 	if (app->pathfinding->IsWalkable(cell))
+	{
 		listToFill.list.Add(PathNode(-1, -1, cell, this));
+	}
 
 	// east
 	cell.Create(pos.x + 1, pos.y);
 	if (app->pathfinding->IsWalkable(cell))
+	{
 		listToFill.list.Add(PathNode(-1, -1, cell, this));
+	}
 
 	// west
 	cell.Create(pos.x - 1, pos.y);
 	if (app->pathfinding->IsWalkable(cell))
+	{
 		listToFill.list.Add(PathNode(-1, -1, cell, this));
+	}
 
 	return listToFill.list.Count();
 }
 
-// PathNode -------------------------------------------------------------------------
-// Calculates this tile score
-// ----------------------------------------------------------------------------------
 int PathNode::Score() const
 {
 	return costSoFar + heuristic;
 }
 
-// PathNode -------------------------------------------------------------------------
-// Calculate the F for a specific destination tile
-// ----------------------------------------------------------------------------------
 int PathNode::CalculateTotalCost(const iPoint& destination)
 {
 	costSoFar = parent->costSoFar + 1;
@@ -193,9 +174,6 @@ int PathNode::CalculateTotalCost(const iPoint& destination)
 	return costSoFar + heuristic;
 }
 
-// ----------------------------------------------------------------------------------
-// Actual A* algorithm: return number of steps in the creation of the path or -1 ----
-// ----------------------------------------------------------------------------------
 int PathFinding::CreatePath(DynArray<iPoint>& path, const iPoint& origin, const iPoint& destination)
 {
 	if (!IsWalkable(origin) || !IsWalkable(destination))

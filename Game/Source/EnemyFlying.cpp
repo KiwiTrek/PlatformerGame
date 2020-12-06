@@ -96,7 +96,6 @@ void EnemyFlying::Update(float dt)
 			pathCount = app->pathfinding->CreatePath(path, origin, destination);
 			if (pathCount != -1)
 			{
-				//LOG("origin: %d, %d destination: %d, %d\n", origin.x, origin.y, destination.x, destination.y);
 				i = 0;
 			}
 		}
@@ -112,7 +111,6 @@ void EnemyFlying::Update(float dt)
 		iPoint pos = app->map->MapToWorld(path.At(i)->x, path.At(i)->y);
 		iPoint dest = app->map->MapToWorld(path.At(i + 1)->x, path.At(i + 1)->y);
 		iPoint dif = { dest.x - pos.x,dest.y - pos.y };
-		//LOG("dif: %d, %d\n", dif.x, dif.y);
 		if (dif.x > 0)
 		{
 			enemyPhysics.speed.x = 150.0f;
@@ -142,7 +140,6 @@ void EnemyFlying::Update(float dt)
 		counterTile = 0;
 	}
 
-	// Call to the base class. It must be called at the end
-	// It will update the collider depending on the position
+	// Call to the base class
 	Enemy::Update(dt);
 }

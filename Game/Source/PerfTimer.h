@@ -3,10 +3,10 @@
 
 #include "Defs.h"
 
+// Slow timer with microsecond precision
 class PerfTimer
 {
 public:
-
 	// Constructor
 	PerfTimer();
 

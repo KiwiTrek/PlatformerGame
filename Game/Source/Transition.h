@@ -7,7 +7,7 @@
 class Transition : public Module
 {
 public:
-
+	// Constructor
 	Transition();
 
 	//Destructor
@@ -18,6 +18,8 @@ public:
 
 	// Called each loop iteration
 	bool Update(float dt);
+
+	// Called after all Updates
 	bool PostUpdate();
 
 	// Called from another module
@@ -26,13 +28,13 @@ public:
 	bool FadeEffect(Module* toDisable, Module* toEnable, bool fadeInOnly, float frames = 60.0f);
 
 private:
-
 	enum TransitionStep
 	{
 		NONE,
 		TO_BLACK,
 		FROM_BLACK
 	}
+
 	currentStep = TransitionStep::NONE;
 
 	// A frame count system to handle the fade time and ratio
@@ -43,7 +45,7 @@ private:
 	// The rectangle of the screen, used to render the black rectangle
 	SDL_Rect screenRect;
 
-	// The modules that should be switched after the first step
+	// The storing of the modules to switch
 	Module* moduleToEnable = nullptr;
 	Module* moduleToDisable = nullptr;
 };

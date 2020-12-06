@@ -12,7 +12,6 @@
 #define CONFIG_FILENAME "config.xml"
 #define SAVE_STATE_FILENAME "save_game.xml"
 
-// Modules
 class Window;
 class Input;
 class Render;
@@ -34,7 +33,6 @@ class DeathScene;
 class App
 {
 public:
-
 	// Constructor
 	App(int argc, char* args[]);
 
@@ -62,13 +60,12 @@ public:
 	const char* GetTitle() const;
 	const char* GetOrganization() const;
 
-	//Request to save & load
+	// Request Save/Load
 	void LoadRequest();
 	void SaveRequest();
 	void CapRequest();
 
 private:
-
 	// Load config file
 	pugi::xml_node LoadConfig(pugi::xml_document&) const;
 
@@ -87,13 +84,12 @@ private:
 	// Call modules after each loop iteration
 	bool PostUpdate();
 
-	// Load & save inside an XML file
+	// Save/Load inside an XML file
 	bool LoadGame();
 	bool SaveGame();
 	bool ChangeCap();
 
 public:
-
 	// Modules
 	Window* win;
 	Input* input;
@@ -117,7 +113,6 @@ public:
 	int generalTileSize = 64;
 
 private:
-
 	int argc;
 	char** args;
 	SString title;
