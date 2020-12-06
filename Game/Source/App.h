@@ -7,7 +7,7 @@
 
 #include "List.h"
 
-#include "PugiXml/src/pugixml.hpp"
+#include "pugixml.hpp"
 
 #define CONFIG_FILENAME "config.xml"
 #define SAVE_STATE_FILENAME "save_game.xml"

@@ -59,7 +59,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ShowIncludes>false</ShowIncludes>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source\External\Optick\include;$(ProjectDir)Source\External\SDL_mixer\include;$(ProjectDir)Source\External\SDL_image\include;$(ProjectDir)Source\External\SDL\include;$(ProjectDir)Source\External</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\External\PugiXml\src;$(ProjectDir)Source\External\Optick\include;$(ProjectDir)Source\External\SDL_mixer\include;$(ProjectDir)Source\External\SDL_image\include;$(ProjectDir)Source\External\SDL\include;$(ProjectDir)Source\External</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -78,7 +78,7 @@
       <UseFullPaths>false</UseFullPaths>
       <ShowIncludes>false</ShowIncludes>
       <PreprocessorDefinitions>_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source\External\Optick\include;$(ProjectDir)Source\External\SDL_mixer\include;$(ProjectDir)Source\External\SDL_image\include;$(ProjectDir)Source\External\SDL\include;$(ProjectDir)Source\External</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\External\PugiXml\src;$(ProjectDir)Source\External\Optick\include;$(ProjectDir)Source\External\SDL_mixer\include;$(ProjectDir)Source\External\SDL_image\include;$(ProjectDir)Source\External\SDL\include;$(ProjectDir)Source\External</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

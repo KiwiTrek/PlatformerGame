@@ -3,7 +3,7 @@
 
 #include "SString.h"
 
-#include "PugiXml/src/pugixml.hpp"
+#include "pugixml.hpp"
 
 class App;
 class Collider;

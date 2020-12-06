@@ -5,7 +5,7 @@
 #include "List.h"
 #include "Point.h"
 
-#include "PugiXml\src\pugixml.hpp"
+#include "pugixml.hpp"
 
 // Map Types enum
 enum MapTypes

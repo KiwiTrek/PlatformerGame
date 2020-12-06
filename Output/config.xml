@@ -16,7 +16,7 @@
         <fullscreen value="false"/>
         <borderless value="false"/>
         <resizable value="false"/>
-        <fullscreen_window value="false"/>
+        <fullscreenWindow value="false"/>
     </window>
 
     <player>

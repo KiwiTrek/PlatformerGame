@@ -2,7 +2,7 @@
 #define __MODULETRANSITION_H__
 
 #include "Module.h"
-#include "SDL\include\SDL_rect.h"
+#include "SDL_rect.h"
 
 class Transition : public Module
 {
