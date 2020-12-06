@@ -28,6 +28,74 @@ void Player::Init()
 	spawnPoint = { 0,0 };
 }
 
+bool Player::Awake(pugi::xml_node& config)
+{
+	playerSize = config.child("playerSize").attribute("value").as_int(0);
+
+	folderTexture.Create(config.child("folderTexture").child_value());
+	folderAudioFx.Create(config.child("folderAudioFx").child_value());
+
+	for (int i = 0; i != 9; ++i)
+	{
+		idle.PushBack({ 10 + (playerSize * i),1329,56,73 });
+	}
+	idle.speed = 15.0f;
+	idle.loop = true;
+
+	for (int i = 0; i != 8; ++i)
+	{
+		run.PushBack({ 10 + (playerSize * i),1202,62,82 });
+	}
+	run.speed = 15.0f;
+	run.loop = true;
+
+	for (int i = 0; i != 2; ++i)
+	{
+		jumpPrep.PushBack({ 10 + (playerSize * i), 812, 60, 90 });
+	}
+	jumpPrep.speed = 15.0f;
+	jumpPrep.loop = false;
+
+	for (int i = 0; i != 4; ++i)
+	{
+		jumpMid.PushBack({ 10 + (2 * playerSize) + (playerSize * i),812,60,80 });
+	}
+	jumpMid.speed = 15.0f;
+	jumpMid.loop = true;
+
+	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
+	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
+	jumpLand.speed = 40.0f;
+	jumpLand.loop = false;
+
+	for (int i = 0; i != 7; ++i)
+	{
+		attack.PushBack({ (playerSize * i), 434, 104, 72 });
+	}
+	attack.speed = 15.0f;
+	attack.loop = false;
+
+	for (int i = 0; i != 3; ++i)
+	{
+		hit.PushBack({ 10 + (playerSize * i),52,56,73 });
+	}
+	hit.speed = 10.0f;
+	hit.loop = false;
+
+	for (int i = 0; i != 5; ++i)
+	{
+		death.PushBack({ 10 + (playerSize * i),192,88,66 });
+	}
+	death.speed = 15.0f;
+	death.loop = false;
+
+	wallJump.PushBack({ 630,170,73,79 });
+	wallJump.speed = 0.0f;
+	wallJump.loop = false;
+
+	return true;
+}
+
 bool Player::Start()
 {
 	spawnPoint = GetSpawnPoint();
@@ -102,74 +170,6 @@ bool Player::Start()
 	app->audio->SetFxVolume(hitFx);
 	app->audio->SetFxVolume(slashFx);
 	app->audio->SetFxVolume(checkpointFx);
-
-	return true;
-}
-
-bool Player::Awake(pugi::xml_node& config)
-{
-	playerSize = config.child("playerSize").attribute("value").as_int(0);
-
-	folderTexture.Create(config.child("folderTexture").child_value());
-	folderAudioFx.Create(config.child("folderAudioFx").child_value());
-
-	for (int i = 0; i != 9; ++i)
-	{
-		idle.PushBack({ 10 + (playerSize * i),1329,56,73 });
-	}
-	idle.speed = 15.0f;
-	idle.loop = true;
-
-	for (int i = 0; i != 8; ++i)
-	{
-		run.PushBack({ 10 + (playerSize * i),1202,62,82 });
-	}
-	run.speed = 15.0f;
-	run.loop = true;
-
-	for (int i = 0; i != 2; ++i)
-	{
-		jumpPrep.PushBack({ 10 + (playerSize * i), 812, 60, 90 });
-	}
-	jumpPrep.speed = 15.0f;
-	jumpPrep.loop = false;
-
-	for (int i = 0; i != 4; ++i)
-	{
-		jumpMid.PushBack({ 10 + (2 * playerSize) + (playerSize * i),812,60,80 });
-	}
-	jumpMid.speed = 15.0f;
-	jumpMid.loop = true;
-
-	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
-	jumpLand.PushBack({ 10 + (playerSize * 6), 818, 60, 72 });
-	jumpLand.speed = 40.0f;
-	jumpLand.loop = false;
-
-	for (int i = 0; i != 7; ++i)
-	{
-		attack.PushBack({ (playerSize * i), 434, 104, 72 });
-	}
-	attack.speed = 15.0f;
-	attack.loop = false;
-
-	for (int i = 0; i != 3; ++i)
-	{
-		hit.PushBack({ 10 + (playerSize * i),52,56,73 });
-	}
-	hit.speed = 10.0f;
-	hit.loop = false;
-
-	for (int i = 0; i != 5; ++i)
-	{
-		death.PushBack({ 10 + (playerSize * i),192,88,66 });
-	}
-	death.speed = 15.0f;
-	death.loop = false;
-
-	wallJump.PushBack({ 630,170,73,79 });
-	wallJump.speed = 0.0f;
-	wallJump.loop = false;
 
 	return true;
 }
@@ -393,14 +393,14 @@ bool Player::Update(float dt)
 		// Animation correction
 		if (app->map->GetTileProperty(currentFrameTile.x + 1, currentFrameTile.y, "CollisionId") == Collider::Type::SOLID
 			&& app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y + 1, "CollisionId") != Collider::Type::SOLID
-			&& !invert)
+			&& !invert && currentAnimation != &wallJump)
 		{
 			currentAnimation = &wallJump;
 			jumpCounter = 1;
 		}
 		else if (app->map->GetTileProperty((playerRect.x - 1) / app->generalTileSize, currentFrameTile.y, "CollisionId") == Collider::Type::SOLID
 			&& app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y + 1, "CollisionId") != Collider::Type::SOLID
-			&& invert)
+			&& invert && currentAnimation != &wallJump)
 		{
 			currentAnimation = &wallJump;
 			jumpCounter = 1;
@@ -454,7 +454,7 @@ bool Player::Update(float dt)
 				spawnPoint.y = 0;
 				once = false;
 			}
-			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, floor(3000.0f * dt));
+			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, floor(10000.0f * dt));
 		}
 
 		// Dead

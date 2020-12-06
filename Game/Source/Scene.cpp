@@ -71,17 +71,15 @@ bool Scene::Start()
 
 	app->render->SetBackgroundColor(app->map->data.backgroundColor);
 
-	app->render->camera.x = -(app->player->spawnPoint.x - app->render->camera.w / 2);
-	app->render->camera.y = -(app->player->spawnPoint.y - app->render->camera.h / 2);
-
-
 	app->collisions->Enable();
 
 	app->player->Enable();
+	app->render->camera.x = -(app->player->spawnPoint.x - app->render->camera.w / 2);
+	app->render->camera.y = -(app->player->spawnPoint.y - app->render->camera.h / 2);
 
 	app->enemies->Enable();
 	app->enemies->AddEnemy(EnemyType::FLYING, app->map->data.tileWidth * 103, app->map->data.tileHeight * 3);
-	app->enemies->AddEnemy(EnemyType::GROUND, app->map->data.tileWidth * 37, app->map->data.tileHeight * 12);
+	app->enemies->AddEnemy(EnemyType::GROUND, app->map->data.tileWidth * 36, app->map->data.tileHeight * 8);
 
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioMusic.GetString(), "level_1.ogg");
@@ -160,18 +158,6 @@ bool Scene::Update(float dt)
 	{
 		app->render->camera.y += floor(250.0f * dt);
 	}
-
-	/*
-	if (app->render->drawAll)
-	{
-		SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d", app->map->data.width, app->map->data.height, app->map->data.tileWidth, app->map->data.tileHeight, app->map->data.tileSets.Count());
-		app->win->SetTitle(title.GetString());
-	}
-	else
-	{
-		app->win->SetTitle(app->GetTitle());
-	}
-	*/
 
 	return true;
 }

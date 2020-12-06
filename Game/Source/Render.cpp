@@ -59,6 +59,7 @@ bool Render::Start()
 	LOG("Render start");
 
 	SDL_RenderGetViewport(renderer, &viewport);
+	drawAll = false;
 	return true;
 }
 

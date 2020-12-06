@@ -47,6 +47,8 @@ EnemyGround::EnemyGround(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, type
 	walking.Reset();
 	hurt.Reset();
 	attack.Reset();
+
+	invert = true;
 }
 
 void EnemyGround::Update(float dt)
@@ -155,6 +157,17 @@ void EnemyGround::Update(float dt)
 		else if (dif.y > 0)
 		{
 			enemyPhysics.positiveSpeedY = true;
+		}
+
+		counterTile++;
+		if (counterTile >= 32)
+		{
+			counterTile = 32;
+		}
+		if (counterTile == app->generalTileSize / 2 && enemyPhysics.speed.y == 0)
+		{
+			i++;
+			counterTile = 0;
 		}
 	}
 

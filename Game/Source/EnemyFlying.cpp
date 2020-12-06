@@ -39,6 +39,8 @@ EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, type
 	flying.Reset();
 	hurt.Reset();
 	attack.Reset();
+
+	invert = true;
 }
 
 void EnemyFlying::Update(float dt)
@@ -46,6 +48,7 @@ void EnemyFlying::Update(float dt)
 	nextFrame.x = enemyRect.x;
 	nextFrame.y = enemyRect.y;
 	enemyPhysics.speed.x = 0;
+	enemyPhysics.speed.y = 0;
 	enemyPhysics.CheckDirection();
 
 	if (attackChange)
@@ -98,7 +101,7 @@ void EnemyFlying::Update(float dt)
 			}
 		}
 	}
-
+	
 	if (pathCount < 12 && pathCount > 1 && !hurtChange)
 	{
 		if (i >= (pathCount - 2))
@@ -112,12 +115,7 @@ void EnemyFlying::Update(float dt)
 		//LOG("dif: %d, %d\n", dif.x, dif.y);
 		if (dif.x > 0)
 		{
-			// i do not agree with this
 			enemyPhysics.speed.x = 150.0f;
-			//if (origin.x <= dest.x)
-			//{
-			//	i++;
-			//}
 			invert = false;
 		}
 		else if (dif.x < 0)
@@ -125,28 +123,23 @@ void EnemyFlying::Update(float dt)
 			origin.x = (nextFrame.x + enemyRect.w) / app->generalTileSize;
 			enemyPhysics.speed.x = -75.0f;
 			invert = true;
-			//if (origin.x >= dest.x)
-			//{
-			//	i++;
-			//}
 		}
 		else if (dif.y < 0)
 		{
 			origin.y = (nextFrame.y + enemyRect.h) / app->generalTileSize;
 			enemyPhysics.speed.y = -75.0f;
-			//if (origin.y >= dest.y)
-			//{
-			//	i++;
-			//}
 		}
 		else if (dif.y > 0)
 		{
 			enemyPhysics.speed.y = 150.0f;
-			//if (origin.y <= dest.y)
-			//{
-			//	i++;
-			//}
 		}
+	}
+
+	counterTile++;
+	if (counterTile == app->generalTileSize/2)
+	{
+		i++;
+		counterTile = 0;
 	}
 
 	// Call to the base class. It must be called at the end

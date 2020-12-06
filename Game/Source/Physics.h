@@ -115,7 +115,8 @@ public:
 			speed.x = 0.0f;
 			speed.y = 0.0f;
 		}
-		else if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y + 1, "CollisionId") == Collider::Type::SOLID) {
+		else if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y + 1, "CollisionId") == Collider::Type::SOLID
+			|| app->map->GetTileProperty(currentFrameTile.x + 1, currentFrameTile.y + 1, "CollisionId") == Collider::Type::SOLID) {
 			speed.y = 0.0f;
 		}
 		else if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId") == Collider::Type::SOLID) {

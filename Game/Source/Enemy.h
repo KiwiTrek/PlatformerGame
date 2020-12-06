@@ -71,13 +71,14 @@ protected:
 	bool invert = false;
 	int enemySize;
 
+
 	// Original spawn position. Stored for movement calculations
 	iPoint spawnPos;
 
+	//Pathfinding stuff
 	iPoint pastDest;
 	int i;
-
-	//DynArray<iPoint> currentPath;
+	int counterTile;
 
 	// State changes
 	bool attackChange = false;
