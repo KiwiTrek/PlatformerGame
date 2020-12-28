@@ -9,7 +9,7 @@ struct QueueItem
 	tdata data;
 	QueueItem<tdata>* next;
 
-	inline QueueItem(const tdata& data) : data(data), next(NULL)
+	inline QueueItem(const tdata& pData) : data(pData), next(NULL)
 	{}
 };
 
@@ -32,9 +32,9 @@ public:
 		Clear();
 	}
 
-	uint Count() const
+	unsigned int Count() const
 	{
-		uint result = 0;
+		unsigned int result = 0;
 		QueueItem<tdata>* tmp;
 
 		for (tmp = start; tmp != NULL; tmp = tmp->next)
@@ -86,9 +86,9 @@ public:
 		return result;
 	}
 
-	const tdata* Peek(uint index) const
+	const tdata* Peek(unsigned int index) const
 	{
-		uint i = 0;
+		unsigned int i = 0;
 		QueueItem<tdata>* tmp;
 
 		for (tmp = start; tmp != NULL && i < index; tmp = tmp->next)

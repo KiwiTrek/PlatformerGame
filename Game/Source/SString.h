@@ -15,7 +15,7 @@ class SString
 private:
 
 	char* str;
-	uint size;
+	unsigned int size;
 
 public:
 
@@ -26,7 +26,7 @@ public:
 		Clear();
 	}
 
-	SString(uint size)
+	SString(unsigned int size)
 	{
 		if(size > 0)
 			Alloc(size);
@@ -42,7 +42,7 @@ public:
 		strcpy_s(str, size, string.str);
 	}
 
-	SString(const char* format, ...)
+	SString(const char *format, ...)
 	{
 		size = 0;
 
@@ -77,7 +77,7 @@ public:
 			delete[] str;
 	}
 
-	const SString& Create(const char* format, ...)
+	const SString& Create(const char *format, ...)
 	{
 		size = 0;
 
@@ -175,12 +175,12 @@ public:
 
 	const SString& operator+= (const SString& string)
 	{
-		uint needSize = string.Length() + Length() + 1;
+		unsigned int need_size = string.Length() + Length() + 1;
 
-		if(needSize > size)
+		if(need_size > size)
 		{
 			char* tmp = str;
-			Alloc(needSize);
+			Alloc(need_size);
 			strcpy_s(str, size, tmp);
 			delete[] tmp;
 		}
@@ -194,12 +194,12 @@ public:
 	{
 		if(string != NULL)
 		{
-			uint needSize = strlen(string) + Length() + 1;
+			unsigned int need_size = strlen(string) + Length() + 1;
 
-			if(needSize > size)
+			if(need_size > size)
 			{
 				char* tmp = str;
-				Alloc(needSize);
+				Alloc(need_size);
 				strcpy_s(str, size, tmp);
 				delete[] tmp;
 			}
@@ -211,7 +211,7 @@ public:
 	}
 
 	// Utils
-	uint Length() const
+	unsigned int Length() const
 	{
 		return strlen(str);
 	}
@@ -226,12 +226,12 @@ public:
 		return str;
 	}
 
-	uint GetCapacity() const
+	unsigned int GetCapacity() const
 	{
 		return size;
 	}
 
-	bool Cut(uint begin, uint end = 0)
+	bool Cut(unsigned int begin, unsigned int end = 0)
 	{
 		uint len = Length();
 
@@ -274,22 +274,22 @@ public:
 
 		if(instances > 0)
 		{
-			uint srcLen = strlen(src);
-			uint dstLen = strlen(dst);
-			uint diff = dstLen - srcLen;
-			uint neededSize = 1 + strlen(str) + (diff * instances);
+			uint src_len = strlen(src);
+			uint dst_len = strlen(dst);
+			uint diff = dst_len - src_len;
+			uint needed_size = 1 + strlen(str) + (diff * instances);
 
-			if(size < neededSize)
+			if(size < needed_size)
 			{
 				char* tmp = str;
-				Alloc(neededSize);
+				Alloc(needed_size);
 				strcpy_s(str, size, tmp);
 				delete tmp;
 			}
 
-			for(uint i = 0; i < size - srcLen; ++i)
+			for(uint i = 0; i < size - src_len; ++i)
 			{
-				if(strncmp(src, &str[i], srcLen) == 0)
+				if(strncmp(src, &str[i], src_len) == 0)
 				{
 					// Make room
 					for(uint j = strlen(str) + diff; j > i + diff; --j)
@@ -298,7 +298,7 @@ public:
 					}
 
 					// Copy
-					for(uint j = 0; j < dstLen; ++j)
+					for(uint j = 0; j < dst_len; ++j)
 					{
 						str[i++] = dst[j];
 					}
@@ -332,7 +332,7 @@ public:
 	}
 
 	// Paste a substring into buffer
-	uint SubString(uint start, uint end, SString& buffer) const
+	uint SubString(unsigned int start, unsigned int end, SString & buffer) const
 	{
 		if (str != NULL)
 		{
@@ -357,9 +357,9 @@ public:
 
 private:
 
-	void Alloc(uint requieredMemory)
+	void Alloc(unsigned int requiered_memory)
 	{
-		size = requieredMemory;
+		size = requiered_memory;
 		str = new char[size];
 	}
 

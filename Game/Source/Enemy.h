@@ -1,79 +1,32 @@
 #ifndef __ENEMY_H__
 #define __ENEMY_H__
 
-#include "Point.h"
-#include "Animation.h"
-#include "Physics.h"
-#include "DynArray.h"
+#include "Entity.h"
 
-struct SDL_Texture;
+#include "DynArray.h"
+#include "Point.h"
+#include "SString.h"
+
+enum EnemyType;
+class EntityManager;
 class Collider;
 
-// Enemy Type enum
-enum EnemyType
-{
-	NO_TYPE,
-	GROUND,
-	FLYING
-};
-
-class Enemy
+class Enemy : public Entity
 {
 public:
-	// Constructor
-	Enemy(int x, int y, EnemyType type);
 
-	// Destructor
-	virtual ~Enemy();
+    Enemy(int x, int y, EntityManager* listener, EnemyType eType);
+    virtual ~Enemy();
 
-	// Called from inhering enemies' Udpate
-	virtual void Update(float dt);
-
-	// Called from ModuleEnemies' Update
-	virtual void Draw();
-
-	// Collision response
-	void OnCollision(Collider* c1, Collider* c2);
+    // Collision response
+    void OnCollision(Collider* c1, Collider* c2) override;
 
 public:
-	// The current position in the world
-	SDL_Rect enemyRect;
+    DynArray<iPoint> path;
 
-	// Enemy physics related variables
-	Physics enemyPhysics;
-	iPoint nextFrame;
-
-	// Path related variables
-	DynArray<iPoint> path;
-	int pathCount = 0;
-
-	// Add to despawn queue
-	bool pendingToDelete = false;
-
-	SDL_Texture* texture = nullptr;
-	EnemyType type = EnemyType::NO_TYPE;
-	int destroyedFx = 0;
-	Collider* collider = nullptr;
-
-protected:
-	// General enemy size
-	int enemySize;
-
-	// Original spawn position
-	iPoint spawnPos;
-
-	//Pathfinding related variables
-	iPoint pastDest;
-	int i;
-	int counterTile;
-
-	// State changes
-	bool attackChange = false;
-	bool hurtChange = false;
-
-	// Animation related variables
-	Animation* currentAnim = nullptr;
-	bool invert = false;
+    // State changes
+    bool attackChange = false;
+    bool hurtChange = false;
 };
 
 #endif // __ENEMY_H__

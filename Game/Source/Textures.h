@@ -5,14 +5,16 @@
 
 #include "List.h"
 
+class Render;
+
 struct SDL_Texture;
 struct SDL_Surface;
 
 class Textures : public Module
 {
 public:
-	// Constructor
-	Textures();
+
+	Textures(Render* render);
 
 	// Destructor
 	virtual ~Textures();
@@ -26,14 +28,18 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	// Load/Unload Texture functions
+	// Load Texture
 	SDL_Texture* const Load(const char* path);
 	SDL_Texture* const LoadSurface(SDL_Surface* surface);
 	bool UnLoad(SDL_Texture* texture);
 	void GetSize(const SDL_Texture* texture, uint& width, uint& height) const;
 
 public:
+
+	Render* render;
+
 	List<SDL_Texture*> textures;
 };
+
 
 #endif // __TEXTURES_H__

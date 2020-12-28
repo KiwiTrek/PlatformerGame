@@ -4,19 +4,26 @@
 #include "Defs.h"
 #include "Log.h"
 
-#include "SDL.h"
-#include "SDL_mixer.h"
+// NOTE: Recommended using: Additional Include Directories,
+// instead of 'hardcoding' library location path in code logic
+#include "SDL/include/SDL.h"
+#include "SDL_mixer/include/SDL_mixer.h"
 
-Audio::Audio() : Module()
+// NOTE: Library linkage is configured in Linker Options
+//#pragma comment(lib, "../Game/Source/External/SDL_mixer/libx86/SDL2_mixer.lib")
+
+AudioManager::AudioManager() : Module()
 {
 	music = NULL;
 	name.Create("audio");
 }
 
-Audio::~Audio()
+// Destructor
+AudioManager::~AudioManager()
 {}
 
-bool Audio::Awake(pugi::xml_node& config)
+// Called before render is available
+bool AudioManager::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Audio Mixer");
 	bool ret = true;
@@ -29,7 +36,7 @@ bool Audio::Awake(pugi::xml_node& config)
 		ret = true;
 	}
 
-	// Load support for the OGG image formats
+	// Load support for the JPG and PNG image formats
 	int flags = MIX_INIT_OGG;
 	int init = Mix_Init(flags);
 
@@ -57,12 +64,11 @@ bool Audio::Awake(pugi::xml_node& config)
 	return ret;
 }
 
-bool Audio::CleanUp()
+// Called before quitting
+bool AudioManager::CleanUp()
 {
-	if (!active)
-	{
+	if(!active)
 		return true;
-	}
 
 	LOG("Freeing sound FX, closing Mixer and Audio subsystem");
 
@@ -72,10 +78,8 @@ bool Audio::CleanUp()
 	}
 
 	ListItem<Mix_Chunk*>* item;
-	for (item = fx.start; item != NULL; item = item->next)
-	{
+	for(item = fx.start; item != NULL; item = item->next)
 		Mix_FreeChunk(item->data);
-	}
 
 	fx.Clear();
 
@@ -86,7 +90,7 @@ bool Audio::CleanUp()
 	return true;
 }
 
-bool Audio::Load(pugi::xml_node& save)
+bool AudioManager::Load(pugi::xml_node& save)
 {
 	LOG("Loading SDL rendering info");
 	bool ret = true;
@@ -96,7 +100,7 @@ bool Audio::Load(pugi::xml_node& save)
 	return ret;
 }
 
-bool Audio::Save(pugi::xml_node& save)
+bool AudioManager::Save(pugi::xml_node& save)
 {
 	LOG("Saving SDL rendering info");
 	bool ret = true;
@@ -107,41 +111,41 @@ bool Audio::Save(pugi::xml_node& save)
 	return ret;
 }
 
-bool Audio::PlayMusic(const char* path, float fade_time)
+// Play a music file
+bool AudioManager::PlayMusic(const char* path, float fadeTime)
 {
 	bool ret = true;
 
-	if (!active)
-	{
+	if(!active)
 		return false;
-	}
 
-	if (music != NULL)
+	if(music != NULL)
 	{
-		if (fade_time > 0.0f)
+		if(fadeTime > 0.0f)
 		{
-			Mix_FadeOutMusic(int(fade_time * 1000.0f));
+			Mix_FadeOutMusic(int(fadeTime * 1000.0f));
 		}
 		else
 		{
 			Mix_HaltMusic();
 		}
 
+		// this call blocks until fade out is done
 		Mix_FreeMusic(music);
 	}
 
 	music = Mix_LoadMUS(path);
 
-	if (music == NULL)
+	if(music == NULL)
 	{
 		LOG("Cannot load music %s. Mix_GetError(): %s\n", path, Mix_GetError());
 		ret = false;
 	}
 	else
 	{
-		if (fade_time > 0.0f)
+		if(fadeTime > 0.0f)
 		{
-			if (Mix_FadeInMusic(music, -1, (int)(fade_time * 1000.0f)) < 0)
+			if(Mix_FadeInMusic(music, -1, (int) (fadeTime * 1000.0f)) < 0)
 			{
 				LOG("Cannot fade in music %s. Mix_GetError(): %s", path, Mix_GetError());
 				ret = false;
@@ -149,7 +153,7 @@ bool Audio::PlayMusic(const char* path, float fade_time)
 		}
 		else
 		{
-			if (Mix_PlayMusic(music, -1) < 0)
+			if(Mix_PlayMusic(music, -1) < 0)
 			{
 				LOG("Cannot play in music %s. Mix_GetError(): %s", path, Mix_GetError());
 				ret = false;
@@ -161,18 +165,17 @@ bool Audio::PlayMusic(const char* path, float fade_time)
 	return ret;
 }
 
-uint Audio::LoadFx(const char* path)
+// Load WAV
+unsigned int AudioManager::LoadFx(const char* path)
 {
-	uint ret = 0;
+	unsigned int ret = 0;
 
-	if (!active)
-	{
+	if(!active)
 		return 0;
-	}
 
 	Mix_Chunk* chunk = Mix_LoadWAV(path);
 
-	if (chunk == NULL)
+	if(chunk == NULL)
 	{
 		LOG("Cannot load wav %s. Mix_GetError(): %s", path, Mix_GetError());
 	}
@@ -185,7 +188,7 @@ uint Audio::LoadFx(const char* path)
 	return ret;
 }
 
-bool Audio::UnloadFx(uint index)
+bool AudioManager::UnloadFx(uint index)
 {
 	ListItem<Mix_Chunk*>* s = fx.At(index - 1);
 	if (s != nullptr)
@@ -198,16 +201,15 @@ bool Audio::UnloadFx(uint index)
 	return false;
 }
 
-bool Audio::PlayFx(uint id, int repeat)
+// Play WAV
+bool AudioManager::PlayFx(unsigned int id, int repeat)
 {
 	bool ret = false;
 
-	if (!active)
-	{
+	if(!active)
 		return false;
-	}
 
-	if (id > 0 && id <= fx.Count())
+	if(id > 0 && id <= fx.Count())
 	{
 		Mix_PlayChannel(-1, fx[id - 1], repeat);
 	}
@@ -215,7 +217,7 @@ bool Audio::PlayFx(uint id, int repeat)
 	return ret;
 }
 
-bool Audio::SetFxVolume(uint index)
+bool AudioManager::SetFxVolume(uint index)
 {
 	ListItem<Mix_Chunk*>* s = fx.At(index - 1);
 	if (s != nullptr)
@@ -223,11 +225,11 @@ bool Audio::SetFxVolume(uint index)
 		Mix_VolumeChunk(s->data, volumeFx);
 		return true;
 	}
-	
+
 	return false;
 }
 
-void Audio::MuteVolume()
+void AudioManager::MuteVolume()
 {
 	if (Mix_VolumeMusic(-1) == 0)
 	{

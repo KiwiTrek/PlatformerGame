@@ -1,77 +1,55 @@
 #include "App.h"
+
 #include "Window.h"
 #include "Input.h"
 #include "Render.h"
 #include "Textures.h"
-#include "Fonts.h"
 #include "Audio.h"
-#include "Player.h"
-#include "EnemyManagement.h"
 #include "Map.h"
-#include "Transition.h"
-#include "Collisions.h"
-#include "PathFinding.h"
-
-#include "Scene.h"
-#include "LogoScene.h"
-#include "TitleScene.h"
-#include "DeathScene.h"
+#include "EntityManager.h"
+#include "SceneManager.h"
 
 #include "Defs.h"
 #include "Log.h"
 
-#include "optick.h"
-#include "optick.config.h"
-
 #include <iostream>
 #include <sstream>
 
+// L07: DONE 3: Measure the amount of ms that takes to execute:
+// App constructor, Awake, Start and CleanUp
+// LOG the result
+
+// Constructor
 App::App(int argc, char* args[]) : argc(argc), args(args)
 {
-	PERF_START(pTimer);
+	PERF_START(ptimer);
 
-	input = new Input();
 	win = new Window();
-	render = new Render();
-	tex = new Textures();
-	fonts = new Fonts();
-	audio = new Audio();
-	player = new Player();
-	enemies = new EnemyManagement();
-	map = new Map();
-	transition = new Transition();
-	collisions = new Collisions();
-	pathfinding = new PathFinding();
-
-	scene = new Scene();
-	logoScene = new LogoScene();
-	titleScene = new TitleScene();
-	deathScene = new DeathScene();
+	input = new Input(win);
+	render = new Render(win);
+	tex = new Textures(render);
+	audio = new AudioManager();
+	map = new Map(tex);
+	entityManager = new EntityManager(render, tex, input, map, audio, this);
+	sceneManager = new SceneManager(input, render, tex);
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
-	AddModule(input);
 	AddModule(win);
+	AddModule(input);
 	AddModule(tex);
 	AddModule(audio);
-	AddModule(pathfinding);
-	AddModule(logoScene);
-	AddModule(titleScene);
-	AddModule(deathScene);
-	AddModule(scene);
 	AddModule(map);
-	AddModule(player);
-	AddModule(fonts);
-	AddModule(enemies);
-	AddModule(collisions);
-	AddModule(transition);
+	AddModule(entityManager);
+	AddModule(sceneManager);
 
-	// render last to swap buffer
+	// Render last to swap buffer
 	AddModule(render);
-
-	PERF_PEEK(pTimer);
+	
+	PERF_PEEK(ptimer);
 }
 
+// Destructor
 App::~App()
 {
 	// Release modules
@@ -92,9 +70,10 @@ void App::AddModule(Module* module)
 	modules.Add(module);
 }
 
+// Called before render is available
 bool App::Awake()
 {
-	PERF_START(pTimer);
+	PERF_START(ptimer);
 
 	pugi::xml_document configFile;
 	pugi::xml_node config;
@@ -102,6 +81,7 @@ bool App::Awake()
 
 	bool ret = false;
 
+	// L01: DONE 3: Load config from XML
 	config = LoadConfig(configFile);
 
 	if (config.empty() == false)
@@ -109,17 +89,13 @@ bool App::Awake()
 		ret = true;
 		configApp = config.child("app");
 
+		// L01: DONE 4: Read the title from the config file
 		title.Create(configApp.child("title").child_value());
 		organization.Create(configApp.child("organization").child_value());
-		generalTileSize = configApp.child("generalTileSize").attribute("value").as_int(64);
 
-		// Read from config file your framerate cap
-		cap = configApp.attribute("framerateCap").as_int(-1);
-
-		if (cap > 0)
-		{
-			cappedMs = 1000 / cap;
-		}
+        // L08: DONE 1: Read from config file your framerate cap
+		cap = configApp.attribute("framerate_cap").as_int(-1);
+		if (cap > 0) cappedMs = 1000 / cap;
 	}
 
 	if (ret == true)
@@ -127,22 +103,27 @@ bool App::Awake()
 		ListItem<Module*>* item;
 		item = modules.start;
 
-		while (item != NULL && ret == true)
+		while ((item != NULL) && (ret == true))
 		{
+			// L01: DONE 5: Add a new argument to the Awake method to receive a pointer to an xml node.
+			// If the section with the module name exists in config.xml, fill the pointer with the valid xml_node
+			// that can be used to read all variables for that module.
+			// Send nullptr if the node does not exist in config.xml
 			ret = item->data->Awake(config.child(item->data->name.GetString()));
 			item = item->next;
 		}
 	}
-
-	PERF_PEEK(pTimer);
+	
+	PERF_PEEK(ptimer);
 
 	return ret;
 }
 
+// Called before the first frame
 bool App::Start()
 {
-	PERF_START(pTimer);
-
+	PERF_START(ptimer);
+	
 	bool ret = true;
 	ListItem<Module*>* item;
 	item = modules.start;
@@ -155,98 +136,87 @@ bool App::Start()
 		}
 		item = item->next;
 	}
+	
+	capGameRequested = false;
 
-	capRequest = false;
-
-	PERF_PEEK(pTimer);
+	PERF_PEEK(ptimer);
 
 	return ret;
 }
 
+// Called each loop iteration
 bool App::Update()
 {
 	bool ret = true;
 	PrepareUpdate();
 
-	if (input->GetWindowEvent(WE_QUIT) == true)
-	{
+	if(input->GetWindowEvent(WE_QUIT) == true)
 		ret = false;
-	}
 
-	if (ret == true)
-	{
-		OPTICK_CATEGORY("PreUpdate", Optick::Category::Input);
+	if(ret == true)
 		ret = PreUpdate();
-	}
 
-	if (ret == true)
-	{
-		OPTICK_CATEGORY("Update", Optick::Category::GameLogic);
+	if(ret == true)
 		ret = DoUpdate();
-	}
 
-	if (ret == true)
-	{
-		OPTICK_CATEGORY("PostUpdate", Optick::Category::Rendering);
+	if(ret == true)
 		ret = PostUpdate();
-	}
 
 	FinishUpdate();
 	return ret;
 }
 
+// Load config from XML file
+// NOTE: Function has been redesigned to avoid storing additional variables on the class
 pugi::xml_node App::LoadConfig(pugi::xml_document& configFile) const
 {
 	pugi::xml_node ret;
 
 	pugi::xml_parse_result result = configFile.load_file(CONFIG_FILENAME);
 
-	if (result == NULL)
-	{
-		LOG("Could not load xml file: %s. pugi error: %s", CONFIG_FILENAME, result.description());
-	}
-	else
-	{
-		ret = configFile.child("config");
-	}
+	if (result == NULL) LOG("Could not load xml file: %s. pugi error: %s", CONFIG_FILENAME, result.description());
+	else ret = configFile.child("config");
 
 	return ret;
 }
 
+// ---------------------------------------------
 void App::PrepareUpdate()
 {
-	OPTICK_CATEGORY("PrepareUpdate", Optick::Category::Debug);
-	frameCount++;
-	lastSecFrameCount++;
+    frameCount++;
+    lastSecFrameCount++;
 
-	// Calculate the dt: differential time since last frame
+    // L08: DONE 4: Calculate the dt: differential time since last frame
 	dt = frameTime.ReadSec();
-
-	// We start the timer after read because we want to know how much time it took from the last frame to the new one
-	PERF_START(frameTime);
+	frameTime.Start();
 }
 
+// ---------------------------------------------
 void App::FinishUpdate()
 {
-	OPTICK_CATEGORY("FinishUpdate", Optick::Category::Wait);
-	if (loadRequest)
+	// L02: DONE 1: This is a good place to call Load / Save methods
+	if (loadGameRequested == true)
 	{
-		loadRequest = !loadRequest;
+		loadGameRequested = !loadGameRequested;
 		LoadGame();
 	}
-	else if (saveRequest)
+	if (saveGameRequested == true)
 	{
-		saveRequest = !saveRequest;
+		saveGameRequested = !saveGameRequested;
 		SaveGame();
 	}
-	else if (capRequest)
+	if (capGameRequested == true)
 	{
-		capRequest = !capRequest;
-		ChangeCap();
+		capGameRequested = !capGameRequested;
+		CapRequest();
 	}
-
-	// Framerate calculations------------------------------------------
-	// To know how many frames have passed in the last second
+    
+    // L07: DONE 4: Now calculate:
+	// Amount of frames since startup
+	// Amount of time since game start (use a low resolution timer)
+	// Average FPS for the whole game life
+	// Amount of ms took the last update
+	// Amount of frames during the last second
 	if (lastSecFrameTime.Read() > 1000)
 	{
 		lastSecFrameTime.Start();
@@ -254,60 +224,40 @@ void App::FinishUpdate()
 		lastSecFrameCount = 0;
 	}
 
-	// Amount of seconds since startup
-	float secondsSinceStartup = 0.0f;
-	secondsSinceStartup = startupTime.ReadSec();
-
-	// Amount of time since game start (use a low resolution timer)
-	uint32 lastFrameMs = 0;
-	lastFrameMs = frameTime.Read(); // Time from the prepare update until now (whole update method)
-
-	// Average FPS for the whole game life (since start)
-	float averageFps = 0.0f;
-	averageFps = float(frameCount) / startupTime.ReadSec();
-
-	// Amount of frames during the last update
-	uint32 framesOnLastUpdate = 0;
-	framesOnLastUpdate = prevLastSecFrameCount;
+	float averageFps = float(frameCount) / startupTime.ReadSec();
+	float secondsSinceStartup = startupTime.ReadSec();
+	uint32 lastFrameMs = frameTime.Read();
+	uint32 framesOnLastUpdate = prevLastSecFrameCount;
 
 	static char title[256];
-	static char vsyncStr[4];
+	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %I64u ",
+			  averageFps, lastFrameMs, framesOnLastUpdate, dt, secondsSinceStartup, frameCount);
 
-	if (vsync)
-	{
-		sprintf_s(vsyncStr, "on");
-	}
-	else
-	{
-		sprintf_s(vsyncStr, "off");
-	}
-	sprintf_s(title, 256, "FPS: %i Av.FPS: %.2f Last Frame Ms: %02u Vsync: %s", framesOnLastUpdate, averageFps, lastFrameMs, vsyncStr);
-	app->win->SetTitle(title);
+	//app->win->SetTitle(title);
 
-	// Use SDL_Delay to make sure you get your capped framerate
-	PERF_START(pTimer);
-	if (cappedMs > lastFrameMs)
+    // L08: DONE 2: Use SDL_Delay to make sure you get your capped framerate
+	if ((cappedMs > 0) && (lastFrameMs < cappedMs))
 	{
+		// L08: DONE 3: Measure accurately the amount of time SDL_Delay actually waits compared to what was expected
+		PerfTimer pt;
 		SDL_Delay(cappedMs - lastFrameMs);
+		LOG("We waited for %d milliseconds and got back in %f", cappedMs - lastFrameMs, pt.ReadMs());
 	}
-
-	// Measure accurately the amount of time SDL_Delay() actually waits compared to what was expected
-	PERF_PEEK(pTimer);
 }
 
+// Call modules before each loop iteration
 bool App::PreUpdate()
 {
 	bool ret = true;
+
 	ListItem<Module*>* item;
-	item = modules.start;
 	Module* pModule = NULL;
 
 	for(item = modules.start; item != NULL && ret == true; item = item->next)
 	{
 		pModule = item->data;
 
-		if(pModule->active == false)
-		{
+		if(pModule->active == false) {
 			continue;
 		}
 
@@ -317,6 +267,7 @@ bool App::PreUpdate()
 	return ret;
 }
 
+// Call modules on each loop iteration
 bool App::DoUpdate()
 {
 	bool ret = true;
@@ -328,17 +279,19 @@ bool App::DoUpdate()
 	{
 		pModule = item->data;
 
-		if(pModule->active == false)
-		{
+		if(pModule->active == false) {
 			continue;
 		}
 
+        // L08: DONE 5: Send dt as an argument to all updates, you need
+        // to update module parent class and all modules that use update
 		ret = item->data->Update(dt);
 	}
 
 	return ret;
 }
 
+// Call modules after each loop iteration
 bool App::PostUpdate()
 {
 	bool ret = true;
@@ -349,8 +302,7 @@ bool App::PostUpdate()
 	{
 		pModule = item->data;
 
-		if(pModule->active == false)
-		{
+		if(pModule->active == false) {
 			continue;
 		}
 
@@ -360,6 +312,7 @@ bool App::PostUpdate()
 	return ret;
 }
 
+// Called before quitting
 bool App::CleanUp()
 {
 	bool ret = true;
@@ -375,51 +328,58 @@ bool App::CleanUp()
 	return ret;
 }
 
+// ---------------------------------------
 int App::GetArgc() const
 {
 	return argc;
 }
 
+// ---------------------------------------
 const char* App::GetArgv(int index) const
 {
-	if (index < argc)
-	{
+	if(index < argc)
 		return args[index];
-	}
 	else
-	{
 		return NULL;
-	}
 }
 
+// ---------------------------------------
 const char* App::GetTitle() const
 {
 	return title.GetString();
 }
 
+// ---------------------------------------
 const char* App::GetOrganization() const
 {
 	return organization.GetString();
 }
 
+// Load / Save
 void App::LoadRequest()
 {
-	loadRequest = true;
+	// NOTE: We should check if SAVE_STATE_FILENAME actually exist
+	loadGameRequested = true;
 }
 
-void App::SaveRequest()
+// ---------------------------------------
+void App::SaveRequest() const
 {
-	saveRequest = true;
+	// NOTE: We should check if SAVE_STATE_FILENAME actually exist and... should we overwriten
+	saveGameRequested = true;
 }
 
 void App::CapRequest()
 {
-	capRequest = true;
+	capGameRequested = true;
 }
 
+// ---------------------------------------
+// L02: TODO 5: Create a method to actually load an xml file
+// then call all the modules to load themselves
 bool App::LoadGame()
 {
-	bool ret = true;
+	bool ret = false;
 
 	pugi::xml_parse_result result = saveFile.load_file("save_game.xml");
 	if (result == NULL)
@@ -442,10 +402,10 @@ bool App::LoadGame()
 	}
 
 	return ret;
-
 }
 
-bool App::SaveGame()
+// L02: TODO 7: Implement the xml save method for current state
+bool App::SaveGame() const
 {
 	bool ret = true;
 

@@ -7,32 +7,25 @@
 
 #include "List.h"
 
-#include "pugixml.hpp"
+#include "PugiXml/src/pugixml.hpp"
 
-#define CONFIG_FILENAME "config.xml"
+#define CONFIG_FILENAME		"config.xml"
 #define SAVE_STATE_FILENAME "save_game.xml"
 
+// Modules
 class Window;
 class Input;
 class Render;
 class Textures;
-class Fonts;
-class Audio;
-class Player;
-class EnemyManagement;
+class AudioManager;
 class Map;
-class Transition;
-class Collisions;
-class PathFinding;
-
-class Scene;
-class LogoScene;
-class TitleScene;
-class DeathScene;
+class EntityManager;
+class SceneManager;
 
 class App
 {
 public:
+
 	// Constructor
 	App(int argc, char* args[]);
 
@@ -60,14 +53,16 @@ public:
 	const char* GetTitle() const;
 	const char* GetOrganization() const;
 
-	// Request Save/Load
+    // L02: DONE 1: Create methods to request Load / Save
 	void LoadRequest();
-	void SaveRequest();
+	void SaveRequest() const;
 	void CapRequest();
 
-private:
 	// Load config file
+	// NOTE: It receives config document
 	pugi::xml_node LoadConfig(pugi::xml_document&) const;
+
+private:
 
 	// Call modules before each loop iteration
 	void PrepareUpdate();
@@ -84,35 +79,25 @@ private:
 	// Call modules after each loop iteration
 	bool PostUpdate();
 
-	// Save/Load inside an XML file
+	// Load / Save
 	bool LoadGame();
-	bool SaveGame();
+	bool SaveGame() const;
 	bool ChangeCap();
 
 public:
+
 	// Modules
 	Window* win;
 	Input* input;
 	Render* render;
 	Textures* tex;
-	Fonts* fonts;
-	Audio* audio;
-	Player* player;
-	EnemyManagement* enemies;
+	AudioManager* audio;
 	Map* map;
-	Transition* transition;
-	Collisions* collisions;
-	PathFinding* pathfinding;
-
-	Scene* scene;
-	LogoScene* logoScene;
-	TitleScene* titleScene;
-	DeathScene* deathScene;
-
-	bool vsync = false;
-	int generalTileSize = 64;
+	EntityManager* entityManager;
+	SceneManager* sceneManager;
 
 private:
+
 	int argc;
 	char** args;
 	SString title;
@@ -120,12 +105,21 @@ private:
 
 	List<Module *> modules;
 
-	bool saveRequest, loadRequest, capRequest;
+	// L01: DONE 2: Create new variables from pugui namespace
+	// NOTE: Redesigned LoadConfig() to avoid storing this variables
+	//pugi::xml_document configFile;
+	//pugi::xml_node config;
+	//pugi::xml_node configApp;
+
+	mutable bool saveGameRequested;
+	bool loadGameRequested;
+	bool capGameRequested;
 	pugi::xml_document saveFile;
 	pugi::xml_node save;
 
-	// Frame variables
-	PerfTimer pTimer;
+	// L07: DONE 4: Calculate some timing measures
+	// required variables are provided:
+	PerfTimer ptimer;
 	uint64 frameCount = 0;
 
 	Timer startupTime;
@@ -137,7 +131,5 @@ private:
 	float cappedMs = -1;
 	int cap = 0;
 };
-
-extern App* app;
 
 #endif	// __APP_H__

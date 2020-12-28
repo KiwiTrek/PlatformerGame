@@ -11,9 +11,9 @@ struct ListItem
 	ListItem<tdata>* next;
 	ListItem<tdata>* prev;
 
-	inline ListItem(const tdata& newData)
+	inline ListItem(const tdata& pData)
 	{
-		data = newData;
+		data = pData;
 		next = prev = NULL;
 	}
 
@@ -33,7 +33,7 @@ public:
 
 private:
 
-	uint size;
+	unsigned int size;
 
 public:
 
@@ -51,7 +51,7 @@ public:
 	}
 
 	// Get Size
-	uint Count() const
+	unsigned int Count() const
 	{
 		return size;
 	}
@@ -136,7 +136,7 @@ public:
 	}
 
 	// Read/write operator access directly to a position in the list
-	tdata& operator [](const uint index)
+	tdata& operator [](const unsigned int index)
 	{
 		long pos;
 		ListItem<tdata>* pItem;
@@ -160,7 +160,7 @@ public:
 	/**
 	* const read operator access directly to a position in the list
 	*/
-	const tdata& operator [](const uint index) const
+	const tdata& operator [](const unsigned int index) const
 	{
 		long pos;
 		ListItem<tdata>* pItem;
@@ -183,26 +183,20 @@ public:
 		return(pItem->data);
 	}
 
-	/**
-	* const read operator access directly to a position in the list
-	*/
-	const List<tdata>& operator +=(const List<tdata>& otherList)
+	const List<tdata>& operator +=(const List<tdata>& other_list)
 	{
-		ListItem<tdata>* pItem = otherList.start;
+		ListItem<tdata>* pItem = other_list.start;
 
 		while(pItem != NULL)
 		{
-			add(pItem->data);
+			Add(pItem->data);
 			pItem = pItem->next;
 		}
 
 		return(*this);
 	}
 
-	/**
-	* const access to a node in a position in the list
-	*/
-	const ListItem<tdata>* At(uint index) const
+	const ListItem<tdata>* At(unsigned int index) const
 	{
 		long pos = 0;
 		ListItem<tdata>* pItem = start;
@@ -218,10 +212,7 @@ public:
 		return pItem;
 	}
 
-	/**
-	* access to a node in a position in the list
-	*/
-	ListItem<tdata>* At(uint index)
+	ListItem<tdata>* At(unsigned int index)
 	{
 		long pos = 0;
 		ListItem<tdata>* pItem = start;
@@ -264,9 +255,6 @@ public:
 		return ret;
 	}
 
-	/**
-	* returns the first apperance of data as index (-1 if not found)
-	*/
 	int Find(const tdata& data)
 	{
 		ListItem<tdata>* tmp = start;
@@ -311,4 +299,4 @@ public:
 		}
 	}
 };
-#endif // LIST_H__
+#endif // __LIST_H__

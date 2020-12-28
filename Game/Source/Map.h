@@ -2,19 +2,16 @@
 #define __MAP_H__
 
 #include "Module.h"
+
+#include "DynArray.h"
 #include "List.h"
+#include "PQueue.h"
 #include "Point.h"
 
-#include "pugixml.hpp"
+#include "SDL/include/SDL.h"
 
-// Map Types enum
-enum MapTypes
-{
-	MAPTYPE_UNKNOWN = 0,
-	MAPTYPE_ORTHOGONAL,
-	MAPTYPE_ISOMETRIC,
-	MAPTYPE_STAGGERED
-};
+class Textures;
+class Render;
 
 struct Properties
 {
@@ -24,7 +21,6 @@ struct Properties
 		int value;
 	};
 
-	// Destructor
 	~Properties()
 	{
 		ListItem<Property*>* item;
@@ -35,13 +31,13 @@ struct Properties
 			RELEASE(item->data);
 			item = item->next;
 		}
+
 		list.Clear();
 	}
 
 	int GetProperty(const char* name, int defaultValue = 0) const;
 	void SetProperty(const char* name, int value);
 
-	// List of properties
 	List<Property*> list;
 };
 
@@ -51,13 +47,16 @@ struct Tile
 	Properties properties;
 };
 
+// L03: DONE 2: Create a struct to hold information for a TileSet
+// Ignore Terrain Types and Tile Types for now, but we want the image!
 struct TileSet
 {
-	int firstgId;
-	SString name;
-	int tileWidth, tileHeight;
-	int spacing;
+	SString	name;
+	int	firstgid;
 	int margin;
+	int	spacing;
+	int	tileWidth;
+	int	tileHeight;
 
 	SDL_Texture* texture;
 	int	texWidth;
@@ -76,39 +75,54 @@ struct TileSet
 	Tile* GetPropList(int id) const;
 };
 
+// L03: DONE 1: We create an enum for map type, just for convenience,
+// NOTE: Platformer game will be of type ORTHOGONAL
+enum MapTypes
+{
+	MAPTYPE_UNKNOWN = 0,
+	MAPTYPE_ORTHOGONAL,
+	MAPTYPE_ISOMETRIC,
+	MAPTYPE_STAGGERED
+};
+
+// L04: DONE 1: Create a struct for the map layer
 struct MapLayer
 {
 	SString	name;
 	int width;
 	int height;
 	uint* data;
+
+	// L06: DONE 1: Support custom properties
 	Properties properties;
 
-	// Constructor
 	MapLayer() : data(NULL)
 	{}
 
-	// Destructor
 	~MapLayer()
 	{
 		RELEASE(data);
 	}
 
-	// Function to get the value of x and y
+	// L04: DONE 6: Short function to get the value of x,y
 	inline uint Get(int x, int y) const
 	{
-		uint result = data[y * width + x];
-		return result;
+		return data[(y * width) + x];
 	}
 };
 
+// L03: DONE 1: Create a struct needed to hold the information to Map node
 struct MapData
 {
-	int width, height;
-	int tileWidth, tileHeight;
+	int width;
+	int	height;
+	int	tileWidth;
+	int	tileHeight;
 	SDL_Color backgroundColor;
 	MapTypes type;
 	List<TileSet*> tileSets;
+
+	// L04: DONE 2: Add a list/array of layers to the map
 	List<MapLayer*> mapLayer;
 };
 
@@ -116,10 +130,10 @@ class Map : public Module
 {
 public:
 	// Constructor
-	Map();
+    Map(Textures* textures);
 
-	// Destructor
-	virtual ~Map();
+    // Destructor
+    virtual ~Map();
 
 	// Called when program is executed
 	void Init();
@@ -128,7 +142,9 @@ public:
 	bool Awake(pugi::xml_node& conf);
 
 	// Called each loop iteration
-	void Draw();
+    void Draw(Render* render);
+
+	void DrawPath(Render* render, DynArray<iPoint>* path);
 
 	// Called before quitting
 	bool CleanUp();
@@ -166,6 +182,10 @@ private:
 	pugi::xml_document mapFile;
 	SString folder;
 	bool mapLoaded;
+	SString folderTexture;
+	SDL_Texture* debugPath;
+
+	Textures* tex;
 };
 
 #endif // __MAP_H__

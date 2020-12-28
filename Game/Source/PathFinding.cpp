@@ -1,40 +1,31 @@
 #include "App.h"
 #include "PathFinding.h"
-#include "Map.h"
-#include "Render.h"
-#include "Textures.h"
 
 #include "Defs.h"
 #include "Log.h"
 
-PathFinding::PathFinding() : Module(), map(NULL), width(0), height(0)
+PathFinding* PathFinding::instance = nullptr;
+
+PathFinding* PathFinding::GetInstance()
 {
-	name.Create("pathfinding");
+	if (instance == nullptr) instance = new PathFinding();
+
+	return instance;
 }
 
+PathFinding::PathFinding() : map(NULL), width(0), height(0)
+{
+	//name.Create("pathfinding");
+}
+
+// Destructor
 PathFinding::~PathFinding()
 {
 	RELEASE_ARRAY(map);
+	RELEASE(instance);
 }
 
-bool PathFinding::Awake(pugi::xml_node& config)
-{
-	LOG("Loading PathFinder");
-	bool ret = true;
-
-	folderTexture.Create(config.child("folderTexture").child_value());
-
-	return ret;
-}
-
-bool PathFinding::Start()
-{
-	SString tmp("%s%s", folderTexture.GetString(), "path_meta_data.png");
-	debugPath = app->tex->Load(tmp.GetString());
-
-	return true;
-}
-
+// Called before quitting
 bool PathFinding::CleanUp()
 {
 	LOG("Freeing pathfinding library");
@@ -44,69 +35,67 @@ bool PathFinding::CleanUp()
 	return true;
 }
 
+// Sets up the walkability map
 void PathFinding::SetMap(uint width, uint height, uchar* data)
 {
 	this->width = width;
 	this->height = height;
 
 	RELEASE_ARRAY(map);
-	map = new uchar[width * height];
-	memcpy(map, data, width * height);
+	map = new uchar[width*height];
+	memcpy(map, data, width*height);
 }
 
+// Utility: return true if pos is inside the map boundaries
 bool PathFinding::CheckBoundaries(const iPoint& pos) const
 {
-	return (pos.x >= 0 && pos.x <= (int)width && pos.y >= 0 && pos.y <= (int)height);
+	return (pos.x >= 0 && pos.x <= (int)width &&
+			pos.y >= 0 && pos.y <= (int)height);
 }
 
+// Utility: returns true is the tile is walkable
 bool PathFinding::IsWalkable(const iPoint& pos) const
 {
 	uchar t = GetTileCost(pos);
-	return t != INVALID_WALK_CODE && t >= 0 && t != 254;
+	return t != INVALID_WALK_CODE && t > 0;
 }
 
+// Utility: return the walkability value of a tile
 uchar PathFinding::GetTileCost(const iPoint& pos) const
 {
-	if (CheckBoundaries(pos))
-	{
-		return map[(pos.y * width) + pos.x];
-	}
+	if(CheckBoundaries(pos))
+		return map[(pos.y*width) + pos.x];
 
 	return INVALID_WALK_CODE;
 }
 
-void PathFinding::DrawPath(DynArray<iPoint>* path)
-{
-	for (uint i = 0; i < path->Count(); ++i)
-	{
-		iPoint pos = app->map->MapToWorld(path->At(i)->x, path->At(i)->y);
-		app->render->DrawTexture(debugPath, pos.x, pos.y);
-	}
-}
-
+// PathList ------------------------------------------------------------------------
+// Looks for a node in this list and returns it's list node or NULL
+// ---------------------------------------------------------------------------------
 const ListItem<PathNode>* PathList::Find(const iPoint& point) const
 {
 	ListItem<PathNode>* item = list.start;
-	while (item)
+	while(item)
 	{
-		if (item->data.pos == point)
-		{
+		if(item->data.pos == point)
 			return item;
-		}
 		item = item->next;
 	}
 	return NULL;
 }
 
+// PathList ------------------------------------------------------------------------
+// Returns the Pathnode with lowest score in this list or NULL if empty
+// ---------------------------------------------------------------------------------
 ListItem<PathNode>* PathList::GetNodeLowestScore() const
 {
 	ListItem<PathNode>* ret = NULL;
 	int min = 65535;
 
 	ListItem<PathNode>* item = list.end;
-	while (item)
+	while(item)
 	{
-		if (item->data.Score() < min)
+		if(item->data.Score() < min)
 		{
 			min = item->data.Score();
 			ret = item;
@@ -116,56 +105,56 @@ ListItem<PathNode>* PathList::GetNodeLowestScore() const
 	return ret;
 }
 
+// PathNode -------------------------------------------------------------------------
+// Convenient constructors
+// ----------------------------------------------------------------------------------
 PathNode::PathNode() : costSoFar(-1), heuristic(-1), pos(-1, -1), parent(NULL)
 {}
 
-PathNode::PathNode(int costSoFar, int heuristic, const iPoint& pos, const PathNode* parent) : costSoFar(costSoFar), heuristic(heuristic), pos(pos), parent(parent)
+PathNode::PathNode(int g, int h, const iPoint& pos, const PathNode* parent) : costSoFar(g), heuristic(h), pos(pos), parent(parent)
 {}
 
 PathNode::PathNode(const PathNode& node) : costSoFar(node.costSoFar), heuristic(node.heuristic), pos(node.pos), parent(node.parent)
 {}
 
-uint PathNode::FindWalkableAdjacents(PathList& listToFill)
+// PathNode -------------------------------------------------------------------------
+// Fills a list (PathList) of all valid adjacent pathnodes
+// ----------------------------------------------------------------------------------
+uint PathNode::FindWalkableAdjacents(PathFinding *path, PathList& listToFill)
 {
 	iPoint cell;
 	uint before = listToFill.list.Count();
 
 	// north
 	cell.Create(pos.x, pos.y + 1);
-	if (app->pathfinding->IsWalkable(cell))
-	{
-		listToFill.list.Add(PathNode(-1, -1, cell, this));
-	}
+	if(path->IsWalkable(cell)) listToFill.list.Add(PathNode(-1, -1, cell, this));
 
 	// south
 	cell.Create(pos.x, pos.y - 1);
-	if (app->pathfinding->IsWalkable(cell))
-	{
-		listToFill.list.Add(PathNode(-1, -1, cell, this));
-	}
+	if(path->IsWalkable(cell)) listToFill.list.Add(PathNode(-1, -1, cell, this));
 
 	// east
 	cell.Create(pos.x + 1, pos.y);
-	if (app->pathfinding->IsWalkable(cell))
-	{
-		listToFill.list.Add(PathNode(-1, -1, cell, this));
-	}
+	if(path->IsWalkable(cell)) listToFill.list.Add(PathNode(-1, -1, cell, this));
 
 	// west
 	cell.Create(pos.x - 1, pos.y);
-	if (app->pathfinding->IsWalkable(cell))
-	{
-		listToFill.list.Add(PathNode(-1, -1, cell, this));
-	}
+	if(path->IsWalkable(cell)) listToFill.list.Add(PathNode(-1, -1, cell, this));
 
 	return listToFill.list.Count();
 }
 
+// PathNode -------------------------------------------------------------------------
+// Calculates this tile score
+// ----------------------------------------------------------------------------------
 int PathNode::Score() const
 {
 	return costSoFar + heuristic;
 }
 
+// PathNode -------------------------------------------------------------------------
+// Calculate the F for a specific destination tile
+// ----------------------------------------------------------------------------------
 int PathNode::CalculateTotalCost(const iPoint& destination)
 {
 	costSoFar = parent->costSoFar + 1;
@@ -205,7 +194,7 @@ int PathFinding::CreatePath(DynArray<iPoint>& path, const iPoint& origin, const 
 		}
 
 		PathList adjNodes;
-		close.list.end->data.FindWalkableAdjacents(adjNodes);
+		close.list.end->data.FindWalkableAdjacents(this, adjNodes);
 		for (ListItem<PathNode>* i = adjNodes.list.start; i != NULL; i = i->next)
 		{
 			if (close.Find(i->data.pos) != NULL)
@@ -231,3 +220,4 @@ int PathFinding::CreatePath(DynArray<iPoint>& path, const iPoint& origin, const 
 	}
 	return -1;
 }
+

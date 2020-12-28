@@ -1,14 +1,13 @@
 #include "Collisions.h"
 
-#include "App.h"
+#include "Module.h"
 
-#include "Defs.h"
 #include "Log.h"
+#include "Defs.h"
 
 Collisions::Collisions()
 {
-	name.Create("collisions");
-
+	LOG("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 	{
 		colliders[i] = nullptr;
@@ -95,24 +94,6 @@ Collisions::Collisions()
 	matrix[Collider::Type::ATTACK][Collider::Type::ATTACK] = false;
 }
 
-Collisions::~Collisions()
-{}
-
-void Collisions::Init()
-{
-	active = false;
-}
-
-bool Collisions::Start()
-{
-	return true;
-}
-
-bool Collisions::Awake(pugi::xml_node&)
-{
-	return true;
-}
-
 bool Collisions::PreUpdate()
 {
 	// Remove all colliders scheduled for deletion
@@ -179,16 +160,6 @@ bool Collisions::CleanUp()
 		}
 	}
 
-	return true;
-}
-
-bool Collisions::Load(pugi::xml_node&)
-{
-	return true;
-}
-
-bool Collisions::Save(pugi::xml_node&)
-{
 	return true;
 }
 

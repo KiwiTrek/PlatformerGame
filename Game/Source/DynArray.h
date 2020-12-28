@@ -5,14 +5,14 @@
 
 #define DYN_ARRAY_BLOCK_SIZE 16
 
-template<class tdata>
+template<class VALUE>
 class DynArray
 {
 private:
 
-	tdata* data;
-	uint memCapacity;
-	uint numElements;
+	VALUE* data;
+	unsigned int memCapacity;
+	unsigned int numElements;
 
 public:
 
@@ -22,7 +22,7 @@ public:
 		Alloc(DYN_ARRAY_BLOCK_SIZE);
 	}
 
-	DynArray(uint capacity) : memCapacity(0), numElements(0), data(NULL)
+	DynArray(unsigned int capacity) : memCapacity(0), numElements(0), data(NULL)
 	{
 		Alloc(capacity);
 	}
@@ -34,9 +34,9 @@ public:
 	}
 
 	// Operators
-	tdata& operator[](uint index)
+	VALUE& operator[](unsigned int index)
 	{
-		ASSERT(index < numElements);
+		assert(index < numElements);
 		return data[index];
 	}
 
@@ -48,13 +48,13 @@ public:
 		Alloc(capacity);
 	}
 
-	const tdata& operator[](uint index) const
+	const VALUE& operator[](unsigned int index) const
 	{
 		assert(index < numElements);
 		return data[index];
 	}
 
-	const DynArray<tdata>& operator+= (const DynArray<tdata>& array)
+	const DynArray<VALUE>& operator+= (const DynArray<VALUE>& array)
 	{
 		if(numElements + array.numElements > memCapacity)
 			Alloc(numElements + array.numElements);
@@ -66,7 +66,7 @@ public:
 	}
 
 	// Data Management
-	void PushBack(const tdata& element)
+	void PushBack(const VALUE& element)
 	{
 		if(numElements >= memCapacity)
 		{
@@ -76,7 +76,7 @@ public:
 		data[numElements++] = element;
 	}
 
-	bool Pop(tdata& result)
+	bool Pop(VALUE& result)
 	{
 		if(numElements > 0)
 		{
@@ -91,7 +91,7 @@ public:
 		numElements = 0;
 	}
 
-	bool Insert(const tdata& element, uint position)
+	bool Insert(const VALUE& element, unsigned int position)
 	{
 		if(position > numElements)
 			return false;
@@ -105,7 +105,7 @@ public:
 		if(numElements + 1 > memCapacity)
 			Alloc(memCapacity + DYN_ARRAY_BLOCK_SIZE);
 
-		for(uint i = numElements; i > position; --i)
+		for(unsigned int i = numElements; i > position; --i)
 		{
 			data[i] = data[i - 1];
 		}
@@ -116,7 +116,7 @@ public:
 		return true;
 	}
 
-	bool Insert(const DynArray<tdata>& array, uint position)
+	bool Insert(const DynArray<VALUE>& array, unsigned int position)
 	{
 		if(position > numElements)
 			return false;
@@ -124,7 +124,7 @@ public:
 		if(numElements + array.numElements > memCapacity)
 			Alloc(numElements + array.numElements + 1);
 
-		for(uint i = position; i < position + array.numElements; ++i)
+		for(unsigned int i = position; i < position + array.numElements; ++i)
 		{
 			data[i + array.numElements] = data[i];
 			data[i] = array[i - position];
@@ -134,9 +134,9 @@ public:
 		return true;
 	}
 
-	tdata* At(uint index)
+	VALUE* At(unsigned int index)
 	{
-		tdata* result = NULL;
+		VALUE* result = NULL;
 
 		if(index < numElements)
 			return result = &data[index];
@@ -144,9 +144,9 @@ public:
 		return result;
 	}
 
-	const tdata* At(uint index) const
+	const VALUE* At(unsigned int index) const
 	{
-		tdata* result = NULL;
+		VALUE* result = NULL;
 
 		if(index < numElements)
 			return result = &data[index];
@@ -155,12 +155,12 @@ public:
 	}
 
 	// Utils
-	uint GetCapacity() const
+	unsigned int GetCapacity() const
 	{
 		return memCapacity;
 	}
 
-	uint Count() const
+	unsigned int Count() const
 	{
 		return numElements;
 	}
@@ -174,7 +174,7 @@ public:
 		while(swapped)
 		{
 			swapped = false;
-			for(uint i = 0; i < numElements - 2; ++i)
+			for(unsigned int i = 0; i < numElements - 2; ++i)
 			{
 				++ret;
 				if(data[i] > data[i + 1])
@@ -188,18 +188,17 @@ public:
 		return ret;
 	}
 
-
 	int BubbleSortOptimized()
 	{
 		int ret = 0;
-		uint count;
-		uint last = numElements - 2;
+		unsigned int count;
+		unsigned int last = numElements - 2;
 
 		while(last > 0)
 		{
 			count = last;
 			last = 0;
-			for(uint i = 0; i < count; ++i)
+			for(unsigned int i = 0; i < count; ++i)
 			{
 				++ret;
 				if(data[i] > data[i + 1])
@@ -211,7 +210,6 @@ public:
 		}
 		return ret;
 	}
-
 
 	int CombSort()
 	{
@@ -225,7 +223,7 @@ public:
 			gap = MAX(1, gap / shrink);
 
 			swapped = false;
-			for(uint i = 0; i + gap < numElements - 1; ++i)
+			for(unsigned int i = 0; i + gap < numElements - 1; ++i)
 			{
 				++ret;
 				if(data[i] > data[i + gap])
@@ -241,8 +239,8 @@ public:
 
 	void Flip()
 	{
-		tdata* start = &data[0];
-		tdata* end = &data[numElements-1];
+		VALUE* start = &data[0];
+		VALUE* end = &data[numElements-1];
 
 		while(start < end) SWAP(*start++, *end--);
 	}
@@ -250,18 +248,18 @@ public:
 private:
 
 	// Private Utils
-	void Alloc(uint mem)
+	void Alloc(unsigned int mem)
 	{
-		tdata* tmp = data;
+		VALUE* tmp = data;
 
 		memCapacity = mem;
-		data = new tdata[memCapacity];
+		data = new VALUE[memCapacity];
 
 		numElements = MIN(memCapacity, numElements);
 
 		if(tmp != NULL)
 		{
-			for(uint i = 0; i < numElements; ++i) data[i] = tmp[i];
+			for(unsigned int i = 0; i < numElements; ++i) data[i] = tmp[i];
 
 			delete[] tmp;
 		}

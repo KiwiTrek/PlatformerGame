@@ -1,16 +1,21 @@
-#include "App.h"
+#include "Map.h"
+
+#include "Entity.h"
 #include "Render.h"
 #include "Textures.h"
-#include "Map.h"
 
 #include "Defs.h"
 #include "Log.h"
 
 #include <math.h>
 
-Map::Map() : Module(), mapLoaded(false)
+#define COST_MAP_SIZE	100
+
+Map::Map(Textures* textures) : Module(), mapLoaded(false)
 {
-	name.Create("map");
+	folder.Create("Assets/Maps/");
+
+	tex = textures;
 }
 
 Map::~Map()
@@ -27,11 +32,14 @@ bool Map::Awake(pugi::xml_node& config)
 	bool ret = true;
 
 	folder.Create(config.child("folder").child_value());
+	folderTexture.Create(config.child("folderTexture").child_value());
+	SString tmp("%s%s", folderTexture.GetString(), "path_meta_data.png");
+	debugPath = tex->Load(tmp.GetString());
 
 	return ret;
 }
 
-void Map::Draw()
+void Map::Draw(Render* render)
 {
 	if (mapLoaded == false)
 	{
@@ -42,7 +50,7 @@ void Map::Draw()
 	TileSet* T;
 	while (L != NULL) // Iterate for all layers
 	{
-		if (L->data->properties.GetProperty("NoDraw") == 0 || app->render->drawAll)
+		if (L->data->properties.GetProperty("NoDraw") == 0 || render->drawAll)
 		{
 			for (int y = 0; y < data.height; ++y)
 			{
@@ -54,9 +62,9 @@ void Map::Draw()
 						T = GetTileSetFromTileId(tileId);
 						SDL_Rect n = T->GetTileRect(tileId);
 						iPoint pos = MapToWorld(x, y);
-						if (T->GetPropList(tileId - T->firstgId)->properties.GetProperty("NoDraw") == 0)
+						if (T->GetPropList(tileId - T->firstgid)->properties.GetProperty("NoDraw") == 0)
 						{
-							app->render->DrawTexture(T->texture, pos.x, pos.y, false, &n);
+							render->DrawTexture(T->texture, pos.x, pos.y, false, &n);
 						}
 					}
 				}
@@ -66,20 +74,20 @@ void Map::Draw()
 	}
 }
 
-iPoint Map::MapToWorld(int x, int y) const
+void Map::DrawPath(Render* render, DynArray<iPoint>* path)
 {
-	iPoint ret;
-	ret.x = x * data.tileWidth;
-	ret.y = y * data.tileHeight;
-
-	return ret;
+	for (uint i = 0; i < path->Count(); ++i)
+	{
+		iPoint pos = MapToWorld(path->At(i)->x, path->At(i)->y);
+		render->DrawTexture(debugPath, pos.x, pos.y);
+	}
 }
 
 SDL_Rect TileSet::GetTileRect(int id) const
 {
 	SDL_Rect rect = { 0 };
 
-	int relativeId = id - firstgId;
+	int relativeId = id - firstgid;
 	rect.w = tileWidth;
 	rect.h = tileHeight;
 	rect.x = margin + ((rect.w + spacing) * (relativeId % numTilesWidth));
@@ -203,7 +211,7 @@ bool Map::LoadTileSetDetails(pugi::xml_node& node, TileSet* set)
 	bool ret = true;
 
 	LOG("Filling TileSetDetails");
-	set->firstgId = node.attribute("firstgid").as_int();
+	set->firstgid = node.attribute("firstgid").as_int();
 	set->name = node.attribute("name").as_string();
 	set->tileWidth = node.attribute("tilewidth").as_int();
 	set->tileHeight = node.attribute("tileheight").as_int();
@@ -227,7 +235,7 @@ bool Map::LoadTileSetImage(pugi::xml_node& node, TileSet* set)
 	{
 		LOG("Filling TileSetDetails");
 		SString tmp("%s%s", folder.GetString(), image.attribute("source").as_string());
-		set->texture = app->tex->Load(tmp.GetString());
+		set->texture = tex->Load(tmp.GetString());
 		set->texWidth = image.attribute("width").as_int();
 		set->texHeight = image.attribute("height").as_int();
 
@@ -333,7 +341,7 @@ bool Map::CreateWalkabilityMap(int* width, int* height, uchar** buffer) const
 
 				if (tileset != NULL)
 				{
-					switch (tileId - tileset->firstgId)
+					switch (tileId - tileset->firstgid)
 					{
 					case 0:
 						map[i] = (uchar)254;
@@ -386,7 +394,7 @@ TileSet* Map::GetTileSetFromTileId(int id) const
 
 	while (item != NULL)
 	{
-		if (set->firstgId <= id)
+		if (set->firstgid <= id)
 		{
 			return set;
 		}
@@ -430,7 +438,7 @@ void Map::LogInfo()
 	{
 		LOG("#TileSet");
 		LOG("Name=%s", infoList->data->name.GetString());
-		LOG("Firstgid=%d", infoList->data->firstgId);
+		LOG("Firstgid=%d", infoList->data->firstgid);
 		LOG("Margin=%d", infoList->data->margin);
 		LOG("Spacing=%d", infoList->data->spacing);
 		LOG("Tile_width=%d", infoList->data->tileWidth);
@@ -552,7 +560,7 @@ void Map::SetTileProperty(int x, int y, const char* property, int value, bool no
 	}
 
 	// Gets CollisionId
-	int id = (int)(mapLayer->data->Get(x, y) - tileSet->data->firstgId);
+	int id = (int)(mapLayer->data->Get(x, y) - tileSet->data->firstgid);
 	if (id < 0)
 	{
 		return;
@@ -605,7 +613,7 @@ int Map::GetTileProperty(int x, int y, const char* property, bool notMovCollisio
 	}
 
 	// Gets CollisionId
-	int id = (int)(mapLayer->data->Get(x, y) - tileSet->data->firstgId);
+	int id = (int)(mapLayer->data->Get(x, y) - tileSet->data->firstgid);
 	if (id < 0)
 	{
 		ret = 0;
@@ -613,5 +621,14 @@ int Map::GetTileProperty(int x, int y, const char* property, bool notMovCollisio
 	}
 	Tile* currentTile = tileSet->data->GetPropList(id);
 	ret = currentTile->properties.GetProperty(property, 0);
+	return ret;
+}
+
+iPoint Map::MapToWorld(int x, int y) const
+{
+	iPoint ret;
+	ret.x = x * data.tileWidth;
+	ret.y = y * data.tileHeight;
+
 	return ret;
 }

@@ -1,11 +1,11 @@
 #ifndef __COLLISIONS_H__
 #define __COLLISIONS_H__
 
+#include "SDL.h"
+
 #define MAX_COLLIDERS 75
 
-#include "Module.h"
-
-#include "SDL.h"
+class Module;
 
 class Collider
 {
@@ -36,39 +36,24 @@ public:
 	// Checks if two rects are intersecting
 	bool Intersects(const SDL_Rect& r) const;
 
+public:
 	SDL_Rect rect;
 	bool pendingToDelete = false;
 	Type type;
 	Module* listener = nullptr;
 };
 
-class Collisions : public Module
+class Collisions
 {
 public:
 	// Constructor
 	Collisions();
-
-	// Called when program is executed
-	void Init();
-
-	// Destructor
-	virtual ~Collisions();
-
-	// Called before player is available
-	bool Awake(pugi::xml_node&);
-
-	// Called before the first frame
-	bool Start();
 
 	// Called each loop iteration
 	bool PreUpdate();
 
 	// Called before quitting
 	bool CleanUp();
-
-	// Save/Load
-	bool Load(pugi::xml_node&);
-	bool Save(pugi::xml_node&);
 
 	// Adds a new collider to the list
 	Collider* AddCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
@@ -82,5 +67,4 @@ private:
 	bool matrix[Collider::Type::MAX][Collider::Type::MAX];
 };
 
-#endif // !__COLLISIONS_H__
-
+#endif // __COLLISIONS_H__

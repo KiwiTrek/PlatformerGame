@@ -1,67 +1,25 @@
 <!-- Config file for the game -->
-
+<!-- L01: DONE 1: Create configuration file-->
 <config>
-    <app framerateCap="60">
-        <title>Adventure in Dream World (ALPHA)</title>
-        <organization>UPC CITM</organization>
-        <generalTileSize value="64"/>
-    </app>
+  <app>
+    <title>Game Development Testbed</title>
+    <organization>UPC</organization>
+  </app>
 
-    <renderer>
-        <vsync value="false"/>
-    </renderer>
+  <renderer>
+    <vsync value="true"/>
+  </renderer>
 
-    <window>
-        <resolution width="1280" height="720" scale="1"/>
-        <fullscreen value="false"/>
-        <borderless value="false"/>
-        <resizable value="false"/>
-        <fullscreenWindow value="false"/>
-    </window>
+  <window>
+    <resolution width="1280" height="720" scale="1"/>
+    <fullscreen value="false"/>
+    <borderless value="false"/>
+    <resizable value="false"/>
+    <fullscreen_window value="false"/>
+  </window>
 
-    <player>
-        <playerSize value ="128"/>
-        <folderTexture>Assets/textures/</folderTexture>
-        <folderAudioFx>Assets/Audio/Fx/</folderAudioFx>
-    </player>
-
-    <audio>
-        <music volume="64"/>
-        <fx volume="48"/>
-    </audio>
-
-    <map>
-        <folder>Assets/Maps/</folder>
-    </map>
-
-    <deathScene>
-        <folderTexture>Assets/Textures/</folderTexture>
-        <folderAudioMusic>Assets/Audio/Music/</folderAudioMusic>
-    </deathScene>
-
-    <logoScene>
-        <timer value ="0"/>
-        <folderTexture>Assets/Textures/</folderTexture>
-        <folderAudioFx>Assets/Audio/Fx/</folderAudioFx>
-    </logoScene>
-
-    <scene>
-        <camera x ="0" y="-128"/>
-        <folderTexture>Assets/Textures/Scene/</folderTexture>
-        <folderAudioMusic>Assets/Audio/Music/</folderAudioMusic>
-    </scene>
-
-    <titleScene>
-        <folderTexture>Assets/Textures/</folderTexture>
-        <folderAudioMusic>Assets/Audio/Music/</folderAudioMusic>
-    </titleScene>
-
-    <enemyManagement>
-        <folderTexture>Assets/Textures/</folderTexture>
-        <folderAudioFx>Assets/Audio/Fx/</folderAudioFx>
-    </enemyManagement>
-
-    <pathfinding>
-        <folderTexture>Assets/Maps/</folderTexture>
-    </pathfinding>
+  <!-- L03: Added maps folder as config option -->
+  <map>
+    <folder>Assets/maps/</folder>
+  </map>
 </config>

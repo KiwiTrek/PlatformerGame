@@ -1,51 +1,71 @@
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
-#include "Module.h"
+#include "SString.h"
 
-struct SDL_Texture;
+class Input;
+class Render;
+class Textures;
 
-class Scene : public Module
+class GuiControl;
+
+enum class SceneType
+{
+    LOGO,
+    TITLE,
+    GAMEPLAY,
+    ENDING
+};
+
+class Scene
 {
 public:
 
-	Scene();
+    Scene() : active(true), loaded(false), transitionRequired(false) {}
 
-	void Init();
+    virtual bool Load(Textures* tex)
+    {
+        return true;
+    }
 
-	// Destructor
-	virtual ~Scene();
+    virtual bool Update(Input* input, float dt)
+    {
+        return true;
+    }
 
-	// Called before render is available
-	bool Awake(pugi::xml_node& config);
+    virtual bool Draw(Render* render)
+    {
+        return true;
+    }
 
-	// Called before the first frame
-	bool Start();
+    virtual bool Unload()
+    {
+        return true;
+    }
 
-	// Called before all Updates
-	bool PreUpdate();
+    void TransitionToScene(SceneType scene)
+    {
+        transitionRequired = true;
+        nextScene = scene;
+    }
 
-	// Called each loop iteration
-	bool Update(float dt);
+    // Define multiple Gui Event methods
+    virtual bool OnGuiMouseClickEvent(GuiControl* control)
+    {
+        return true;
+    }
 
-	// Called after all Updates
-	bool PostUpdate();
+public:
 
-	// Called before quitting
-	bool CleanUp();
+    bool active = true;
+    SString name;         // Scene name identifier?
 
-private:
-	SDL_Color sky;
-	SDL_Texture* clouds;
-	SDL_Texture* mountainsBack;
-	SDL_Texture* mountainsFront;
-	SString folderTexture;
-	SString folderAudioMusic;
+    // Possible properties
+    bool loaded = false;
+    // TODO: Transition animation properties
 
-	// Score Handling
-	int font = -1;
-
-	char score[8] = { "\0" };
+    bool transitionRequired;
+    SceneType nextScene;
 };
 
 #endif // __SCENE_H__

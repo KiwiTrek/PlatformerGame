@@ -9,7 +9,7 @@ struct SDL_Surface;
 class Window : public Module
 {
 public:
-	// Constructor
+
 	Window();
 
 	// Destructor
@@ -21,17 +21,17 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	// Change/Set window title
+	// Changae title
 	void SetTitle(const char* title);
 
-	// Returns the window size
+	// Retrive window size
 	void GetWindowSize(uint& width, uint& height) const;
 
-	// Returns the window scale
+	// Retrieve window scale
 	uint GetScale() const;
 
 public:
-	// The window where rendering happens
+	// The window we'll be rendering to
 	SDL_Window* window;
 
 	// The surface contained by the window

@@ -1,100 +1,78 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
-#include "Module.h"
-#include "Animation.h"
-#include "Physics.h"
+#include "Entity.h"
 
-#include "SDL.h"
+#include "Point.h"
+#include "SString.h"
 
-struct Collider;
-class Player : public Module
+#include "SDL/include/SDL.h"
+
+class EntityManager;
+class Input;
+class Map;
+class Render;
+class AudioManager;
+
+class Player: public Entity
 {
 public:
-	// Constructor
-	Player();
 
-	// Called when program is executed
-	void Init();
+    Player(int x, int y, EntityManager* listener);
 
-	// Destructor
-	virtual ~Player();
+    bool Update(Input* input, Map* map, Render* render, AudioManager* audio, float dt);
 
-	// Called before player is available
-	bool Awake(pugi::xml_node&);
+    bool Draw(Render* render);
 
-	// Called before the first frame
-	bool Start();
+    void SetTexture(SDL_Texture *tex);
 
-	// Called each loop iteration
-	bool Update(float dt);
+    SDL_Rect GetBounds();
 
-	// Called after all Updates
-	bool PostUpdate();
+    // Collision response
+    void OnCollision(Collider* c1, Collider* c2) override;
 
-	// Called before quitting
-	bool CleanUp();
+    // Gets the coordinates of the spawn point
+    iPoint GetSpawnPoint();
 
-	// Save/Load
-	bool Save(pugi::xml_node&);
-	bool Load(pugi::xml_node&);
+    bool IsIdle();
 
-	// Collision response
-	void OnCollision(Collider* c1, Collider* c2);
+public:
+    //int width, height;
 
-	SDL_Texture* playerTex;
-	SDL_Texture* playerHeart;
-	SDL_Rect playerRect;
-	iPoint spawnPoint;
-	int score = 0;
+    //float jumpSpeed = 0.0f;
+    //bool readyToJump = true;
+    //bool hitObstacle = false;
 
-private:
-	// Gets the coordinates of the spawn point
-	iPoint GetSpawnPoint();
+    SDL_Texture* playerHeart;
+    Collider* hurtBox = nullptr;
 
-	Animation* currentAnimation = &idle;
+    int jumpCounter;
+    int hitCD = 5;
+    int lives = 3;
+    int score = 0;
 
-	Collider* playerCollider = nullptr;
-	Collider* hurtBox = nullptr;
+    bool keyPressed = false;
+    bool godMode = false;
+    bool isDead = false;
+    bool isJumping = false;
+    bool isHit = false;
+    bool isAttacking = false;
+    bool invert = false;
+    bool debugDraw = false;
+    bool once = true;
+    bool onceCheckpoint = true;
 
-	Physics playerPhysics;
-	iPoint nextFrame;
-	int jumpCounter;
-	int hitCD = 5;
-	int lives = 3;
-	int playerSize;
+    Animation idle;
+    Animation run;
+    Animation jumpPrep;
+    Animation jumpMid;
+    Animation jumpLand;
+    Animation attack;
+    Animation hit;
+    Animation death;
+    Animation wallJump;
 
-	bool keyPressed = false;
-	bool godMode = false;
-	bool isDead = false;
-	bool isJumping = false;
-	bool isHit = false;
-	bool isAttacking = false;
-	bool invert = false;
-	bool debugDraw = false;
-	bool once = true;
-	bool onceCheckpoint = true;
-
-	Animation idle;
-	Animation run;
-	Animation jumpPrep;
-	Animation jumpMid;
-	Animation jumpLand;
-	Animation attack;
-	Animation hit;
-	Animation death;
-	Animation wallJump;
-
-	uint deadFx;
-	uint jumpFx;
-	uint doubleJumpFx;
-	uint fruitFx;
-	uint hitFx;
-	uint slashFx;
-	uint checkpointFx;
-
-	SString folderTexture;
-	SString folderAudioFx;
+    EntityManager* listener;
 };
 
-#endif // !__PLAYER_H__
+#endif // __PLAYER_H__
