@@ -5,8 +5,7 @@
 #include "Textures.h"
 #include "Fonts.h"
 #include "Audio.h"
-#include "Player.h"
-#include "EnemyManagement.h"
+#include "EntityManager.h"
 #include "Map.h"
 #include "Transition.h"
 #include "Collisions.h"
@@ -36,8 +35,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	tex = new Textures();
 	fonts = new Fonts();
 	audio = new Audio();
-	player = new Player();
-	enemies = new EnemyManagement();
+	entities = new EntityManager();
 	map = new Map();
 	transition = new Transition();
 	collisions = new Collisions();
@@ -60,9 +58,8 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(deathScene);
 	AddModule(scene);
 	AddModule(map);
-	AddModule(player);
 	AddModule(fonts);
-	AddModule(enemies);
+	AddModule(entities);
 	AddModule(collisions);
 	AddModule(transition);
 

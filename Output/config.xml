@@ -19,12 +19,6 @@
         <fullscreenWindow value="false"/>
     </window>
 
-    <player>
-        <playerSize value ="128"/>
-        <folderTexture>Assets/textures/</folderTexture>
-        <folderAudioFx>Assets/Audio/Fx/</folderAudioFx>
-    </player>
-
     <audio>
         <music volume="64"/>
         <fx volume="48"/>
@@ -56,10 +50,10 @@
         <folderAudioMusic>Assets/Audio/Music/</folderAudioMusic>
     </titleScene>
 
-    <enemyManagement>
+    <entityManager>
         <folderTexture>Assets/Textures/</folderTexture>
         <folderAudioFx>Assets/Audio/Fx/</folderAudioFx>
-    </enemyManagement>
+    </entityManager>
 
     <pathfinding>
         <folderTexture>Assets/Maps/</folderTexture>

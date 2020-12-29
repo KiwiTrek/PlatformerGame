@@ -30,6 +30,7 @@
     <ClCompile Include="Source\EnemyFlying.cpp" />
     <ClCompile Include="Source\PathFinding.cpp" />
     <ClCompile Include="Source\Fonts.cpp" />
+    <ClCompile Include="Source\EntityManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Window.h" />
@@ -88,6 +89,8 @@
     <ClInclude Include="Source\EnemyFlying.h" />
     <ClInclude Include="Source\PathFinding.h" />
     <ClInclude Include="Source\Fonts.h" />
+    <ClInclude Include="Source\EntityManager.h" />
+    <ClInclude Include="Source\Entity.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">
