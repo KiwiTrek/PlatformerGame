@@ -18,6 +18,7 @@
 Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 {
 	spawnPos = GetSpawnPoint();
+	pendingToDelete = false;
 	collider = app->collisions->AddCollider({ spawnPos.x, spawnPos.y, app->generalTileSize, app->generalTileSize }, Collider::Type::PLAYER, (Module*)app->entities);
 
 	playerSize = 128;
@@ -42,6 +43,7 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	physics.verlet = true;
 
 	// Fx
+	destroyedFx = app->entities->deadFx;
 	jumpFx = app->entities->jumpFx;
 	doubleJumpFx = app->entities->doubleJumpFx;
 	fruitFx = app->entities->fruitFx;

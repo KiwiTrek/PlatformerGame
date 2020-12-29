@@ -16,7 +16,7 @@ class Enemy : public Entity
 {
 public:
 	// Constructor
-	Enemy(int x, int y, EnemyType type, Entity* playerPointer);
+	Enemy(int x, int y, EnemyType enemyType, Entity* playerPointer);
 
 	// Destructor
 	virtual ~Enemy();
@@ -31,9 +31,6 @@ public:
 	// Path related variables
 	DynArray<iPoint> path;
 	int pathCount = 0;
-
-	// Add to despawn queue
-	bool pendingToDelete = false;
 
 	EnemyType type = EnemyType::NO_TYPE;
 protected:

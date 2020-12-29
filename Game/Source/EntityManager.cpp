@@ -111,7 +111,14 @@ bool EntityManager::Start()
 // Called before quitting
 bool EntityManager::CleanUp()
 {
-	if (!active) return true;
+	ListItem<Entity*>* e = entities.start;
+	while (e != nullptr)
+	{
+		ListItem<Entity*>* eNext = e->next;
+		DestroyEntity(e->data);
+		e = eNext;
+	}
+
 	app->tex->UnLoad(playerTex);
 	app->tex->UnLoad(ground);
 	app->tex->UnLoad(flying);
@@ -200,7 +207,7 @@ bool EntityManager::UpdateAll(float dt, bool doLogic)
 	{
 		app->collisions->PreUpdate();
 		ListItem<Entity*>* e = entities.start;
-		while (e != entities.end)
+		while (e != nullptr)
 		{
 			e->data->Update(dt);
 			if (e->data->currentAnim != nullptr)
@@ -214,11 +221,28 @@ bool EntityManager::UpdateAll(float dt, bool doLogic)
 				e->data->collider->SetPos(e->data->collider->rect.x, e->data->collider->rect.y, e->data->currentAnim->GetCurrentFrame().w, e->data->currentAnim->GetCurrentFrame().h);
 			}
 			e->data->PostUpdate(dt);
-			e->data->Draw();
 			e = e->next;
 		}
 	}
 
+	return true;
+}
+
+bool EntityManager::PostUpdate()
+{
+	ListItem<Entity*>* e = entities.start;
+	while (e != nullptr)
+	{
+		if (e->data->currentAnim != nullptr)
+		{
+			e->data->Draw();
+		}
+		if (e->data->pendingToDelete == true)
+		{
+			DestroyEntity(e->data);
+		}
+		e = e->next;
+	}
 	return true;
 }
 

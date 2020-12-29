@@ -64,6 +64,8 @@ public:
     Collider* collider;
     uint destroyedFx;
 
+    bool pendingToDelete = false;
+
     // Original spawn position
     iPoint spawnPos;
 

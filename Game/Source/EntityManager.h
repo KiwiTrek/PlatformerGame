@@ -30,6 +30,8 @@ public:
 
 	bool Update(float dt);
 
+	bool PostUpdate();
+
 	// Called before quitting
 	bool CleanUp();
 

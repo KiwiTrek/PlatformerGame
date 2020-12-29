@@ -1,21 +1,22 @@
 #include "Enemy.h"
-#include "EnemyGround.h"
 
 #include "App.h"
+#include "EntityManager.h"
 #include "Scene.h"
 #include "Collisions.h"
 #include "Audio.h"
 #include "Render.h"
 #include "PathFinding.h"
-#include "Player.h"
 
 #include "Log.h"
 
-Enemy::Enemy(int x, int y, EnemyType type, Entity* playerPointer) : Entity(x,y,EntityType::ENEMY,type)
+Enemy::Enemy(int x, int y, EnemyType enemyType, Entity* playerPointer) : Entity(x,y,EntityType::ENEMY, enemyType)
 {
+	type = enemyType;
 	player = playerPointer;
 	spawnPos.x = x;
 	spawnPos.y = y;
+	destroyedFx = app->entities->enemyDestroyedFx;
 	physics.axisX = true;
 	physics.axisY = true;
 	path.Create(DEFAULT_PATH_LENGTH);
