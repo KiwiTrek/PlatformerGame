@@ -7,19 +7,25 @@
 #include "DynArray.h"
 #include "List.h"
 
+#include "SDL.h"
+
+#define DEFAULT_PATH_LENGTH 50
 #define INVALID_WALK_CODE 255
 
-class PathFinding
+class PathFinding : public Module
 {
 public:
-
-	// NOTE: Constructor is private to avoid new instances creation
-
-	// Get unique instance of the class
-	static PathFinding* GetInstance();
+	// Constructor
+	PathFinding();
 
 	// Destructor
 	~PathFinding();
+
+	// Called before the first frame
+	bool Start();
+
+	// Called before render is available
+	bool Awake(pugi::xml_node& config);
 
 	// Called before quitting
 	bool CleanUp();
@@ -39,24 +45,17 @@ public:
 	// Returns the walkability value of a tile
 	uchar GetTileCost(const iPoint& pos) const;
 
+	// Draws the given path
+	void DrawPath(DynArray<iPoint>* path);
+
 private:
-	// Singleton instance
-	static PathFinding* instance;
-
-	// Private constructor, alternatively: PathFinding()=delete;
-	PathFinding();
-
-	// Declare the copy constructor and the assignment operator as 
-	// private (or delete them explicitly) to prevent cloning your object
-	PathFinding(const PathFinding&);
-	PathFinding& operator=(const PathFinding&);
-
-	// Size of the map
-	uint width;
-	uint height;
-
 	// Walkability values of the whole map
 	uchar* map;
+
+	SString folderTexture;
+	SDL_Texture* debugPath;
+	uint width;
+	uint height;
 };
 
 struct PathList;
@@ -70,7 +69,7 @@ struct PathNode
 	PathNode(const PathNode& node);
 
 	// Fills a list of all valid adjacent pathnodes
-	uint FindWalkableAdjacents(PathFinding* path, PathList& list_to_fill);
+	uint FindWalkableAdjacents(PathList& list_to_fill);
 
 	// Calculates the score for a tile
 	int Score() const;

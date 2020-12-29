@@ -3,23 +3,14 @@
 
 #include "Enemy.h"
 
-class Collider;
-class AudioManager;
-class EntityManager;
-class PathFinding;
-class Map;
-class Enemy;
-class Entity;
-enum EnemyType;
-
 class EnemyGround : public Enemy
 {
 public:
 	// Constructor
-	EnemyGround(int x, int y, EntityManager* listener, EnemyType typeOfEnemy);
+	EnemyGround(int x, int y, EnemyType typeOfEnemy);
 
 	// Called each loop iteration
-	bool Update(float dt, Map* map, AudioManager* audio, PathFinding* pathfinding, Entity* player);
+	void Update(float dt);
 
 	EnemyType type;
 private:

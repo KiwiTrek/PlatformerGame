@@ -8,7 +8,7 @@
 #ifdef NULL
 #undef NULL
 #endif
-#define NULL  0
+#define NULL 0
 
 // Deletes a buffer
 #define RELEASE( x ) \
@@ -49,9 +49,9 @@ template <class VALUE_TYPE> void SWAP(VALUE_TYPE& a, VALUE_TYPE& b)
 }
 
 // Standard string size
-#define SHORT_STR	 32
-#define MID_STR	    255
-#define HUGE_STR   8192
+#define SHORT_STR 32
+#define MID_STR 255
+#define HUGE_STR 8192
 
 // Joins a path and file
 inline const char* const PATH(const char* folder, const char* file)
@@ -65,6 +65,4 @@ inline const char* const PATH(const char* folder, const char* file)
 #define PERF_START(timer) timer.Start()
 #define PERF_PEEK(timer) LOG("%s took %f ms", __FUNCTION__, timer.ReadMs())
 
-#define GENERAL_TILE_SIZE 64
-
-#endif	// __DEFS_H__
+#endif

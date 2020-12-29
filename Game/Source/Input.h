@@ -7,15 +7,13 @@
 #define NUM_MOUSE_BUTTONS 5
 //#define LAST_KEYS_PRESSED_BUFFER 50
 
-class Window;
-
 struct SDL_Rect;
 
 enum EventWindow
 {
 	WE_QUIT = 0,
-	WE_HIDE = 1,
-	WE_SHOW = 2,
+	WE_HIDE,
+	WE_SHOW,
 	WE_COUNT
 };
 
@@ -29,10 +27,9 @@ enum KeyState
 
 class Input : public Module
 {
-
 public:
-
-	Input(Window* win);
+	// Constructor
+	Input();
 
 	// Destructor
 	virtual ~Input();
@@ -43,18 +40,19 @@ public:
 	// Called before the first frame
 	bool Start();
 
-	// Called each loop iteration
+	// Called before all Updates
 	bool PreUpdate();
 
 	// Called before quitting
 	bool CleanUp();
 
-	// Check key states (includes mouse and joy buttons)
+	// Check key states
 	KeyState GetKey(int id) const
 	{
 		return keyboard[id];
 	}
 
+	// Check mouse button states
 	KeyState GetMouseButtonDown(int id) const
 	{
 		return mouseButtons[id - 1];
@@ -64,17 +62,13 @@ public:
 	bool GetWindowEvent(EventWindow ev);
 
 	// Get mouse / axis position
-	void GetMousePosition(int &x, int &y);
+	void GetMousePosition(int& x, int& y);
 	void GetMouseMotion(int& x, int& y);
 
 private:
-
-	Window* win;
-
 	bool windowEvents[WE_COUNT];
 	KeyState* keyboard;
 	KeyState mouseButtons[NUM_MOUSE_BUTTONS];
-
 	int	mouseMotionX;
 	int mouseMotionY;
 	int mouseX;

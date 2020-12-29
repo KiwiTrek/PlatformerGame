@@ -3,10 +3,10 @@
 
 #include "Defs.h"
 
+// Slow timer with microsecond precision
 class PerfTimer
 {
 public:
-
 	// Constructor
 	PerfTimer();
 
@@ -15,7 +15,7 @@ public:
 	uint64 ReadTicks() const;
 
 private:
-	uint64 startTime;
+	uint64 startTick;
 	static uint64 frequency;
 };
 
