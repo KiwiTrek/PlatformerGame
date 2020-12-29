@@ -7,10 +7,7 @@
 
 #define MAX_ENTITIES 100
 
-
 class Entity;
-enum EntityType;
-enum EnemyType;
 
 class EntityManager : public Module
 {
@@ -37,7 +34,7 @@ public:
 	bool CleanUp();
 
 	// Additional methods
-	Entity* CreateEntity(int x, int y, EntityType type, EnemyType eType = EnemyType::NO_TYPE);
+	Entity* CreateEntity(int x, int y, EntityType type, Entity* playerPointer = nullptr, EnemyType eType = EnemyType::NO_TYPE);
 	void DestroyEntity(Entity* entity);
 
 	bool UpdateAll(float dt, bool doLogic);

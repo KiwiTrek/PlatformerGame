@@ -1,6 +1,7 @@
 #include "EnemyFlying.h"
 
 #include "App.h"
+#include "EntityManager.h"
 #include "Collisions.h"
 #include "PathFinding.h"
 #include "Player.h"
@@ -9,7 +10,7 @@
 
 #include "Log.h"
 
-EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, typeOfEnemy)
+EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy, Entity* playerPointer) : Enemy(x, y, typeOfEnemy, playerPointer)
 {
 	enemySize = app->generalTileSize;
 	for (int i = 0; i != 7; ++i)
@@ -34,22 +35,25 @@ EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, type
 	attack.loop = false;
 
 	currentAnim = &flying;
-	collider = app->collisions->AddCollider({ enemyRect.x, enemyRect.y, app->generalTileSize, app->generalTileSize }, Collider::Type::ENEMY, (Module*)app->enemies);
+	collider = app->collisions->AddCollider({ x, y, app->generalTileSize, app->generalTileSize }, Collider::Type::ENEMY, (Module*)app->entities);
 
 	flying.Reset();
 	hurt.Reset();
 	attack.Reset();
 
+	entityTex = app->entities->flying;
+	physics.verlet = false;
+
 	invert = true;
 }
 
-void EnemyFlying::Update(float dt)
+bool EnemyFlying::Update(float dt)
 {
-	nextFrame.x = enemyRect.x;
-	nextFrame.y = enemyRect.y;
-	enemyPhysics.speed.x = 0;
-	enemyPhysics.speed.y = 0;
-	enemyPhysics.CheckDirection();
+	nextPos.x = collider->rect.x;
+	nextPos.y = collider->rect.y;
+	physics.speed.x = 0;
+	physics.speed.y = 0;
+	physics.CheckDirection();
 
 	if (attackChange)
 	{
@@ -74,15 +78,15 @@ void EnemyFlying::Update(float dt)
 		}
 	}
 
-	if (app->map->GetTileProperty(nextFrame.x / app->generalTileSize, nextFrame.y / app->generalTileSize + 1, "CollisionId") == Collider::Type::SPIKE)
+	if (app->map->GetTileProperty(nextPos.x / app->generalTileSize, nextPos.y / app->generalTileSize + 1, "CollisionId") == Collider::Type::SPIKE)
 	{
 		hurtChange = true;
 		collider->pendingToDelete = true;
 		app->audio->PlayFx(destroyedFx);
 	}
 
-	iPoint origin = { nextFrame.x / app->generalTileSize,nextFrame.y / app->generalTileSize };
-	iPoint destination = { app->player->playerRect.x / app->generalTileSize,app->player->playerRect.y / app->generalTileSize };
+	iPoint origin = { nextPos.x / app->generalTileSize,nextPos.y / app->generalTileSize };
+	iPoint destination = { player->collider->rect.x / app->generalTileSize,player->collider->rect.y / app->generalTileSize };
 	if (destination.y < 0)
 	{
 		destination.y = 0;
@@ -113,23 +117,23 @@ void EnemyFlying::Update(float dt)
 		iPoint dif = { dest.x - pos.x,dest.y - pos.y };
 		if (dif.x > 0)
 		{
-			enemyPhysics.speed.x = 150.0f;
+			physics.speed.x = 150.0f;
 			invert = false;
 		}
 		else if (dif.x < 0)
 		{
-			origin.x = (nextFrame.x + enemyRect.w) / app->generalTileSize;
-			enemyPhysics.speed.x = -75.0f;
+			origin.x = (nextPos.x + collider->rect.w) / app->generalTileSize;
+			physics.speed.x = -75.0f;
 			invert = true;
 		}
 		else if (dif.y < 0)
 		{
-			origin.y = (nextFrame.y + enemyRect.h) / app->generalTileSize;
-			enemyPhysics.speed.y = -75.0f;
+			origin.y = (nextPos.y + collider->rect.h) / app->generalTileSize;
+			physics.speed.y = -75.0f;
 		}
 		else if (dif.y > 0)
 		{
-			enemyPhysics.speed.y = 150.0f;
+			physics.speed.y = 150.0f;
 		}
 	}
 
@@ -140,6 +144,5 @@ void EnemyFlying::Update(float dt)
 		counterTile = 0;
 	}
 
-	// Call to the base class
-	Enemy::Update(dt);
+	return true;
 }

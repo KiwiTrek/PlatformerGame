@@ -7,10 +7,10 @@ class EnemyFlying : public Enemy
 {
 public:
 	// Constructor
-	EnemyFlying(int x, int y, EnemyType typeOfEnemy);
+	EnemyFlying(int x, int y, EnemyType typeOfEnemy, Entity* playerPointer);
 
 	// Called each loop iteration
-	void Update(float dt);
+	bool Update(float dt);
 
 	EnemyType type;
 private:

@@ -2,8 +2,6 @@
 
 #include "App.h"
 
-#include "Player.h"
-#include "Enemy.h"
 #include "Collisions.h"
 #include "Map.h"
 #include "Render.h"
@@ -11,6 +9,11 @@
 #include "Audio.h"
 #include "Input.h"
 #include "PathFinding.h"
+
+#include "Player.h"
+//#include "Enemy.h"
+#include "EnemyFlying.h"
+#include "EnemyGround.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -125,7 +128,7 @@ bool EntityManager::CleanUp()
 	return true;
 }
 
-Entity* EntityManager::CreateEntity(int x, int y, EntityType type, EnemyType eType)
+Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playerPointer, EnemyType eType)
 {
 	Entity* ret = nullptr;
 
@@ -139,7 +142,23 @@ Entity* EntityManager::CreateEntity(int x, int y, EntityType type, EnemyType eTy
 	}
 	case EntityType::ENEMY:
 	{
-		ret = new Enemy(x, y, eType);
+		switch (eType)
+		{
+		case EnemyType::FLYING:
+		{
+			ret = new EnemyFlying(x, y, eType, playerPointer);
+			break;
+		}
+		case EnemyType::GROUND:
+		{
+			ret = new EnemyGround(x, y, eType, playerPointer);
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
 		break;
 	}
 	default:
@@ -218,3 +237,78 @@ void EntityManager::OnCollision(Collider* c1, Collider* c2)
 		}
 	}
 }
+
+//bool EnemyManagement::Load(pugi::xml_node& save)
+//{
+//	LOG("Loading enemy data");
+//	bool ret = true;
+//	int i = 0;
+//
+//	int x = 0;
+//	int y = 0;
+//	EnemyType type = EnemyType::NO_TYPE;
+//	bool destroyed = false;
+//
+//	for (pugi::xml_node enemy = save.child("enemy"); enemy && ret; enemy = enemy.next_sibling("enemy"))
+//	{
+//		destroyed = enemy.child("destroyed").attribute("value").as_bool();
+//		if (destroyed == true && enemies[i] != nullptr)
+//		{
+//			enemies[i]->pendingToDelete = true;
+//		}
+//		else
+//		{
+//			x = enemy.child("coordinates").attribute("x").as_int();
+//			y = enemy.child("coordinates").attribute("y").as_int();
+//			switch (enemy.child("type").attribute("value").as_int())
+//			{
+//			case 1:
+//				type = EnemyType::GROUND;
+//				break;
+//			case 2:
+//				type = EnemyType::FLYING;
+//				break;
+//			default:
+//				type = EnemyType::NO_TYPE;
+//				break;
+//			}
+//
+//			if (enemies[i] == nullptr)
+//			{
+//				AddEnemy(type, x, y, i);
+//			}
+//			else
+//			{
+//				enemies[i]->enemyRect.x = x;
+//				enemies[i]->enemyRect.y = y;
+//			}
+//		}
+//		i++;
+//	}
+//
+//	return ret;
+//}
+//
+//bool EnemyManagement::Save(pugi::xml_node& save)
+//{
+//	LOG("Saving enemy data");
+//	bool ret = true;
+//
+//	for (uint i = 0; i < MAX_ENEMIES; ++i)
+//	{
+//		pugi::xml_node enemy = save.append_child("enemy");
+//		if (enemies[i] != nullptr)
+//		{
+//			pugi::xml_node enemyCoords = enemy.append_child("coordinates");
+//			enemyCoords.append_attribute("x").set_value(enemies[i]->enemyRect.x);
+//			enemyCoords.append_attribute("y").set_value(enemies[i]->enemyRect.y);
+//			enemy.append_child("type").append_attribute("value").set_value(enemies[i]->type);
+//			enemy.append_child("destroyed").append_attribute("value").set_value(enemies[i]->pendingToDelete);
+//		}
+//		else
+//		{
+//			enemy.append_child("destroyed").append_attribute("value").set_value(true);
+//		}
+//	}
+//	return ret;
+//}

@@ -1,6 +1,7 @@
 #include "EnemyGround.h"
 
 #include "App.h"
+#include "EntityManager.h"
 #include "Collisions.h"
 #include "PathFinding.h"
 #include "Player.h"
@@ -9,7 +10,7 @@
 
 #include "Log.h"
 
-EnemyGround::EnemyGround(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, typeOfEnemy)
+EnemyGround::EnemyGround(int x, int y, EnemyType typeOfEnemy, Entity* playerPointer) : Enemy(x, y, typeOfEnemy, playerPointer)
 {
 	enemySize = app->generalTileSize;
 	for (int i = 0; i != 11; ++i)
@@ -41,22 +42,25 @@ EnemyGround::EnemyGround(int x, int y, EnemyType typeOfEnemy) : Enemy(x, y, type
 	attack.loop = false;
 
 	currentAnim = &idle;
-	collider = app->collisions->AddCollider({ enemyRect.x, enemyRect.y, app->generalTileSize, app->generalTileSize }, Collider::Type::ENEMY, (Module*)app->enemies);
+	collider = app->collisions->AddCollider({ x, y, app->generalTileSize, app->generalTileSize }, Collider::Type::ENEMY, (Module*)app->entities);
 	
 	idle.Reset();
 	walking.Reset();
 	hurt.Reset();
 	attack.Reset();
 
+	entityTex = app->entities->ground;
+	physics.verlet = true;
+
 	invert = true;
 }
 
-void EnemyGround::Update(float dt)
+bool EnemyGround::Update(float dt)
 {
-	nextFrame.x = enemyRect.x;
-	nextFrame.y = enemyRect.y;
-	enemyPhysics.speed.x = 0;
-	enemyPhysics.CheckDirection();
+	nextPos.x = collider->rect.x;
+	nextPos.y = collider->rect.y;
+	physics.speed.x = 0;
+	physics.CheckDirection();
 
 	if (attackChange)
 	{
@@ -66,12 +70,12 @@ void EnemyGround::Update(float dt)
 	{
 		currentAnim = &hurt;
 	}
-	else if (enemyPhysics.speed.x != 0)
+	else if (physics.speed.x != 0)
 	{
 		currentAnim = &walking;
 	}
 
-	if (currentAnim->HasFinished() && enemyPhysics.speed.x == 0)
+	if (currentAnim->HasFinished() && physics.speed.x == 0)
 	{
 		if (currentAnim == &hurt)
 		{
@@ -92,15 +96,15 @@ void EnemyGround::Update(float dt)
 		}
 	}
 
-	if (app->map->GetTileProperty(nextFrame.x / app->generalTileSize, nextFrame.y / app->generalTileSize + 1, "CollisionId") == Collider::Type::SPIKE)
+	if (app->map->GetTileProperty(nextPos.x / app->generalTileSize, nextPos.y / app->generalTileSize + 1, "CollisionId") == Collider::Type::SPIKE)
 	{
 		hurtChange = true;
 		collider->pendingToDelete = true;
 		app->audio->PlayFx(destroyedFx);
 	}
 
-	iPoint origin = { nextFrame.x / app->generalTileSize,nextFrame.y / app->generalTileSize };
-	iPoint destination = { app->player->playerRect.x / app->generalTileSize,app->player->playerRect.y / app->generalTileSize };
+	iPoint origin = { nextPos.x / app->generalTileSize,nextPos.y / app->generalTileSize };
+	iPoint destination = { player->collider->rect.x / app->generalTileSize,player->collider->rect.y / app->generalTileSize };
 	if (destination.y < 0)
 	{
 		destination.y = 0;
@@ -132,28 +136,28 @@ void EnemyGround::Update(float dt)
 		if (dif.x > 0)
 		{
 			currentAnim = &walking;
-			enemyPhysics.speed.x = 150.0f;
+			physics.speed.x = 150.0f;
 			invert = false;
 		}
 		else if (dif.x < 0)
 		{
 			currentAnim = &walking;
-			origin.x = (nextFrame.x + enemyRect.w) / app->generalTileSize;
-			enemyPhysics.speed.x = -75.0f;
+			origin.x = (nextPos.x + collider->rect.w) / app->generalTileSize;
+			physics.speed.x = -75.0f;
 			invert = true;
 		}
 
 		if (dif.y < 0)
 		{
-			if (enemyPhysics.speed.y == 0)
+			if (physics.speed.y == 0)
 			{
-				enemyPhysics.speed.y = -250.0f;
+				physics.speed.y = -250.0f;
 			}
-			enemyPhysics.positiveSpeedY = false;
+			physics.positiveSpeedY = false;
 		}
 		else if (dif.y > 0)
 		{
-			enemyPhysics.positiveSpeedY = true;
+			physics.positiveSpeedY = true;
 		}
 
 		counterTile++;
@@ -161,13 +165,12 @@ void EnemyGround::Update(float dt)
 		{
 			counterTile = 32;
 		}
-		if (counterTile == app->generalTileSize / 2 && enemyPhysics.speed.y == 0)
+		if (counterTile == app->generalTileSize / 2 && physics.speed.y == 0)
 		{
 			i++;
 			counterTile = 0;
 		}
 	}
 
-	// Call to the base class
-	Enemy::Update(dt);
+	return true;
 }

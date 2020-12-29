@@ -27,7 +27,6 @@ public:
 
 
 	SDL_Texture* playerHeart;
-	int score = 0;
 
 private:
 	// Gets the coordinates of the spawn point

@@ -7,10 +7,10 @@ class EnemyGround : public Enemy
 {
 public:
 	// Constructor
-	EnemyGround(int x, int y, EnemyType typeOfEnemy);
+	EnemyGround(int x, int y, EnemyType typeOfEnemy, Entity* playerPointer);
 
 	// Called each loop iteration
-	void Update(float dt);
+	bool Update(float dt);
 
 	EnemyType type;
 private:

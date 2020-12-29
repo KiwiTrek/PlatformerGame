@@ -21,7 +21,6 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	collider = app->collisions->AddCollider({ spawnPos.x, spawnPos.y, app->generalTileSize, app->generalTileSize }, Collider::Type::PLAYER, (Module*)app->entities);
 
 	playerSize = 128;
-	score = 0;
 	jumpCounter = 2;
 	lives = 3;
 	hitCD = 0;
@@ -126,7 +125,6 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 
 bool Player::Update(float dt)
 {
-	currentAnim->Update(dt);
 	keyPressed = false;
 	nextPos.x = collider->rect.x;
 	nextPos.y = collider->rect.y;
@@ -324,11 +322,9 @@ bool Player::Update(float dt)
 				}
 			}
 		}
-
-		// Physics & Collisions
-		physics.UpdatePhysics(nextPos, dt);
-		physics.ResolveCollisions(collider->rect, nextPos, invert);
 	}
+
+	return true;
 }
 
 bool Player::PostUpdate(float dt)
@@ -387,7 +383,7 @@ bool Player::PostUpdate(float dt)
 				lives++;
 				app->map->SetTileProperty(collider->rect.x / app->generalTileSize, collider->rect.y / app->generalTileSize, "NoDraw", 1, true, true);
 				app->audio->PlayFx(fruitFx);
-				score += 50;
+				app->scene->scoreValue += 50;
 			}
 		}
 

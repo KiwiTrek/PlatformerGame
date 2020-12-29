@@ -3,6 +3,7 @@
 
 #include "Module.h"
 
+class Entity;
 struct SDL_Texture;
 
 class Scene : public Module
@@ -34,7 +35,10 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	int scoreValue = 0;
 private:
+	Entity* player = nullptr;
+	
 	SDL_Color sky;
 	SDL_Texture* clouds;
 	SDL_Texture* mountainsBack;

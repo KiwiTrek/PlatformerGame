@@ -7,8 +7,7 @@
 #include "Window.h"
 #include "Scene.h"
 #include "Map.h"
-#include "Player.h"
-#include "EnemyManagement.h"
+#include "EntityManager.h"
 #include "Collisions.h"
 #include "Transition.h"
 #include "DeathScene.h"
@@ -73,13 +72,16 @@ bool Scene::Start()
 
 	app->collisions->Enable();
 
-	app->player->Enable();
-	app->render->camera.x = -(app->player->spawnPoint.x - app->render->camera.w / 2);
-	app->render->camera.y = -(app->player->spawnPoint.y - app->render->camera.h / 2 - 64);
+	scoreValue = 0;
 
-	app->enemies->Enable();
-	app->enemies->AddEnemy(EnemyType::FLYING, app->map->data.tileWidth * 103, app->map->data.tileHeight * 3);
-	app->enemies->AddEnemy(EnemyType::GROUND, app->map->data.tileWidth * 36, app->map->data.tileHeight * 8);
+	app->entities->Enable();
+	player = app->entities->CreateEntity(0, 0, EntityType::PLAYER);
+	app->entities->CreateEntity(app->map->data.tileWidth * 103, app->map->data.tileHeight * 3, EntityType::ENEMY, player, EnemyType::FLYING);
+	app->entities->CreateEntity(app->map->data.tileWidth * 36, app->map->data.tileHeight * 8, EntityType::ENEMY, player, EnemyType::GROUND);
+
+	app->render->camera.x = -(player->spawnPos.x - app->render->camera.w / 2);
+	app->render->camera.y = -(player->spawnPos.y - app->render->camera.h / 2 - 64);
+
 
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioMusic.GetString(), "level_1.ogg");
@@ -114,29 +116,29 @@ bool Scene::Update(float dt)
 	//DEBUG
 	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
-		app->player->spawnPoint = { 0,0 };
+		player->spawnPos = { 0,0 };
 		app->transition->FadeEffect(this, (Module*)app->scene, false);
 	}
 	if (app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 	{
-		app->player->spawnPoint = { 0,0 };
+		player->spawnPos = { 0,0 };
 		app->transition->FadeEffect(this, this, false);
 	}
 
 	//Player restraint
-	if ((app->render->camera.x + app->player->playerRect.x) < (app->map->data.tileWidth * 6))
+	if ((app->render->camera.x + player->collider->rect.x) < (app->map->data.tileWidth * 6))
 	{
 		app->render->camera.x += (250.0f * dt);
 	}
-	if ((app->player->playerRect.w + app->render->camera.x + app->player->playerRect.x) > (app->render->camera.w - app->map->data.tileWidth * 10))
+	if ((player->collider->rect.w + app->render->camera.x + player->collider->rect.x) > (app->render->camera.w - app->map->data.tileWidth * 10))
 	{
 		app->render->camera.x -= (250.0f * dt);
 	}
-	if ((app->render->camera.y + app->player->playerRect.y) < (app->map->data.tileHeight * 6))
+	if ((app->render->camera.y + player->collider->rect.y) < (app->map->data.tileHeight * 6))
 	{
 		app->render->camera.y += floor(250.0f * dt);
 	}
-	if ((app->player->playerRect.h + app->render->camera.y + app->player->playerRect.y) > (app->render->camera.h - app->map->data.tileHeight * 6))
+	if ((player->collider->rect.h + app->render->camera.y + player->collider->rect.y) > (app->render->camera.h - app->map->data.tileHeight * 6))
 	{
 		app->render->camera.y -= floor(250.0f * dt);
 	}
@@ -178,7 +180,7 @@ bool Scene::PostUpdate()
 
 	app->map->Draw();
 
-	sprintf_s(score, 8, "%d", app->player->score);
+	sprintf_s(score, 8, "%d", scoreValue);
 	iPoint tmp(-app->render->camera.x, -app->render->camera.y);
 	app->fonts->DrawText(tmp.x, tmp.y + 56, font, score);
 
@@ -196,8 +198,7 @@ bool Scene::CleanUp()
 	app->tex->UnLoad(mountainsBack);
 	app->tex->UnLoad(mountainsFront);
 
-	app->enemies->Disable();
-	app->player->Disable();
+	app->entities->Disable();
 	app->map->Disable();
 
 	return true;

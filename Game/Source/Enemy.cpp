@@ -2,6 +2,7 @@
 #include "EnemyGround.h"
 
 #include "App.h"
+#include "Scene.h"
 #include "Collisions.h"
 #include "Audio.h"
 #include "Render.h"
@@ -10,10 +11,13 @@
 
 #include "Log.h"
 
-Enemy::Enemy(int x, int y, EnemyType type) : enemyRect({ x, y, app->generalTileSize, app->generalTileSize }), type(type)
+Enemy::Enemy(int x, int y, EnemyType type, Entity* playerPointer) : Entity(x,y,EntityType::ENEMY,type)
 {
-	spawnPos.x = enemyRect.x;
-	spawnPos.y = enemyRect.y;
+	player = playerPointer;
+	spawnPos.x = x;
+	spawnPos.y = y;
+	physics.axisX = true;
+	physics.axisY = true;
 	path.Create(DEFAULT_PATH_LENGTH);
 }
 
@@ -26,34 +30,19 @@ Enemy::~Enemy()
 	path.Clear();
 }
 
-void Enemy::Update(float dt)
+bool Enemy::Draw()
 {
 	if (currentAnim != nullptr)
 	{
-		currentAnim->Update(dt);
-	}
-
-	enemyPhysics.UpdatePhysics(nextFrame, dt);
-	enemyPhysics.ResolveCollisions(enemyRect, nextFrame, invert);
-
-	if (collider != nullptr)
-	{
-		collider->SetPos(enemyRect.x, enemyRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
-	}
-}
-
-void Enemy::Draw()
-{
-	if (currentAnim != nullptr)
-	{
-		app->render->DrawTexture(texture, enemyRect.x, enemyRect.y, false, &(currentAnim->GetCurrentFrame()), invert);
+		app->render->DrawTexture(entityTex, collider->rect.x, collider->rect.y, false, &(currentAnim->GetCurrentFrame()), invert);
 	}
 
 	if (app->render->drawAll)
 	{
-		app->render->DrawRectangle({ enemyRect.x, enemyRect.y, app->generalTileSize,app->generalTileSize }, 255, 255, 0, 100);
+		app->render->DrawRectangle({ collider->rect.x, collider->rect.y, app->generalTileSize,app->generalTileSize }, 255, 255, 0, 100);
 		app->pathfinding->DrawPath(&path);
 	}
+	return true;
 }
 
 void Enemy::OnCollision(Collider* c1, Collider* c2)
@@ -63,7 +52,7 @@ void Enemy::OnCollision(Collider* c1, Collider* c2)
 		hurtChange = true;
 		collider->pendingToDelete = true;
 		app->audio->PlayFx(destroyedFx);
-		app->player->score += 100;
+		app->scene->scoreValue += 100;
 	}
 	else
 	{
