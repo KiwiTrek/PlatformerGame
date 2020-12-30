@@ -19,7 +19,8 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 {
 	spawnPos = GetSpawnPoint();
 	pendingToDelete = false;
-	collider = app->collisions->AddCollider({ spawnPos.x, spawnPos.y, app->generalTileSize, app->generalTileSize }, Collider::Type::PLAYER, (Module*)app->entities);
+	entityRect = { spawnPos.x, spawnPos.y, app->generalTileSize, app->generalTileSize };
+	collider = app->collisions->AddCollider(entityRect, Collider::Type::PLAYER, (Module*)app->entities);
 
 	playerSize = 128;
 	jumpCounter = 2;
@@ -123,13 +124,15 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	attack.Reset();
 	death.Reset();
 	wallJump.Reset();
+
+	currentAnim = &idle;
 }
 
 bool Player::Update(float dt)
 {
 	keyPressed = false;
-	nextPos.x = collider->rect.x;
-	nextPos.y = collider->rect.y;
+	nextPos.x = entityRect.x;
+	nextPos.y = entityRect.y;
 
 	if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && currentAnim == &idle)
 	{
@@ -260,11 +263,11 @@ bool Player::Update(float dt)
 		{
 			if (invert && currentAnim == &attack)
 			{
-				hurtBox->SetPos(collider->rect.x - 40, collider->rect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
+				hurtBox->SetPos(entityRect.x - 40, entityRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
 			}
 			else
 			{
-				hurtBox->SetPos(collider->rect.x, collider->rect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
+				hurtBox->SetPos(entityRect.x, entityRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
 			}
 		}
 
@@ -333,7 +336,7 @@ bool Player::PostUpdate(float dt)
 {
 	if (isDead == false)
 	{
-		iPoint currentFrameTile = { collider->rect.x / app->generalTileSize, collider->rect.y / app->generalTileSize };
+		iPoint currentFrameTile = { entityRect.x / app->generalTileSize, entityRect.y / app->generalTileSize };
 
 		// Animation correction
 		if (app->map->GetTileProperty(currentFrameTile.x + 1, currentFrameTile.y, "CollisionId") == Collider::Type::SOLID
@@ -343,7 +346,7 @@ bool Player::PostUpdate(float dt)
 			currentAnim = &wallJump;
 			jumpCounter = 1;
 		}
-		else if (app->map->GetTileProperty((collider->rect.x - 1) / app->generalTileSize, currentFrameTile.y, "CollisionId") == Collider::Type::SOLID
+		else if (app->map->GetTileProperty((entityRect.x - 1) / app->generalTileSize, currentFrameTile.y, "CollisionId") == Collider::Type::SOLID
 			&& app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y + 1, "CollisionId") != Collider::Type::SOLID
 			&& invert && currentAnim != &wallJump)
 		{
@@ -355,19 +358,13 @@ bool Player::PostUpdate(float dt)
 			currentAnim = &jumpLand;
 		}
 
-		// Attack
-		if (!isAttacking && currentAnim != &attack)
-		{
-			collider->SetPos(collider->rect.x, collider->rect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
-		}
-
 		// Checkpoint
 		if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId", true, true) == Collider::Type::CHECKPOINT)
 		{
 			if (onceCheckpoint)
 			{
-				spawnPos.x = collider->rect.x;
-				spawnPos.y = collider->rect.y;
+				spawnPos.x = entityRect.x;
+				spawnPos.y = entityRect.y;
 				app->audio->PlayFx(checkpointFx);
 				onceCheckpoint = false;
 			}
@@ -383,7 +380,7 @@ bool Player::PostUpdate(float dt)
 			if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "NoDraw", true, true) == 0)
 			{
 				lives++;
-				app->map->SetTileProperty(collider->rect.x / app->generalTileSize, collider->rect.y / app->generalTileSize, "NoDraw", 1, true, true);
+				app->map->SetTileProperty(entityRect.x / app->generalTileSize, entityRect.y / app->generalTileSize, "NoDraw", 1, true, true);
 				app->audio->PlayFx(fruitFx);
 				app->scene->scoreValue += 50;
 			}
@@ -412,8 +409,8 @@ bool Player::PostUpdate(float dt)
 			}
 			else
 			{
-				collider->rect.x = spawnPos.x;
-				collider->rect.y = spawnPos.y;
+				entityRect.x = spawnPos.x;
+				entityRect.y = spawnPos.y;
 
 				app->render->camera.x = -(spawnPos.x - app->render->camera.w / 2);
 				app->render->camera.y = -(spawnPos.y - app->render->camera.h / 2 - app->generalTileSize);
@@ -432,11 +429,11 @@ bool Player::PostUpdate(float dt)
 			hitCD--;
 			if (invert)
 			{
-				collider->rect.x += floor(250.0f * dt);
+				entityRect.x += floor(250.0f * dt);
 			}
 			else
 			{
-				collider->rect.x -= floor(250.0f * dt);
+				entityRect.x -= floor(250.0f * dt);
 			}
 		}
 	}
@@ -457,13 +454,13 @@ bool Player::PostUpdate(float dt)
 	}
 
 	// Map borders
-	if (collider->rect.x <= 0)
+	if (entityRect.x <= 0)
 	{
-		collider->rect.x = 0;
+		entityRect.x = 0;
 	}
-	if ((collider->rect.x + collider->rect.w) > (app->map->data.width * app->map->data.tileWidth))
+	if ((entityRect.x + entityRect.w) > (app->map->data.width * app->map->data.tileWidth))
 	{
-		collider->rect.x -= floor(250.0f * dt);
+		entityRect.x -= floor(250.0f * dt);
 	}
 	return true;
 }
@@ -474,21 +471,21 @@ bool Player::Draw()
 	{
 		if (isAttacking)
 		{
-			app->render->DrawTexture(entityTex, collider->rect.x - 40, collider->rect.y, false, &currentAnim->GetCurrentFrame(), invert);
+			app->render->DrawTexture(entityTex, entityRect.x - 40, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
 		}
 		else
 		{
-			app->render->DrawTexture(entityTex, collider->rect.x + 8, collider->rect.y, false, &currentAnim->GetCurrentFrame(), invert);
+			app->render->DrawTexture(entityTex, entityRect.x + 8, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
 		}
 	}
 	else
 	{
-		app->render->DrawTexture(entityTex, collider->rect.x, collider->rect.y, false, &currentAnim->GetCurrentFrame(), invert);
+		app->render->DrawTexture(entityTex, entityRect.x, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
 	}
 
 	if (app->render->drawAll)
 	{
-		app->render->DrawRectangle({ collider->rect.x, collider->rect.y, app->generalTileSize, app->generalTileSize }, 0, 255, 0, 100);
+		app->render->DrawRectangle({ entityRect.x, entityRect.y, app->generalTileSize, app->generalTileSize }, 0, 255, 0, 100);
 		if (hurtBox != nullptr && isAttacking)
 		{
 			app->render->DrawRectangle(hurtBox->rect, 255, 0, 255, 100);
@@ -510,8 +507,8 @@ bool Player::Load(pugi::xml_node& save)
 	LOG("Loading player coordinates");
 	bool ret = true;
 
-	playerRect.x = save.child("coordinates").attribute("x").as_int();
-	playerRect.y = save.child("coordinates").attribute("y").as_int();
+	entityRect.x = save.child("coordinates").attribute("x").as_int();
+	entityRect.y = save.child("coordinates").attribute("y").as_int();
 	score = save.child("score").attribute("value").as_int(0);
 	lives = save.child("life").attribute("value").as_int(3);
 
@@ -524,8 +521,8 @@ bool Player::Save(pugi::xml_node& save)
 	bool ret = true;
 
 	pugi::xml_node player = save.append_child("coordinates");
-	player.append_attribute("x").set_value(playerRect.x);
-	player.append_attribute("y").set_value(playerRect.y);
+	player.append_attribute("x").set_value(entityRect.x);
+	player.append_attribute("y").set_value(entityRect.y);
 	save.append_child("score").append_attribute("value").set_value(score);
 	save.append_child("life").append_attribute("value").set_value(lives);
 

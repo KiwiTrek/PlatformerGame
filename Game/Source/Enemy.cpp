@@ -35,12 +35,12 @@ bool Enemy::Draw()
 {
 	if (currentAnim != nullptr)
 	{
-		app->render->DrawTexture(entityTex, collider->rect.x, collider->rect.y, false, &(currentAnim->GetCurrentFrame()), invert);
+		app->render->DrawTexture(entityTex, entityRect.x, entityRect.y, false, &(currentAnim->GetCurrentFrame()), invert);
 	}
 
 	if (app->render->drawAll)
 	{
-		app->render->DrawRectangle({ collider->rect.x, collider->rect.y, app->generalTileSize,app->generalTileSize }, 255, 255, 0, 100);
+		app->render->DrawRectangle({ entityRect.x, entityRect.y, app->generalTileSize,app->generalTileSize }, 255, 255, 0, 100);
 		app->pathfinding->DrawPath(&path);
 	}
 	return true;

@@ -35,7 +35,8 @@ EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy, Entity* playerPoin
 	attack.loop = false;
 
 	currentAnim = &flying;
-	collider = app->collisions->AddCollider({ x, y, app->generalTileSize, app->generalTileSize }, Collider::Type::ENEMY, (Module*)app->entities);
+	entityRect = { x, y, app->generalTileSize, app->generalTileSize };
+	collider = app->collisions->AddCollider(entityRect, Collider::Type::ENEMY, (Module*)app->entities);
 
 	flying.Reset();
 	hurt.Reset();
@@ -49,8 +50,8 @@ EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy, Entity* playerPoin
 
 bool EnemyFlying::Update(float dt)
 {
-	nextPos.x = collider->rect.x;
-	nextPos.y = collider->rect.y;
+	nextPos.x = entityRect.x;
+	nextPos.y = entityRect.y;
 	physics.speed.x = 0;
 	physics.speed.y = 0;
 	physics.CheckDirection();
@@ -86,7 +87,7 @@ bool EnemyFlying::Update(float dt)
 	}
 
 	iPoint origin = { nextPos.x / app->generalTileSize,nextPos.y / app->generalTileSize };
-	iPoint destination = { player->collider->rect.x / app->generalTileSize,player->collider->rect.y / app->generalTileSize };
+	iPoint destination = { player->entityRect.x / app->generalTileSize,player->entityRect.y / app->generalTileSize };
 	if (destination.y < 0)
 	{
 		destination.y = 0;
@@ -122,13 +123,13 @@ bool EnemyFlying::Update(float dt)
 		}
 		else if (dif.x < 0)
 		{
-			origin.x = (nextPos.x + collider->rect.w) / app->generalTileSize;
+			origin.x = (nextPos.x + entityRect.w) / app->generalTileSize;
 			physics.speed.x = -75.0f;
 			invert = true;
 		}
 		else if (dif.y < 0)
 		{
-			origin.y = (nextPos.y + collider->rect.h) / app->generalTileSize;
+			origin.y = (nextPos.y + entityRect.h) / app->generalTileSize;
 			physics.speed.y = -75.0f;
 		}
 		else if (dif.y > 0)

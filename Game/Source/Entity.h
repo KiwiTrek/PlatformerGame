@@ -59,6 +59,7 @@ public:
     // want our Entity class, maybe it's not renderable...
     iPoint position;        // Use a float instead?
     SDL_Texture* entityTex;
+    SDL_Rect entityRect;
     Physics physics;
     iPoint nextPos;
     Collider* collider;

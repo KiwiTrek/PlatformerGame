@@ -7,6 +7,7 @@
 #include "Map.h"
 
 #include "SDL.h"
+#include "Log.h"
 
 class Collider;
 
@@ -93,7 +94,7 @@ public:
 			i--;
 			correctedPos.y = -MIN(currentFrame.y - nextFrame.y, currentFrame.y - (tiledPos.y - i) * app->generalTileSize);
 		}
-
+		LOG("%d", correctedPos.x);
 		currentFrame.x += correctedPos.x;
 		currentFrame.y += correctedPos.y;
 

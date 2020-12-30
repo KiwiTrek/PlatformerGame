@@ -215,10 +215,10 @@ bool EntityManager::UpdateAll(float dt, bool doLogic)
 				e->data->currentAnim->Update(dt);
 			}
 			e->data->physics.UpdatePhysics(e->data->nextPos, dt);
-			e->data->physics.ResolveCollisions(e->data->collider->rect, e->data->nextPos, e->data->invert);
+			e->data->physics.ResolveCollisions(e->data->entityRect, e->data->nextPos, e->data->invert);
 			if (e->data->collider != nullptr)
 			{
-				e->data->collider->SetPos(e->data->collider->rect.x, e->data->collider->rect.y, e->data->currentAnim->GetCurrentFrame().w, e->data->currentAnim->GetCurrentFrame().h);
+				e->data->collider->SetPos(e->data->entityRect.x, e->data->entityRect.y, e->data->currentAnim->GetCurrentFrame().w, e->data->currentAnim->GetCurrentFrame().h);
 			}
 			e->data->PostUpdate(dt);
 			e = e->next;
@@ -248,7 +248,10 @@ bool EntityManager::PostUpdate()
 
 void EntityManager::DestroyEntity(Entity* entity)
 {
-	entities.Del(entities.At(entities.Find(entity)));
+	entity->collider->pendingToDelete = true;
+	int i = entities.Find(entity);
+	delete entities[i];
+	entities.Del(entities.At(i));
 }
 
 void EntityManager::OnCollision(Collider* c1, Collider* c2)
