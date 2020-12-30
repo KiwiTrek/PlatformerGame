@@ -21,6 +21,9 @@ public:
 	// Destructor
 	virtual ~Enemy();
 
+	// Called from inhering enemies' Udpate
+	virtual bool Update(float dt);
+
 	// Called from ModuleEnemies' Update
 	virtual bool Draw();
 

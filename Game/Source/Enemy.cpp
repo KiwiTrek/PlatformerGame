@@ -31,6 +31,24 @@ Enemy::~Enemy()
 	path.Clear();
 }
 
+bool Enemy::Update(float dt)
+{
+	if (currentAnim != nullptr)
+	{
+		currentAnim->Update(dt);
+	}
+
+	physics.UpdatePhysics(nextPos, dt);
+	physics.ResolveCollisions(entityRect, nextPos, invert);
+
+	if (collider != nullptr)
+	{
+		collider->SetPos(entityRect.x, entityRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
+	}
+
+	return true;
+}
+
 bool Enemy::Draw()
 {
 	if (currentAnim != nullptr)

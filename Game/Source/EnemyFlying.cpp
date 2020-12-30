@@ -145,5 +145,8 @@ bool EnemyFlying::Update(float dt)
 		counterTile = 0;
 	}
 
+	// Call to the base class
+	Enemy::Update(dt);
+
 	return true;
 }

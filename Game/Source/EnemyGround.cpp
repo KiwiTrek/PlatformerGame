@@ -173,5 +173,8 @@ bool EnemyGround::Update(float dt)
 		}
 	}
 
+	// Call to the base class
+	Enemy::Update(dt);
+
 	return true;
 }

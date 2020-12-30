@@ -18,7 +18,7 @@ public:
 	bool Update(float dt);
 
 	// Called after all Updates
-	bool PostUpdate(float dt);
+	//bool PostUpdate(float dt);
 
 	bool Draw();
 

@@ -210,17 +210,17 @@ bool EntityManager::UpdateAll(float dt, bool doLogic)
 		while (e != nullptr)
 		{
 			e->data->Update(dt);
-			if (e->data->currentAnim != nullptr)
-			{
-				e->data->currentAnim->Update(dt);
-			}
-			e->data->physics.UpdatePhysics(e->data->nextPos, dt);
-			e->data->physics.ResolveCollisions(e->data->entityRect, e->data->nextPos, e->data->invert);
-			if (e->data->collider != nullptr)
-			{
-				e->data->collider->SetPos(e->data->entityRect.x, e->data->entityRect.y, e->data->currentAnim->GetCurrentFrame().w, e->data->currentAnim->GetCurrentFrame().h);
-			}
-			e->data->PostUpdate(dt);
+			//if (e->data->currentAnim != nullptr)
+			//{
+			//	e->data->currentAnim->Update(dt);
+			//}
+			//e->data->physics.UpdatePhysics(e->data->nextPos, dt);
+			//e->data->physics.ResolveCollisions(e->data->entityRect, e->data->nextPos, e->data->invert);
+			//if (e->data->collider != nullptr)
+			//{
+			//	e->data->collider->SetPos(e->data->entityRect.x, e->data->entityRect.y, e->data->currentAnim->GetCurrentFrame().w, e->data->currentAnim->GetCurrentFrame().h);
+			//}
+			//e->data->PostUpdate(dt);
 			e = e->next;
 		}
 	}

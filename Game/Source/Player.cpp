@@ -130,6 +130,7 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 
 bool Player::Update(float dt)
 {
+	currentAnim->Update(dt);
 	keyPressed = false;
 	nextPos.x = entityRect.x;
 	nextPos.y = entityRect.y;
@@ -327,15 +328,10 @@ bool Player::Update(float dt)
 				}
 			}
 		}
-	}
 
-	return true;
-}
+		physics.UpdatePhysics(nextPos, dt);
+		physics.ResolveCollisions(entityRect, nextPos, invert);
 
-bool Player::PostUpdate(float dt)
-{
-	if (isDead == false)
-	{
 		iPoint currentFrameTile = { entityRect.x / app->generalTileSize, entityRect.y / app->generalTileSize };
 
 		// Animation correction
@@ -356,6 +352,12 @@ bool Player::PostUpdate(float dt)
 		else if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y + 1, "CollisionId") == Collider::Type::SOLID && isJumping)
 		{
 			currentAnim = &jumpLand;
+		}
+
+		// Attack
+		if (!isAttacking && currentAnim != &attack)
+		{
+			collider->SetPos(entityRect.x, entityRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
 		}
 
 		// Checkpoint
