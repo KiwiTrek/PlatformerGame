@@ -114,7 +114,7 @@ bool EnemyFlying::Update(float dt)
 		}
 	}
 	
-	if (pathCount < 12 && pathCount > 1 && !hurtChange)
+	if (path.Count() != 0 && pathCount < 12 && pathCount > 1 && !hurtChange)
 	{
 		if (i >= (pathCount - 2))
 		{

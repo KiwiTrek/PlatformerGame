@@ -5,6 +5,8 @@
 #include "Fonts.h"
 
 #include "GuiButton.h"
+#include "GuiCheckBox.h"
+#include "GuiSlider.h"
 
 GuiManager::GuiManager() : Module()
 {
@@ -48,13 +50,16 @@ bool GuiManager::Start()
 	tmp.Create("%s%s", folderTexture.GetString(), "title_label.png");
 	titleFont = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
 	tmp.Clear();
+	tmp.Create("%s%s", folderTexture.GetString(), "title_label_medium.png");
+	titleFontMedium = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "title_label_small.png");
 	titleFontSmall = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
 
 	return true;
 }
 
-GuiControl* GuiManager::CreateGuiControl(GuiControlType type, uint32 id, SDL_Rect bounds, const char* text, Module* observer)
+GuiControl* GuiManager::CreateGuiControl(GuiControlType type, uint32 id, SDL_Rect bounds, const char* text, Module* observer, int widthInUnits)
 {
 	GuiControl* control = nullptr;
 
@@ -67,10 +72,12 @@ GuiControl* GuiManager::CreateGuiControl(GuiControlType type, uint32 id, SDL_Rec
 	}
 	case GuiControlType::CHECKBOX:
 	{
+		control = new GuiCheckBox(id, bounds, text);
 		break;
 	}
 	case GuiControlType::SLIDER:
 	{
+		control = new GuiSlider(id, bounds, widthInUnits, text);
 		break;
 	}
 	default: break;
@@ -78,12 +85,18 @@ GuiControl* GuiManager::CreateGuiControl(GuiControlType type, uint32 id, SDL_Rec
 
 	control->SetObserver(observer);
 	control->SetTexture(atlas);
-	control->SetFonts(defaultFont, titleFont, hoverFont, pressedFont, disabledFont);
+	control->SetFonts(defaultFont, titleFontMedium, hoverFont, pressedFont, disabledFont);
 
 	// Created entities are added to the list
 	if (control != nullptr) controls.Add(control);
 
 	return control;
+}
+
+void GuiManager::DestroyGuiControl(GuiControl* entity)
+{
+	delete entity;
+	entity = nullptr;
 }
 
 bool GuiManager::CleanUp()

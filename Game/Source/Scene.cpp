@@ -5,13 +5,14 @@
 #include "Audio.h"
 #include "Render.h"
 #include "Window.h"
-#include "Scene.h"
 #include "Map.h"
 #include "EntityManager.h"
 #include "Collisions.h"
 #include "Transition.h"
 #include "DeathScene.h"
 #include "PathFinding.h"
+
+#include "Scene.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -91,6 +92,13 @@ bool Scene::Start()
 	tmp.Create("%s%s", folderTexture.GetString(), "score_font.png");
 	font = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
 
+	scoreTitle.Create("Score:");
+	offsetScore = scoreTitle.Length() * 36;
+
+	timerValue = 501.0f;
+	timerTitle.Create("Time:");
+	offsetTimer = timerTitle.Length() * 36;
+
 	return true;
 }
 
@@ -103,6 +111,12 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
+	timerValue -= dt;
+	if (timerValue <= 0.0f)
+	{
+		timerValue = 0.0f;
+		player->isDead = true;
+	}
 	if (app->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
 	{
 		app->audio->MuteVolume();
@@ -126,19 +140,19 @@ bool Scene::Update(float dt)
 	}
 
 	//Player restraint
-	if ((app->render->camera.x + player->collider->rect.x) < (app->map->data.tileWidth * 6))
+	if ((app->render->camera.x + player->entityRect.x) < (app->map->data.tileWidth * 6))
 	{
 		app->render->camera.x += (250.0f * dt);
 	}
-	if ((player->collider->rect.w + app->render->camera.x + player->collider->rect.x) > (app->render->camera.w - app->map->data.tileWidth * 10))
+	if ((player->entityRect.w + app->render->camera.x + player->entityRect.x) > (app->render->camera.w - app->map->data.tileWidth * 10))
 	{
 		app->render->camera.x -= (250.0f * dt);
 	}
-	if ((app->render->camera.y + player->collider->rect.y) < (app->map->data.tileHeight * 6))
+	if ((app->render->camera.y + player->entityRect.y) < (app->map->data.tileHeight * 6))
 	{
 		app->render->camera.y += floor(250.0f * dt);
 	}
-	if ((player->collider->rect.h + app->render->camera.y + player->collider->rect.y) > (app->render->camera.h - app->map->data.tileHeight * 6))
+	if ((player->entityRect.h + app->render->camera.y + player->entityRect.y) > (app->render->camera.h - app->map->data.tileHeight * 6))
 	{
 		app->render->camera.y -= floor(250.0f * dt);
 	}
@@ -179,10 +193,18 @@ bool Scene::PostUpdate()
 	}
 
 	app->map->Draw();
+	
+	iPoint tmp(-app->render->camera.x, -app->render->camera.y);
+	app->render->DrawRectangle({ tmp.x, tmp.y + 102, 288, 5 }, 0, 0, 0, 255);
 
 	sprintf_s(score, 8, "%d", scoreValue);
-	iPoint tmp(-app->render->camera.x, -app->render->camera.y);
-	app->fonts->DrawText(tmp.x, tmp.y + 56, font, score);
+	app->fonts->DrawText(tmp.x, tmp.y + 66, font, scoreTitle.GetString());
+	app->fonts->DrawText(tmp.x + offsetScore, tmp.y + 66, font, score);
+
+	//Would like it on top right side of the screen ;w;
+	sprintf_s(timer, 6, "%03d", (int)timerValue);
+	app->fonts->DrawText(tmp.x, tmp.y + 106, font, timerTitle.GetString());
+	app->fonts->DrawText(tmp.x + offsetTimer, tmp.y + 106, font, timer);
 
 	return true;
 }
@@ -197,6 +219,7 @@ bool Scene::CleanUp()
 	app->tex->UnLoad(clouds);
 	app->tex->UnLoad(mountainsBack);
 	app->tex->UnLoad(mountainsFront);
+	app->fonts->Unload(font);
 
 	app->entities->Disable();
 	app->map->Disable();

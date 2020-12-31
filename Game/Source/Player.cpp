@@ -37,6 +37,8 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	debugDraw = false;
 	once = true;
 	onceCheckpoint = true;
+	heartLess = false;
+	heartMore = false;
 
 	physics.axisX = true;
 	physics.axisY = true;
@@ -115,6 +117,20 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	wallJump.speed = 0.0f;
 	wallJump.loop = false;
 
+	for (int i = 0; i != 19; ++i)
+	{
+		heartDestroyed.PushBack({ (64 * i),0,64,64 });
+	}
+	heartDestroyed.speed = 35.0f;
+	heartDestroyed.loop = false;
+
+	for (int i = 0; i != 11; ++i)
+	{
+		heartRecovered.PushBack({ (64*10) - (64 * i),0,64,64 });
+	}
+	heartRecovered.speed = 35.0f;
+	heartRecovered.loop = false;
+
 	idle.Reset();
 	run.Reset();
 	jumpPrep.Reset();
@@ -124,13 +140,24 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	attack.Reset();
 	death.Reset();
 	wallJump.Reset();
+	heartRecovered.Reset();
+	heartDestroyed.Reset();
 
 	currentAnim = &idle;
+	heartRecovered.currentFrame = heartRecovered.totalFrames - 1;
 }
 
 bool Player::Update(float dt)
 {
 	currentAnim->Update(dt);
+	if (heartMore)
+	{
+		heartRecovered.Update(dt);
+	}
+	if (heartLess)
+	{
+		heartDestroyed.Update(dt);
+	}
 	keyPressed = false;
 	nextPos.x = entityRect.x;
 	nextPos.y = entityRect.y;
@@ -382,6 +409,8 @@ bool Player::Update(float dt)
 			if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "NoDraw", true, true) == 0)
 			{
 				lives++;
+				heartMore = true;
+				heartRecovered.Reset();
 				app->map->SetTileProperty(entityRect.x / app->generalTileSize, entityRect.y / app->generalTileSize, "NoDraw", 1, true, true);
 				app->audio->PlayFx(fruitFx);
 				app->scene->scoreValue += 50;
@@ -405,6 +434,7 @@ bool Player::Update(float dt)
 		if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y + 1, "CollisionId") == Collider::Type::SPIKE && !godMode)
 		{
 			lives--;
+			heartLess = true;
 			if (lives == 0)
 			{
 				isDead = true;
@@ -495,9 +525,30 @@ bool Player::Draw()
 	}
 
 	iPoint tmp(-app->render->camera.x, -app->render->camera.y);
-	for (int i = lives; i > 0; i--)
+	for (int i = lives - 1; i > 0; i--)
 	{
-		app->render->DrawTexture(playerHeart, tmp.x + (i * 68) - app->generalTileSize, tmp.y);
+		app->render->DrawTexture(playerHeart, tmp.x + (i * 68) - app->generalTileSize, tmp.y, false, &heartRecovered.GetLastFrame());
+	}
+	if (heartMore && !heartLess)
+	{
+		app->render->DrawTexture(playerHeart, tmp.x + (lives * 68) - app->generalTileSize, tmp.y, false, &heartRecovered.GetCurrentFrame());
+		if (heartRecovered.HasFinished())
+		{
+			heartMore = false;
+		}
+	}
+	else if (heartLess && !heartMore)
+	{
+		app->render->DrawTexture(playerHeart, tmp.x + ((lives + 1) * 68) - app->generalTileSize, tmp.y, false, &heartDestroyed.GetCurrentFrame());
+		app->render->DrawTexture(playerHeart, tmp.x + (lives * 68) - app->generalTileSize, tmp.y, false, &heartRecovered.GetLastFrame());
+		if (heartDestroyed.HasFinished())
+		{
+			heartLess = false;
+		}
+	}
+	else
+	{
+		app->render->DrawTexture(playerHeart, tmp.x + (lives * 68) - app->generalTileSize, tmp.y, false, &heartRecovered.GetLastFrame());
 	}
 
 	return true;
@@ -585,6 +636,8 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 	{
 		LOG("Enemy collision!\n");
 		hitCD = 15;
+		heartLess = true;
+		heartDestroyed.Reset();
 		lives--;
 		if (lives == 0)
 		{

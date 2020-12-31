@@ -94,7 +94,7 @@ bool EntityManager::Start()
 	playerTex = app->tex->Load(tmp.GetString());
 
 	tmp.Clear();
-	tmp.Create("%s%s", folderTexture.GetString(), "heart.png");
+	tmp.Create("%s%s", folderTexture.GetString(), "heart_animation.png");
 	playerHeart = app->tex->Load(tmp.GetString());
 
 	tmp.Clear();

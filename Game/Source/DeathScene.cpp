@@ -1,3 +1,5 @@
+#include "DeathScene.h"
+
 #include "App.h"
 #include "Input.h"
 #include "Textures.h"
@@ -5,12 +7,13 @@
 #include "Render.h"
 #include "Window.h"
 #include "TitleScene.h"
-#include "DeathScene.h"
 #include "Transition.h"
 #include "Scene.h"
+#include "GuiManager.h"
 
 #include "Defs.h"
 #include "Log.h"
+
 
 DeathScene::DeathScene() : Module()
 {
@@ -45,6 +48,13 @@ bool DeathScene::Start()
 	tmp.Create("%s%s", folderAudioMusic.GetString(), "game_over.ogg");
 	app->audio->PlayMusic(tmp.GetString(), 0.5f);
 
+	state = 0;
+	timer = 0.0f;
+	alpha = 0.0f;
+
+	btnTitle = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 1, { 193, 498, 217, 109 }, "TITLE", this);
+	btnExit = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 2, { 867, 498, 217, 109 }, "EXIT", this);
+
 	return true;
 }
 
@@ -55,10 +65,35 @@ bool DeathScene::PreUpdate()
 
 bool DeathScene::Update(float dt)
 {
-	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
+	dtTmp = dt;
+	if (state == 0)
 	{
-		app->transition->FadeEffect(this, (Module*)app->titleScene, false, floor(1200.0f * dt));
+		state = 1;
 	}
+	else if (state == 1)
+	{
+		timer += dt;
+		if (timer >= 5.0f)
+		{
+			state = 2;
+		}
+	}
+	else if (state == 2)
+	{
+		alpha += (1.0f * dt);
+
+		if (alpha > 1.0f)
+		{
+			alpha = 1.0f;
+			state = 3;
+		}
+	}
+	else if (state == 3)
+	{
+		btnTitle->Update(dt);
+		btnExit->Update(dt);
+	}
+
 	return true;
 }
 
@@ -66,12 +101,17 @@ bool DeathScene::PostUpdate()
 {
 	bool ret = true;
 
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	if (exitRequest)
 	{
 		ret = false;
 	}
 
 	app->render->DrawTexture(deathScreen, NULL, NULL, true);
+
+	btnTitle->Draw();
+	btnExit->Draw();
+	app->render->DrawRectangle(btnTitle->bounds, 0, 0, 0, (uchar)(255 - (255 * alpha)));
+	app->render->DrawRectangle(btnExit->bounds, 0, 0, 0, (uchar)(255 - (255 * alpha)));
 
 	return ret;
 }
@@ -81,6 +121,41 @@ bool DeathScene::CleanUp()
 	LOG("Freeing scene");
 
 	app->tex->UnLoad(deathScreen);
+
+	app->gui->DestroyGuiControl(btnTitle);
+	btnTitle = nullptr;
+	app->gui->DestroyGuiControl(btnExit);
+	btnExit = nullptr;
+
+	return true;
+}
+
+bool DeathScene::OnGuiMouseClickEvent(GuiControl* control)
+{
+	switch (control->type)
+	{
+	case GuiControlType::BUTTON:
+	{
+		switch (control->id)
+		{
+		case 1:	//Back to title
+		{
+			app->transition->FadeEffect(this, (Module*)app->titleScene, false, floor(1200.0f * dtTmp));
+			break;
+		}
+		case 2:	//Exit
+		{
+			exitRequest = true;
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
+	}
+	default: break;
+	}
 
 	return true;
 }

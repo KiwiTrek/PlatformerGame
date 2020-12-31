@@ -73,6 +73,9 @@ public:
     // Animation related variables
     Animation* currentAnim = nullptr;
     bool invert = false;
+
+    //Public vars from player (SHOULD BE TMP)
+    bool isDead = false;
 };
 
 #endif // __ENTITY_H__

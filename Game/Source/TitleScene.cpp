@@ -1,10 +1,12 @@
+#include "TitleScene.h"
+
+
 #include "App.h"
 #include "Input.h"
 #include "Textures.h"
 #include "Audio.h"
 #include "Render.h"
 #include "Window.h"
-#include "TitleScene.h"
 #include "Transition.h"
 #include "Scene.h"
 #include "Fonts.h"
@@ -60,7 +62,7 @@ bool TitleScene::Start()
 	titleScreen = app->tex->Load(tmp.GetString());
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioMusic.GetString(), "title_screen.ogg");
-	app->audio->PlayMusic(tmp.GetString(),0.0f);
+	app->audio->PlayMusic(tmp.GetString(), 0.0f);
 
 	exitRequest = false;
 
@@ -76,6 +78,9 @@ bool TitleScene::Start()
 	btnExit = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 5, { 976, 553, 217, 109 }, "EXIT", this);
 
 	btnContinue->state = GuiControlState::DISABLED;
+
+	//chckTest = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 69, { (1280 / 2),10,54,54 }, "Test", this);
+	//sldrTest = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 420, { (1280 / 2), 25, 54, 54 }, "Another Test", this, 7);
 
 	return true;
 }
@@ -101,6 +106,9 @@ bool TitleScene::Update(float dt)
 	{
 		btnBack->Update(dt);
 	}
+
+	//chckTest->Update(dt);
+	//sldrTest->Update(dt);
 
 	return true;
 }
@@ -149,6 +157,9 @@ bool TitleScene::PostUpdate()
 		btnBack->Draw();
 	}
 
+	//chckTest->Draw();
+	//sldrTest->Draw();
+
 	return ret;
 }
 
@@ -157,6 +168,19 @@ bool TitleScene::CleanUp()
 	LOG("Freeing scene");
 
 	app->tex->UnLoad(titleScreen);
+
+	app->gui->DestroyGuiControl(btnPlay);
+	btnPlay = nullptr;
+	app->gui->DestroyGuiControl(btnContinue);
+	btnContinue = nullptr;
+	app->gui->DestroyGuiControl(btnSettings);
+	btnSettings = nullptr;
+	app->gui->DestroyGuiControl(btnCredits);
+	btnCredits = nullptr;
+	app->gui->DestroyGuiControl(btnExit);
+	btnExit = nullptr;
+	app->gui->DestroyGuiControl(btnBack);
+	btnBack = nullptr;
 
 	return true;
 }

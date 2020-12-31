@@ -35,15 +35,14 @@ private:
 	Collider* hurtBox = nullptr;
 
 	int jumpCounter;
-	int hitCD = 5;
 	int lives = 3;
+	int hitCD = 5;
 	int playerSize;
 
 	bool keyPressed = false;
 	bool godMode = false;
-	bool isDead = false;
-	bool isJumping = false;
 	bool isHit = false;
+	bool isJumping = false;
 	bool isAttacking = false;
 	bool invert = false;
 	bool debugDraw = false;
@@ -59,6 +58,11 @@ private:
 	Animation hit;
 	Animation death;
 	Animation wallJump;
+
+	bool heartLess;
+	Animation heartDestroyed; //19 f
+	bool heartMore;
+	Animation heartRecovered; //11 f
 
 	uint jumpFx;
 	uint doubleJumpFx;

@@ -43,6 +43,11 @@ public:
 		return frames[(int)currentFrame];
 	}
 
+	SDL_Rect& GetLastFrame()
+	{
+		return frames[(int)totalFrames - 1];
+	}
+
 	float currentFrame = 0.0f;
 	int totalFrames = 0;
 	int loopCount = 0;

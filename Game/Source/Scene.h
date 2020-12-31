@@ -46,9 +46,16 @@ private:
 	SString folderTexture;
 	SString folderAudioMusic;
 
-	// Score Handling
 	int font = -1;
+	// Timer Handling
+	float timerValue;
+	SString timerTitle;
+	int offsetTimer;
+	char timer[6] = { "\0" };
 
+	// Score Handling
+	SString scoreTitle;
+	int offsetScore;
 	char score[8] = { "\0" };
 };
 

@@ -3,11 +3,23 @@
 #include "App.h"
 #include "Input.h"
 #include "Render.h"
+#include "Fonts.h"
 
 GuiCheckBox::GuiCheckBox(uint32 id, SDL_Rect bounds, const char* text) : GuiControl(GuiControlType::CHECKBOX, id)
 {
     this->bounds = bounds;
     this->text = text;
+    this->offsetText = this->text.Length() * 36 + (36 * 3);
+
+    normal = { 217,0,54, 54 };
+    focused = { 217,109,54, 54 };
+    pressed = { 217,218,54, 54 };
+    disabled = { 217,327,54, 54 };
+
+    normalChecked = { 217,54,54, 54 };
+    focusedChecked = { 217,163, 54, 54 };
+    pressedChecked = { 217,272, 54, 54 };
+    disabledChecked = { 217,381, 54, 54 };
 }
 
 GuiCheckBox::~GuiCheckBox()
@@ -48,17 +60,19 @@ bool GuiCheckBox::Update(float dt)
 bool GuiCheckBox::Draw()
 {
     // Draw the right button depending on state
+    app->fonts->DrawText(bounds.x - offsetText, bounds.y, titleFont, text.GetString());
+
     switch (state)
     {
     case GuiControlState::DISABLED:
     {
         if (checked)
         {
-
+            app->render->DrawTexture(texture, bounds.x, bounds.y, false, &disabled);
         }
         else
         {
-
+            app->render->DrawTexture(texture, bounds.x, bounds.y, false, &disabledChecked);
         }
         break;
     }
@@ -66,11 +80,11 @@ bool GuiCheckBox::Draw()
     {
         if (checked)
         {
-
+            app->render->DrawTexture(texture, bounds.x, bounds.y, false, &normal);
         }
         else
         {
-
+            app->render->DrawTexture(texture, bounds.x, bounds.y, false, &normalChecked);
         }
         break;
     }
@@ -78,11 +92,11 @@ bool GuiCheckBox::Draw()
     {
         if (checked)
         {
-
+            app->render->DrawTexture(texture, bounds.x, bounds.y, false, &focused);
         }
         else
         {
-
+            app->render->DrawTexture(texture, bounds.x, bounds.y, false, &focusedChecked);
         }
         break;
     }
@@ -90,23 +104,11 @@ bool GuiCheckBox::Draw()
     {
         if (checked)
         {
-
+            app->render->DrawTexture(texture, bounds.x, bounds.y, false, &pressed);
         }
         else
         {
-
-        }
-        break;
-    }
-    case GuiControlState::SELECTED:
-    {
-        if (checked)
-        {
-
-        }
-        else
-        {
-
+            app->render->DrawTexture(texture, bounds.x, bounds.y, false, &pressedChecked);
         }
         break;
     }

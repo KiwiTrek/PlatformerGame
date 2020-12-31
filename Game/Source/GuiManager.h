@@ -28,7 +28,7 @@ public:
 	bool CleanUp();
 
 	// Additional methods
-	GuiControl* CreateGuiControl(GuiControlType type, uint32 id, SDL_Rect bounds, const char* text, Module* observer);
+	GuiControl* CreateGuiControl(GuiControlType type, uint32 id, SDL_Rect bounds, const char* text, Module* observer, int widthInUnits = 0);
 	void DestroyGuiControl(GuiControl* entity);
 
 	//void AddGuiControl(GuiControl* entity);
@@ -38,6 +38,7 @@ public:
 	SDL_Texture* atlas;
 	int defaultFont = -1;
 	int titleFont = -1;
+	int titleFontMedium = -1;
 	int titleFontSmall = -1;
 	int hoverFont = -1;
 	int pressedFont = -1;

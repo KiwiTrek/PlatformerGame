@@ -114,7 +114,7 @@ bool EnemyGround::Update(float dt)
 	if (pastDest != destination)
 	{
 		pastDest = destination;
-		if (diffTiles.x < 12 && diffTiles.y < 12)
+		if (diffTiles.x < 10 && diffTiles.y < 10)
 		{
 			if (origin.x != destination.x || origin.y != destination.y)
 			{
@@ -132,7 +132,7 @@ bool EnemyGround::Update(float dt)
 		}
 	}
 
-	if (pathCount < 12 && pathCount > 1 && !hurtChange)
+	if (path.Count() != 0 && pathCount < 12 && pathCount > 1 && !hurtChange)
 	{
 		if (i >= (pathCount - 2))
 		{

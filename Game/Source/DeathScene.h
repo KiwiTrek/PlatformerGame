@@ -3,6 +3,8 @@
 
 #include "Module.h"
 
+#include "GuiButton.h"
+
 struct SDL_Texture;
 
 class DeathScene : public Module
@@ -35,10 +37,22 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	bool OnGuiMouseClickEvent(GuiControl* control);
+
 private:
 	SDL_Texture* deathScreen;
 	SString folderTexture;
 	SString folderAudioMusic;
+
+	int state;
+	float alpha;
+	float timer;
+
+	GuiButton* btnTitle;
+	float dtTmp;
+
+	GuiButton* btnExit;
+	bool exitRequest;
 };
 
 #endif // __DEATH_SCENE_H__

@@ -4,6 +4,8 @@
 #include "Module.h"
 
 #include "GuiButton.h"
+#include "GuiCheckBox.h"
+#include "GuiSlider.h"
 
 struct SDL_Texture;
 
@@ -47,6 +49,7 @@ private:
 
 	GuiButton* btnPlay;
 	GuiButton* btnContinue;
+	float dtTmp;
 
 	GuiButton* btnSettings;
 
@@ -71,7 +74,9 @@ private:
 
 	GuiButton* btnExit;
 	bool exitRequest;
-	float dtTmp;
+
+	//GuiCheckBox* chckTest;
+	//GuiSlider* sldrTest;
 };
 
 #endif // __TITLE_SCENE_H__

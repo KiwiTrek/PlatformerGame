@@ -4,13 +4,12 @@
 #include "Audio.h"
 #include "Render.h"
 #include "Window.h"
-#include "LogoScene.h"
 #include "Transition.h"
 #include "Defs.h"
 
-#include "Log.h"
+#include "LogoScene.h"
 
-#define LOGO_FADE_SPEED 1.0f
+#include "Log.h"
 
 
 LogoScene::LogoScene() : Module()
@@ -67,7 +66,7 @@ bool LogoScene::Update(float dt)
 	}
 	else if (state == 1)
 	{
-		logoAlpha += (LOGO_FADE_SPEED * dt);
+		logoAlpha += (1.0f * dt);
 
 		if (logoAlpha > 1.0f)
 		{
@@ -79,16 +78,16 @@ bool LogoScene::Update(float dt)
 	{
 		// Waiting for 3 seconds
 		timer += dt;
-		if (timer >= 1.0f && onceTimer)
+		if (timer >= 0.5f && onceTimer)
 		{
 			onceTimer = false;
 			app->audio->PlayFx(logoFx);
 		}
-		if (timer >= 3.0f) state = 3;
+		if (timer >= 2.0f) state = 3;
 	}
 	else if (state == 3)
 	{
-		logoAlpha -= (LOGO_FADE_SPEED * dt);
+		logoAlpha -= (1.0f * dt);
 
 		if (logoAlpha < 0.0f)
 		{
