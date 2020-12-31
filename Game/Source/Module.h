@@ -8,6 +8,8 @@
 class App;
 class Collider;
 
+class GuiControl;
+
 class Module
 {
 public:
@@ -91,6 +93,12 @@ public:
 
 	// Collision response
 	virtual void OnCollision(Collider* c1, Collider* c2){}
+
+	// Define multiple Gui Event methods
+	virtual bool OnGuiMouseClickEvent(GuiControl* control)
+	{
+		return true;
+	}
 
 public:
 	SString name;

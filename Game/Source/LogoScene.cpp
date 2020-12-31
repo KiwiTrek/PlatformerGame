@@ -10,6 +10,9 @@
 
 #include "Log.h"
 
+#define LOGO_FADE_SPEED 1.0f
+
+
 LogoScene::LogoScene() : Module()
 {
 	name.Create("logoScene");
@@ -27,7 +30,7 @@ bool LogoScene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
 	bool ret = true;
-	timer = config.child("timer").attribute("value").as_int(0);
+	timer = config.child("timer").attribute("value").as_float(0.0f);
 
 	folderTexture.Create(config.child("folderTexture").child_value());
 	folderAudioFx.Create(config.child("folderAudioFx").child_value());
@@ -37,12 +40,17 @@ bool LogoScene::Awake(pugi::xml_node& config)
 
 bool LogoScene::Start()
 {
-	SString tmp("%s%s", folderTexture.GetString(), "logo_screen.jpg");
+	SString tmp("%s%s", folderTexture.GetString(), "logo_screen.png");
 	logo = app->tex->Load(tmp.GetString());
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioFx.GetString(), "logo.wav");
 	logoFx = app->audio->LoadFx(tmp.GetString());
 	app->audio->SetFxVolume(logoFx);
+
+	window = { 0,0,0,0 };
+	state = 0;
+	logoAlpha = 0.0f;
+
 	return true;
 }
 
@@ -53,25 +61,46 @@ bool LogoScene::PreUpdate()
 
 bool LogoScene::Update(float dt)
 {
-	if (once)
+	if (state == 0)
 	{
-		once = false;
-		app->transition->FadeEffect(nullptr, this, true, floor(80.0f * dt));
+		state = 1;
 	}
-
-	if (timer < (15000 * dt))
+	else if (state == 1)
 	{
-		timer++;
-		if (timer >= (7500 * dt) && onceTimer)
+		logoAlpha += (LOGO_FADE_SPEED * dt);
+
+		if (logoAlpha > 1.0f)
 		{
-			app->audio->PlayFx(logoFx);
-			onceTimer = false;
+			logoAlpha = 1.0f;
+			state = 2;
 		}
 	}
-	else
+	else if (state == 2)
+	{
+		// Waiting for 3 seconds
+		timer += dt;
+		if (timer >= 1.0f && onceTimer)
+		{
+			onceTimer = false;
+			app->audio->PlayFx(logoFx);
+		}
+		if (timer >= 3.0f) state = 3;
+	}
+	else if (state == 3)
+	{
+		logoAlpha -= (LOGO_FADE_SPEED * dt);
+
+		if (logoAlpha < 0.0f)
+		{
+			logoAlpha = 0.0f;
+			state = 4;
+		}
+	}
+	else if (state == 4)
 	{
 		app->transition->FadeEffect(this, (Module*)app->titleScene, false, floor(1200.0f * dt));
 	}
+
 	return true;
 }
 
@@ -83,8 +112,15 @@ bool LogoScene::PostUpdate()
 	{
 		ret = false;
 	}
+	
+	uint w, h;
+	app->win->GetWindowSize(w, h);
+	window.w = (int)w;
+	window.h = (int)h;
 
+	app->render->DrawRectangle(window, 255, 255, 255, 255);
 	app->render->DrawTexture(logo, NULL, NULL, true);
+	app->render->DrawRectangle(window, 255, 255, 255, (uchar)(255 - (255 * logoAlpha)));
 
 	return ret;
 }

@@ -3,6 +3,8 @@
 
 #include "Module.h"
 
+#include "GuiButton.h"
+
 struct SDL_Texture;
 
 class TitleScene : public Module
@@ -35,10 +37,41 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	// Declare on mouse click event
+	bool OnGuiMouseClickEvent(GuiControl* control);
+
 private:
 	SDL_Texture* titleScreen;
 	SString folderTexture;
 	SString folderAudioMusic;
+
+	GuiButton* btnPlay;
+	GuiButton* btnContinue;
+
+	GuiButton* btnSettings;
+
+	GuiButton* btnCredits;
+	bool credits;
+	int titleFont;
+	int titleFontSmall;
+	int offsetText;
+	SString title;
+	SString underLine;
+	SString authors;
+	SString kiwi;
+	SString lladruc;
+	SString licence;
+	SString licenceText1;
+	SString licenceText2;
+	SString licenceText3;
+	SString licenceText4;
+	SString licenceText5;
+	SString licenceText6;
+	GuiButton* btnBack;
+
+	GuiButton* btnExit;
+	bool exitRequest;
+	float dtTmp;
 };
 
 #endif // __TITLE_SCENE_H__

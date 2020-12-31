@@ -37,12 +37,15 @@ public:
 
 private:
 	SDL_Texture* logo;
-	int timer = 0;
 	uint logoFx;
 	SString folderTexture;
 	SString folderAudioFx;
-	bool once = true;
 	bool onceTimer = true;
+	SDL_Rect window;
+
+	float timer = 0.0f;
+	int state = 0;
+	float logoAlpha = 0.0f;
 };
 
 #endif // __LOGO_SCENE_H__

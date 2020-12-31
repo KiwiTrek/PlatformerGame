@@ -21,7 +21,7 @@ bool Textures::Awake(pugi::xml_node& config)
 	bool ret = true;
 
 	// Load support for the PNG and JPG image format
-	int flags = IMG_INIT_PNG | IMG_INIT_JPG;
+	int flags = IMG_INIT_PNG;
 	int init = IMG_Init(flags);
 
 	if ((init & flags) != flags)

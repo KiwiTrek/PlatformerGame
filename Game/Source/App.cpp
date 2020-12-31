@@ -6,6 +6,7 @@
 #include "Fonts.h"
 #include "Audio.h"
 #include "EntityManager.h"
+#include "GuiManager.h"
 #include "Map.h"
 #include "Transition.h"
 #include "Collisions.h"
@@ -36,6 +37,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	fonts = new Fonts();
 	audio = new Audio();
 	entities = new EntityManager();
+	gui = new GuiManager();
 	map = new Map();
 	transition = new Transition();
 	collisions = new Collisions();
@@ -61,6 +63,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(fonts);
 	AddModule(entities);
 	AddModule(collisions);
+	AddModule(gui);
 	AddModule(transition);
 
 	// render last to swap buffer

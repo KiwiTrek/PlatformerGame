@@ -89,7 +89,7 @@ bool Scene::Start()
 
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "score_font.png");
-	font = app->fonts->Load(tmp.GetString(), "0123456789", 1);
+	font = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
 
 	return true;
 }

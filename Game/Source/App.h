@@ -19,6 +19,7 @@ class Textures;
 class Fonts;
 class Audio;
 class EntityManager;
+class GuiManager;
 class Map;
 class Transition;
 class Collisions;
@@ -97,6 +98,7 @@ public:
 	Fonts* fonts;
 	Audio* audio;
 	EntityManager* entities;
+	GuiManager* gui;
 	Map* map;
 	Transition* transition;
 	Collisions* collisions;

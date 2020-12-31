@@ -34,7 +34,7 @@
     </deathScene>
 
     <logoScene>
-        <timer value ="0"/>
+        <timer value ="0.0"/>
         <folderTexture>Assets/Textures/</folderTexture>
         <folderAudioFx>Assets/Audio/Fx/</folderAudioFx>
     </logoScene>
@@ -48,12 +48,31 @@
     <titleScene>
         <folderTexture>Assets/Textures/</folderTexture>
         <folderAudioMusic>Assets/Audio/Music/</folderAudioMusic>
+        <credits>
+            <title>- CREDITS -</title>
+            <underLine>_________</underLine>
+            <authors>Authors</authors>
+            <kiwi>> Guillem Alava (@WillyTrek): Level Designer - Programer</kiwi>
+            <lladruc>> Sergi Colomer (@Lladruc37): Physics Engineer - Programer</lladruc>
+            <licences>Licences</licences>
+            <line1>This project is licensed under an unmodified MIT license,</line1>
+            <line2>which is an OSI-certified license that allows static linking</line2>
+            <line3>with closed source software.</line3>
+            <line4>Check LICENSE for further details.</line4>
+            <line5>Additional liscences included alongside</line5>
+            <line6>their respective intellectual properties.</line6>
+        </credits>
+        
     </titleScene>
 
     <entityManager>
         <folderTexture>Assets/Textures/</folderTexture>
         <folderAudioFx>Assets/Audio/Fx/</folderAudioFx>
     </entityManager>
+
+    <guiManager>
+        <folderTexture>Assets/Textures/Gui/</folderTexture>
+    </guiManager>
 
     <pathfinding>
         <folderTexture>Assets/Maps/</folderTexture>

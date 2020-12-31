@@ -88,6 +88,7 @@ bool EnemyFlying::Update(float dt)
 
 	iPoint origin = { nextPos.x / app->generalTileSize,nextPos.y / app->generalTileSize };
 	iPoint destination = { player->entityRect.x / app->generalTileSize,player->entityRect.y / app->generalTileSize };
+	iPoint diffTiles = { abs(destination.x - origin.x), abs(destination.y - origin.y) };
 	if (destination.y < 0)
 	{
 		destination.y = 0;
@@ -95,14 +96,21 @@ bool EnemyFlying::Update(float dt)
 	if (pastDest != destination)
 	{
 		pastDest = destination;
-		if (origin.x != destination.x || origin.y != destination.y)
+		if (diffTiles.x < 12 && diffTiles.y < 12)
+		{
+			if (origin.x != destination.x || origin.y != destination.y)
+			{
+				path.Clear();
+				pathCount = app->pathfinding->CreatePath(path, origin, destination);
+				if (pathCount != -1)
+				{
+					i = 0;
+				}
+			}
+		}
+		else if (path.Count() != 0)
 		{
 			path.Clear();
-			pathCount = app->pathfinding->CreatePath(path, origin, destination);
-			if (pathCount != -1)
-			{
-				i = 0;
-			}
 		}
 	}
 	
