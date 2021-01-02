@@ -19,6 +19,7 @@ public:
 		SPIKE,
 		PLAYER,
 		FRUIT,
+		COIN,
 		CHECKPOINT,
 		GOAL,
 		ENEMY,

@@ -11,9 +11,9 @@
 #include "PathFinding.h"
 
 #include "Player.h"
-//#include "Enemy.h"
 #include "EnemyFlying.h"
 #include "EnemyGround.h"
+#include "Coin.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -38,6 +38,7 @@ bool EntityManager::Awake(pugi::xml_node& config)
 
 	folderAudioFx.Create(config.child("folderAudioFx").child_value());
 	folderTexture.Create(config.child("folderTexture").child_value());
+	folderMap.Create(config.child("folderMap").child_value());
 
 	return ret;
 }
@@ -80,6 +81,10 @@ bool EntityManager::Start()
 	tmp.Create("%s%s", folderAudioFx.GetString(), "enemy_death.wav");
 	enemyDestroyedFx = app->audio->LoadFx(tmp.GetString());
 
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudioFx.GetString(), "coin.wav");
+	coinFx = app->audio->LoadFx(tmp.GetString());
+
 	app->audio->SetFxVolume(deadFx);
 	app->audio->SetFxVolume(jumpFx);
 	app->audio->SetFxVolume(doubleJumpFx);
@@ -87,6 +92,8 @@ bool EntityManager::Start()
 	app->audio->SetFxVolume(hitFx);
 	app->audio->SetFxVolume(slashFx);
 	app->audio->SetFxVolume(checkpointFx);
+	app->audio->SetFxVolume(enemyDestroyedFx);
+	app->audio->SetFxVolume(coinFx);
 
 	// Tex
 	tmp.Clear();
@@ -105,6 +112,10 @@ bool EntityManager::Start()
 	tmp.Create("%s%s", folderTexture.GetString(), "enemy_flying_spritesheet.png");
 	flying = app->tex->Load(tmp.GetString());
 
+	tmp.Clear();
+	tmp.Create("%s%s", folderMap.GetString(), "level_1_tileset.png");
+	coin = app->tex->Load(tmp.GetString());
+
 	return true;
 }
 
@@ -122,6 +133,7 @@ bool EntityManager::CleanUp()
 	app->tex->UnLoad(playerTex);
 	app->tex->UnLoad(ground);
 	app->tex->UnLoad(flying);
+	app->tex->UnLoad(coin);
 
 	app->audio->UnloadFx(deadFx);
 	app->audio->UnloadFx(doubleJumpFx);
@@ -131,6 +143,7 @@ bool EntityManager::CleanUp()
 	app->audio->UnloadFx(slashFx);
 	app->audio->UnloadFx(checkpointFx);
 	app->audio->UnloadFx(enemyDestroyedFx);
+	app->audio->UnloadFx(coinFx);
 
 	return true;
 }
@@ -167,6 +180,10 @@ Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playe
 		}
 		}
 		break;
+	}
+	case EntityType::COIN:
+	{
+		ret = new Coin(x, y);
 	}
 	default:
 	{

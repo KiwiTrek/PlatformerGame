@@ -79,6 +79,7 @@ bool Scene::Start()
 	player = app->entities->CreateEntity(0, 0, EntityType::PLAYER);
 	app->entities->CreateEntity(app->map->data.tileWidth * 103, app->map->data.tileHeight * 3, EntityType::ENEMY, player, EnemyType::FLYING);
 	app->entities->CreateEntity(app->map->data.tileWidth * 36, app->map->data.tileHeight * 8, EntityType::ENEMY, player, EnemyType::GROUND);
+	app->entities->CreateEntity(app->map->data.tileWidth * 30, app->map->data.tileHeight * 7, EntityType::COIN);
 
 	app->render->camera.x = -(player->spawnPos.x - app->render->camera.w / 2);
 	app->render->camera.y = -(player->spawnPos.y - app->render->camera.h / 2 - 64);

@@ -54,6 +54,7 @@ public:
 
 	SString folderTexture;
 	SString folderAudioFx;
+	SString folderMap;
 
 	// The audio fx for destroying an enemy
 	int enemyDestroyedFx = 0;
@@ -64,11 +65,13 @@ public:
 	uint hitFx;
 	uint slashFx;
 	uint checkpointFx;
+	uint coinFx;
 
 	SDL_Texture* playerTex;
 	SDL_Texture* playerHeart;
 	SDL_Texture* ground;
 	SDL_Texture* flying;
+	SDL_Texture* coin;
 };
 
 #endif // __MODULE_ENTITY_MANAGER_H__

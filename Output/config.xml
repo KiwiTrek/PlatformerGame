@@ -68,6 +68,7 @@
     <entityManager>
         <folderTexture>Assets/Textures/</folderTexture>
         <folderAudioFx>Assets/Audio/Fx/</folderAudioFx>
+        <folderMap>Assets/Maps/</folderMap>
     </entityManager>
 
     <guiManager>
