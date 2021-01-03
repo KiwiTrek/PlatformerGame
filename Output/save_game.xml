@@ -14,14 +14,14 @@
 		<score value="0" />
 		<coin value="0" />
 		<fruit value="0" />
-		<timer value="493.640381" />
+		<timer value="495.63147" />
 	</scene>
 	<map />
 	<fonts />
 	<guiManager />
 	<entityManager>
 		<entity>
-			<coordinates x="1432" y="512" />
+			<coordinates x="1079" y="640" />
 			<lives value="3" />
 			<type value="0" />
 			<eType value="0" />

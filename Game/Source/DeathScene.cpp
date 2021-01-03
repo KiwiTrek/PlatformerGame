@@ -52,6 +52,8 @@ bool DeathScene::Start()
 	timer = 0.0f;
 	alpha = 0.0f;
 
+	app->gui->Enable();
+
 	btnTitle = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 1, { -app->render->camera.x + 193, -app->render->camera.y + 498, 217, 109 }, "BACK to", this, 0, true, "TITLE");
 	btnExit = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 2, { -app->render->camera.x + 867, -app->render->camera.y + 498, 217, 109 }, "EXIT", this);
 
@@ -126,6 +128,8 @@ bool DeathScene::CleanUp()
 	btnTitle = nullptr;
 	app->gui->DestroyGuiControl(btnExit);
 	btnExit = nullptr;
+
+	app->gui->Disable();
 
 	return true;
 }

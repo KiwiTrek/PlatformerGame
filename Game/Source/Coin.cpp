@@ -31,7 +31,7 @@ Coin::Coin(int x, int y) : Entity(x, y, EntityType::COIN)
 
 	for (int i = 0; i != 6; ++i)
 	{
-		rotating.PushBack({ (i * 64) + 402,18, 30, 28 });
+		rotating.PushBack({ (i * 64) + 384,0, 64, 64 });
 	}
 	rotating.speed = 15.0f;
 	rotating.loop = true;
@@ -64,4 +64,5 @@ void Coin::OnCollision(Collider* c1, Collider* c2)
 	app->scene->scoreValue += 50;
 	app->audio->PlayFx(coinFx);
 	pendingToDelete = true;
+	this->collider->pendingToDelete = true;
 }

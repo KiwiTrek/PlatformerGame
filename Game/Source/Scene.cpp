@@ -123,16 +123,6 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
-	ListItem<Entity*>* e = app->entities->entities.start;
-	while (e != nullptr)
-	{
-		if (e->data->type == EntityType::PLAYER)
-		{
-			player = e->data;
-		}
-		e = e->next;
-	}
-
 	if (app->entities->doLogic)
 	{
 		timerValue -= dt;
@@ -270,6 +260,16 @@ bool Scene::Load(pugi::xml_node& save)
 	coinCounter = save.child("coin").attribute("value").as_int();
 	fruitCounter = save.child("fruit").attribute("value").as_int();
 	timerValue = save.child("timer").attribute("value").as_float(500.0f);
+
+	ListItem<Entity*>* e = app->entities->entities.start;
+	while (e != nullptr)
+	{
+		if (e->data->type == EntityType::PLAYER)
+		{
+			player = e->data;
+		}
+		e = e->next;
+	}
 
 	return ret;
 }
