@@ -15,7 +15,7 @@ public:
     virtual ~GuiButton();
 
     bool Update(float dt);
-    bool Draw();
+    bool Draw(int cPosX = 0, int cPosY = 0);
 
 private:
     SString secondText;

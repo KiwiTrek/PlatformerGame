@@ -252,17 +252,17 @@ bool EntityManager::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 	{
 		doLogic = false;
-		btnResume->bounds.x = cameraPos.x + (cameraSize.x / 2) - (btnResume->bounds.w / 2);
-		btnResume->bounds.y = cameraPos.y + 175;
+		btnResume->bounds.x = (cameraSize.x / 2) - (btnResume->bounds.w / 2);
+		btnResume->bounds.y = 175;
 
-		btnSettings->bounds.x = cameraPos.x + (cameraSize.x / 2) - (btnSettings->bounds.w / 2);
-		btnSettings->bounds.y = cameraPos.y + 300;
+		btnSettings->bounds.x = (cameraSize.x / 2) - (btnSettings->bounds.w / 2);
+		btnSettings->bounds.y = 300;
 
-		btnTitle->bounds.x = cameraPos.x + (cameraSize.x / 2) - (btnTitle->bounds.w / 2);
-		btnTitle->bounds.y = cameraPos.y + 425;
+		btnTitle->bounds.x = (cameraSize.x / 2) - (btnTitle->bounds.w / 2);
+		btnTitle->bounds.y = 425;
 
-		btnExit->bounds.x = cameraPos.x + (cameraSize.x / 2) - (btnExit->bounds.w / 2);
-		btnExit->bounds.y = cameraPos.y + 550;
+		btnExit->bounds.x = (cameraSize.x / 2) - (btnExit->bounds.w / 2);
+		btnExit->bounds.y = 550;
 	}
 
 	UpdateAll(dt, doLogic);
@@ -326,10 +326,10 @@ bool EntityManager::PostUpdate()
 	{
 		app->render->DrawRectangle({ cameraPos.x,cameraPos.y,cameraSize.x,cameraSize.y }, 0, 0, 0, 191);
 		app->fonts->DrawText(cameraPos.x + (cameraSize.x - offsetTitle) / 2,cameraPos.y + 100, pauseFont, pauseTitle.GetString());
-		btnResume->Draw();
-		btnSettings->Draw();
-		btnTitle->Draw();
-		btnExit->Draw();
+		btnResume->Draw(cameraPos.x,cameraPos.y);
+		btnSettings->Draw(cameraPos.x, cameraPos.y);
+		btnTitle->Draw(cameraPos.x, cameraPos.y);
+		btnExit->Draw(cameraPos.x, cameraPos.y);
 	}
 
 	return true;
