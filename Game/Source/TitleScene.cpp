@@ -1,6 +1,5 @@
 #include "TitleScene.h"
 
-
 #include "App.h"
 #include "Input.h"
 #include "Textures.h"
@@ -79,8 +78,22 @@ bool TitleScene::Start()
 
 	btnContinue->state = GuiControlState::DISABLED;
 
-	//chckTest = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 69, { (1280 / 2),10,54,54 }, "Test", this);
-	//sldrTest = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 420, { (1280 / 2), 25, 54, 54 }, "Another Test", this, 7);
+	float tmpValue = 0;
+	settings = false;
+	settingsTitle.Create("- SETTINGS -");
+	sldrMusic = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 91, { (1280 / 4) + 132, 150, 54, 54 }, "Music Volume", this, 10);
+	sldrMusic->value = app->audio->GetMusicVolume();
+	sldrMusic->maxValue = 128;
+	tmpValue = (float)(sldrMusic->limits.w - sldrMusic->bounds.w) / (float)sldrMusic->maxValue;
+	sldrMusic->bounds.x = sldrMusic->limits.x + (sldrMusic->value * tmpValue);
+	sldrFx = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 92, { (1280 / 4) + 132, 260, 54, 54 }, "SFX Volume", this, 10);
+	sldrFx->value = app->audio->GetFxVolume();
+	sldrFx->maxValue = 128;
+	tmpValue = (float)(sldrFx->limits.w - sldrFx->bounds.w) / (float)sldrFx->maxValue;
+	sldrFx->bounds.x = sldrFx->limits.x + (tmpValue * sldrFx->value);
+	LOG("%d", (sldrFx->bounds.x - sldrFx->limits.x));
+	chckFullscreen = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 93, { (1280 / 4) + 132,380,54,54 }, "Fullscreen", this);
+	chckVSync = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 94, { (1280 / 4) + 132,440,54,54 }, "VSync", this);
 
 	return true;
 }
@@ -94,7 +107,7 @@ bool TitleScene::Update(float dt)
 {
 	dtTmp = dt;
 
-	if (!credits)
+	if (!credits && !settings)
 	{
 		btnPlay->Update(dt);
 		btnContinue->Update(dt);
@@ -106,9 +119,14 @@ bool TitleScene::Update(float dt)
 	{
 		btnBack->Update(dt);
 	}
-
-	//chckTest->Update(dt);
-	//sldrTest->Update(dt);
+	
+	if (settings)
+	{
+		sldrMusic->Update(dt);
+		sldrFx->Update(dt);
+		chckFullscreen->Update(dt);
+		chckVSync->Update(dt);
+	}
 
 	return true;
 }
@@ -124,7 +142,7 @@ bool TitleScene::PostUpdate()
 
 	app->render->DrawTexture(titleScreen, NULL, NULL, true);
 
-	if (!credits)
+	if (!credits && !settings)
 	{
 		btnPlay->Draw();
 		btnContinue->Draw();
@@ -132,7 +150,8 @@ bool TitleScene::PostUpdate()
 		btnCredits->Draw();
 		btnExit->Draw();
 	}
-	else
+
+	if (credits)
 	{
 		uint w, h;
 		app->win->GetWindowSize(w, h);
@@ -157,8 +176,22 @@ bool TitleScene::PostUpdate()
 		btnBack->Draw();
 	}
 
-	//chckTest->Draw();
-	//sldrTest->Draw();
+	if (settings)
+	{
+		uint w, h;
+		app->win->GetWindowSize(w, h);
+		int width = (int)w;
+		int height = (int)h;
+
+		app->render->DrawRectangle({ 0,0,width,height }, 0, 0, 0, 191);
+		offsetText = settingsTitle.Length() * TITLE_FONT_SIZE;
+		app->fonts->DrawText((w - offsetText) / 2, 84, titleFont, settingsTitle.GetString());
+		sldrMusic->Draw();
+		sldrFx->Draw();
+		chckFullscreen->Draw();
+		chckVSync->Draw();
+		btnBack->Draw();
+	}
 
 	return ret;
 }
@@ -198,6 +231,11 @@ bool TitleScene::OnGuiMouseClickEvent(GuiControl* control)
 			app->transition->FadeEffect(this, (Module*)app->scene, false, floor(1200.0f * dtTmp));
 			break;
 		}
+		case 3: //Settings
+		{
+			settings = true;
+			break;
+		}
 		case 4: //Credits
 		{
 			credits = true;
@@ -211,6 +249,17 @@ bool TitleScene::OnGuiMouseClickEvent(GuiControl* control)
 		case 6: //Back
 		{
 			credits = false;
+			settings = false;
+			break;
+		}
+		case 91: //MUSIC
+		{
+			app->audio->SetMusicVolume(sldrMusic->value);
+			break;
+		}
+		case 92: //FX
+		{
+			app->audio->SetFxVolumeValue(sldrFx->value);
 			break;
 		}
 		default:

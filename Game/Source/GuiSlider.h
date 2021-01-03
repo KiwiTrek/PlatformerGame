@@ -16,6 +16,13 @@ public:
     bool Update(float dt);
     bool Draw();
 
+public:
+    SDL_Rect limits;
+
+    int value;
+    int maxValue;
+    float conversion;
+
 private:
 
     SDL_Rect normal;
@@ -23,7 +30,6 @@ private:
     SDL_Rect pressed;
     SDL_Rect disabled;
 
-    SDL_Rect limits;
     int widthInUnits;
 
     SDL_Rect normalLimitsBegin;
@@ -33,11 +39,6 @@ private:
     SDL_Rect disabledLimitsBegin;
     SDL_Rect disabledLimitsMiddle;
     SDL_Rect disabledLimitsEnd;
-
-    int value;
-
-    int minValue;
-    int maxValue;
 };
 
 #endif // __GUISLIDER_H__

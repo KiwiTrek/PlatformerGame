@@ -61,9 +61,9 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(scene);
 	AddModule(map);
 	AddModule(fonts);
+	AddModule(gui);
 	AddModule(entities);
 	AddModule(collisions);
-	AddModule(gui);
 	AddModule(transition);
 
 	// render last to swap buffer

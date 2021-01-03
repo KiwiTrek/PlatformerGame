@@ -33,7 +33,7 @@ Coin::Coin(int x, int y) : Entity(x, y, EntityType::COIN)
 	{
 		rotating.PushBack({ (i * 64) + 402,18, 30, 28 });
 	}
-	rotating.speed = 20.0f;
+	rotating.speed = 15.0f;
 	rotating.loop = true;
 
 	currentAnim = &rotating;
@@ -60,4 +60,8 @@ bool Coin::Draw()
 
 void Coin::OnCollision(Collider* c1, Collider* c2)
 {
+	app->scene->coinCounter++;
+	app->scene->scoreValue += 50;
+	app->audio->PlayFx(coinFx);
+	pendingToDelete = true;
 }

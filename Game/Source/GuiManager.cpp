@@ -38,14 +38,26 @@ bool GuiManager::Start()
 	tmp.Create("%s%s", folderTexture.GetString(), "default_label.png");
 	defaultFont = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
 	tmp.Clear();
+	tmp.Create("%s%s", folderTexture.GetString(), "default_label_small.png");
+	defaultFontSmall = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "disabled_label.png");
 	disabledFont = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+	tmp.Clear();
+	tmp.Create("%s%s", folderTexture.GetString(), "disabled_label_small.png");
+	disabledFontSmall = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "hover_label.png");
 	hoverFont = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
 	tmp.Clear();
+	tmp.Create("%s%s", folderTexture.GetString(), "hover_label_small.png");
+	hoverFontSmall = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "pressed_label.png");
 	pressedFont = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+	tmp.Clear();
+	tmp.Create("%s%s", folderTexture.GetString(), "pressed_label_small.png");
+	pressedFontSmall = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "title_label.png");
 	titleFont = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
@@ -59,7 +71,7 @@ bool GuiManager::Start()
 	return true;
 }
 
-GuiControl* GuiManager::CreateGuiControl(GuiControlType type, uint32 id, SDL_Rect bounds, const char* text, Module* observer, int widthInUnits)
+GuiControl* GuiManager::CreateGuiControl(GuiControlType type, uint32 id, SDL_Rect bounds, const char* text, Module* observer, int widthInUnits, bool secondText, const char* text2)
 {
 	GuiControl* control = nullptr;
 
@@ -67,7 +79,14 @@ GuiControl* GuiManager::CreateGuiControl(GuiControlType type, uint32 id, SDL_Rec
 	{
 	case GuiControlType::BUTTON:
 	{
-		control = new GuiButton(id, bounds, text);
+		if (secondText)
+		{
+			control = new GuiButton(id, bounds, text, text2);
+		}
+		else
+		{
+			control = new GuiButton(id, bounds, text);
+		}
 		break;
 	}
 	case GuiControlType::CHECKBOX:
@@ -85,7 +104,14 @@ GuiControl* GuiManager::CreateGuiControl(GuiControlType type, uint32 id, SDL_Rec
 
 	control->SetObserver(observer);
 	control->SetTexture(atlas);
-	control->SetFonts(defaultFont, titleFontMedium, hoverFont, pressedFont, disabledFont);
+	if (secondText)
+	{
+		control->SetFonts(defaultFontSmall, titleFontMedium, hoverFontSmall, pressedFontSmall, disabledFontSmall);
+	}
+	else
+	{
+		control->SetFonts(defaultFont, titleFontMedium, hoverFont, pressedFont, disabledFont);
+	}
 
 	// Created entities are added to the list
 	if (control != nullptr) controls.Add(control);
@@ -108,6 +134,12 @@ bool GuiManager::CleanUp()
 	app->fonts->Unload(hoverFont);
 	app->fonts->Unload(pressedFont);
 	app->fonts->Unload(titleFont);
+	app->fonts->Unload(defaultFontSmall);
+	app->fonts->Unload(disabledFontSmall);
+	app->fonts->Unload(hoverFontSmall);
+	app->fonts->Unload(pressedFontSmall);
+	app->fonts->Unload(titleFontMedium);
+	app->fonts->Unload(titleFontSmall);
 
 	return true;
 }

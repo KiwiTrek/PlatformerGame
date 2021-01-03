@@ -9,14 +9,21 @@
 #include "Audio.h"
 #include "Input.h"
 #include "PathFinding.h"
+#include "Transition.h"
+#include "Fonts.h"
+#include "GuiManager.h"
 
 #include "Player.h"
 #include "EnemyFlying.h"
 #include "EnemyGround.h"
 #include "Coin.h"
 
+#include "Scene.h"
+
 #include "Defs.h"
 #include "Log.h"
+
+#define TITLE_FONT_SIZE 36
 
 EntityManager::EntityManager() : Module()
 {
@@ -116,6 +123,32 @@ bool EntityManager::Start()
 	tmp.Create("%s%s", folderMap.GetString(), "level_1_tileset.png");
 	coin = app->tex->Load(tmp.GetString());
 
+	// Pause Menu
+	cameraPos = { -app->render->camera.x, -app->render->camera.y };
+	cameraSize = { app->render->camera.w, app->render->camera.h };
+
+	pauseFont = app->gui->titleFont;
+	pauseTitle.Create("- PAUSE SCREEN -");
+	offsetTitle = pauseTitle.Length() * TITLE_FONT_SIZE;
+	btnResume = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 1, { cameraPos.x + (cameraSize.x / 2), 150, 217, 109 }, "RESUME", this);
+	btnSettings = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 2, { cameraPos.x + (cameraSize.x / 2), 260, 217, 109 }, "SETTINGS", this);
+	btnTitle = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 3, { cameraPos.x + (cameraSize.x / 2), 370, 217, 109 }, "BACK to", this, 0, true, "TITLE");
+	btnExit = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 4, { cameraPos.x + (cameraSize.x / 2), 480, 217, 109 }, "EXIT", this);
+	exitRequest = false;
+
+	// Settings menu
+	settings = false;
+	settingsTitle.Create("- SETTINGS MENU -");
+	offsetSettings = settingsTitle.Length() * TITLE_FONT_SIZE;
+	sldrMusic = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 91, { cameraPos.x + (cameraSize.x / 2) + 84, 150, 54, 54 }, "Music Volume", this, 10);
+	sldrFx = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 92, { cameraPos.x + (cameraSize.x / 2) + 84, 260, 54, 54 }, "Music Volume", this, 10);
+	chckFullscreen = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 93, { cameraPos.x + (cameraSize.x / 2) + 84,370,54,54 }, "Fullscreen", this);
+	chckVSync = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 94, { cameraPos.x + (cameraSize.x / 2) + 184,370,54,54 }, "VSync", this);
+
+	btnBack = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 6, { cameraPos.x + 976, cameraPos.x + 553, 217, 109 }, "BACK", this);
+
+	doLogic = true;
+
 	return true;
 }
 
@@ -144,6 +177,15 @@ bool EntityManager::CleanUp()
 	app->audio->UnloadFx(checkpointFx);
 	app->audio->UnloadFx(enemyDestroyedFx);
 	app->audio->UnloadFx(coinFx);
+
+	app->gui->DestroyGuiControl(btnResume);
+	btnResume = nullptr;
+	app->gui->DestroyGuiControl(btnSettings);
+	btnSettings = nullptr;
+	app->gui->DestroyGuiControl(btnTitle);
+	btnTitle = nullptr;
+	app->gui->DestroyGuiControl(btnExit);
+	btnExit = nullptr;
 
 	return true;
 }
@@ -199,20 +241,39 @@ Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playe
 
 bool EntityManager::Update(float dt)
 {
+	cameraPos = { -app->render->camera.x, -app->render->camera.y };
+
+	dtTmp = dt;
 	if (app->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
 	{
 		app->CapRequest();
 	}
 
-	accumulatedTime += dt;
-	if (accumulatedTime >= updateMsCycle) doLogic = true;
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	{
+		doLogic = false;
+		btnResume->bounds.x = cameraPos.x + (cameraSize.x / 2) - (btnResume->bounds.w / 2);
+		btnResume->bounds.y = cameraPos.y + 175;
+
+		btnSettings->bounds.x = cameraPos.x + (cameraSize.x / 2) - (btnSettings->bounds.w / 2);
+		btnSettings->bounds.y = cameraPos.y + 300;
+
+		btnTitle->bounds.x = cameraPos.x + (cameraSize.x / 2) - (btnTitle->bounds.w / 2);
+		btnTitle->bounds.y = cameraPos.y + 425;
+
+		btnExit->bounds.x = cameraPos.x + (cameraSize.x / 2) - (btnExit->bounds.w / 2);
+		btnExit->bounds.y = cameraPos.y + 550;
+	}
 
 	UpdateAll(dt, doLogic);
 
-	if (doLogic == true)
+	if (!app->entities->doLogic)
 	{
-		accumulatedTime = 0.0f;
-		doLogic = false;
+		app->entities->doLogic = false;
+		btnResume->Update(dt);
+		btnSettings->Update(dt);
+		btnTitle->Update(dt);
+		btnExit->Update(dt);
 	}
 
 	return true;
@@ -260,6 +321,17 @@ bool EntityManager::PostUpdate()
 		}
 		e = e->next;
 	}
+
+	if (!app->entities->doLogic)
+	{
+		app->render->DrawRectangle({ cameraPos.x,cameraPos.y,cameraSize.x,cameraSize.y }, 0, 0, 0, 191);
+		app->fonts->DrawText(cameraPos.x + (cameraSize.x - offsetTitle) / 2,cameraPos.y + 100, pauseFont, pauseTitle.GetString());
+		btnResume->Draw();
+		btnSettings->Draw();
+		btnTitle->Draw();
+		btnExit->Draw();
+	}
+
 	return true;
 }
 
@@ -280,6 +352,46 @@ void EntityManager::OnCollision(Collider* c1, Collider* c2)
 			entities[i]->OnCollision(c1, c2);
 		}
 	}
+}
+
+bool EntityManager::OnGuiMouseClickEvent(GuiControl* control)
+{
+	switch (control->type)
+	{
+	case GuiControlType::BUTTON:
+	{
+		switch (control->id)
+		{
+		case 1:	//Resume
+		{
+			doLogic = false;
+			app->entities->doLogic = true;
+			break;
+		}
+		case 2: //Settings
+		{
+			break;
+		}
+		case 3:	//Title
+		{
+			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, floor(1200.0f * dtTmp));
+			break;
+		}
+		case 4: //Exit
+		{
+			exitRequest = true;
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
+	}
+	default: break;
+	}
+
+	return true;
 }
 
 //bool EnemyManagement::Load(pugi::xml_node& save)

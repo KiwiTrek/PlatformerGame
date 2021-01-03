@@ -9,7 +9,7 @@ GuiCheckBox::GuiCheckBox(uint32 id, SDL_Rect bounds, const char* text) : GuiCont
 {
     this->bounds = bounds;
     this->text = text;
-    this->offsetText = this->text.Length() * 36 + (36 * 3);
+    this->offsetText = this->text.Length() * 24 + (24 * 3);
 
     normal = { 217,0,54, 54 };
     focused = { 217,109,54, 54 };

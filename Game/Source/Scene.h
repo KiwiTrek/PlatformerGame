@@ -36,8 +36,12 @@ public:
 	bool CleanUp();
 
 	int scoreValue = 0;
+	int coinCounter = 0;
+	int fruitCounter = 0;
 private:
 	Entity* player = nullptr;
+	iPoint cameraPos;
+	iPoint cameraSize;
 	
 	SDL_Color sky;
 	SDL_Texture* clouds;
@@ -56,7 +60,13 @@ private:
 	// Score Handling
 	SString scoreTitle;
 	int offsetScore;
-	char score[8] = { "\0" };
+	char score[6] = { "\0" };
+
+	SDL_Texture* ui;
+	SDL_Rect uiFruit;
+	char scoreFruit[4] = { "\0" };
+	SDL_Rect uiCoin;
+	char scoreCoin[4] = { "\0" };
 };
 
 #endif // __SCENE_H__

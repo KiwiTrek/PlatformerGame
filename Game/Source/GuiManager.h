@@ -28,7 +28,7 @@ public:
 	bool CleanUp();
 
 	// Additional methods
-	GuiControl* CreateGuiControl(GuiControlType type, uint32 id, SDL_Rect bounds, const char* text, Module* observer, int widthInUnits = 0);
+	GuiControl* CreateGuiControl(GuiControlType type, uint32 id, SDL_Rect bounds, const char* text, Module* observer, int widthInUnits = 0, bool secondText = false, const char* text2 = nullptr);
 	void DestroyGuiControl(GuiControl* entity);
 
 	//void AddGuiControl(GuiControl* entity);
@@ -37,12 +37,16 @@ public:
 	SString folderTexture;
 	SDL_Texture* atlas;
 	int defaultFont = -1;
+	int defaultFontSmall = -1;
 	int titleFont = -1;
 	int titleFontMedium = -1;
 	int titleFontSmall = -1;
 	int hoverFont = -1;
+	int hoverFontSmall = -1;
 	int pressedFont = -1;
+	int pressedFontSmall = -1;
 	int disabledFont = -1;
+	int disabledFontSmall = -1;
 
 	List<GuiControl*> controls;
 

@@ -16,9 +16,10 @@ public:
     bool Update(float dt);
     bool Draw();
 
-private:
-
+public:
     bool checked;
+
+private:
     SDL_Rect disabled;
     SDL_Rect normal;
     SDL_Rect focused;

@@ -238,3 +238,29 @@ void Audio::MuteVolume()
 		Mix_VolumeMusic(0);
 	}
 }
+
+int Audio::GetMusicVolume()
+{
+	return Mix_VolumeMusic(-1);
+}
+
+void Audio::SetMusicVolume(int volume)
+{
+	Mix_VolumeMusic(volume);
+}
+
+int Audio::GetFxVolume()
+{
+	return volumeFx;
+}
+
+void Audio::SetFxVolumeValue(int volume)
+{
+	volumeFx = volume;
+	ListItem<Mix_Chunk*>* s = fx.start;
+	while (s != nullptr)
+	{
+		Mix_VolumeChunk(s->data, volume);
+		s = s->next;
+	}
+}

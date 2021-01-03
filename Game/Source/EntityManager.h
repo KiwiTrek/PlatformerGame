@@ -4,6 +4,9 @@
 #include "Module.h"
 #include "Entity.h"
 #include "List.h"
+#include "GuiButton.h"
+#include "GuiCheckBox.h"
+#include "GuiSlider.h"
 
 #define MAX_ENTITIES 100
 
@@ -44,6 +47,9 @@ public:
 	// Collision response
 	void OnCollision(Collider* c1, Collider* c2);
 
+	// Declare on mouse click event
+	bool OnGuiMouseClickEvent(GuiControl* control);
+
 public:
 
 	List<Entity*> entities;
@@ -72,6 +78,29 @@ public:
 	SDL_Texture* ground;
 	SDL_Texture* flying;
 	SDL_Texture* coin;
+
+	// Pause menu
+	iPoint cameraPos;
+	iPoint cameraSize;
+
+	bool settings;
+	SString settingsTitle;
+	int offsetSettings;
+	GuiSlider* sldrMusic;
+	GuiSlider* sldrFx;
+	GuiCheckBox* chckFullscreen;
+	GuiCheckBox* chckVSync;
+	GuiButton* btnBack;
+
+	int pauseFont;
+	SString pauseTitle;
+	int offsetTitle;
+	GuiButton* btnResume;
+	GuiButton* btnSettings;
+	GuiButton* btnTitle;
+	float dtTmp;
+	GuiButton* btnExit;
+	bool exitRequest;
 };
 
 #endif // __MODULE_ENTITY_MANAGER_H__

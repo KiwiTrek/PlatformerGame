@@ -7,6 +7,7 @@
 #include "Window.h"
 #include "Map.h"
 #include "EntityManager.h"
+#include "GuiManager.h"
 #include "Collisions.h"
 #include "Transition.h"
 #include "DeathScene.h"
@@ -54,6 +55,11 @@ bool Scene::Start()
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "mountain_depth_front.png");
 	mountainsFront = app->tex->Load(tmp.GetString());
+	tmp.Clear();
+	tmp.Create("%s%s", folderTexture.GetString(), "ui_elements.png");
+	ui = app->tex->Load(tmp.GetString());
+	uiCoin = { 0,0,32,32 };
+	uiFruit = { 32,0,32,32 };
 
 	app->map->Enable();
 	if (app->map->Load("level_1.tmx") == true)
@@ -84,7 +90,6 @@ bool Scene::Start()
 	app->render->camera.x = -(player->spawnPos.x - app->render->camera.w / 2);
 	app->render->camera.y = -(player->spawnPos.y - app->render->camera.h / 2 - 64);
 
-
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioMusic.GetString(), "level_1.ogg");
 	app->audio->PlayMusic(tmp.GetString(), 0.0f);
@@ -93,12 +98,18 @@ bool Scene::Start()
 	tmp.Create("%s%s", folderTexture.GetString(), "score_font.png");
 	font = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
 
-	scoreTitle.Create("Score:");
-	offsetScore = scoreTitle.Length() * 36;
+	scoreTitle.Create("Score");
+	offsetScore = scoreTitle.Length() * 36 + (36 * 3);
 
 	timerValue = 501.0f;
-	timerTitle.Create("Time:");
-	offsetTimer = timerTitle.Length() * 36;
+	timerTitle.Create("Time");
+	offsetTimer = timerTitle.Length() * 36 + (36 * 3);
+
+	fruitCounter = 0;
+	coinCounter = 0;
+
+	cameraPos = { -app->render->camera.x, -app->render->camera.y };
+	cameraSize = { app->render->camera.w, app->render->camera.h };
 
 	return true;
 }
@@ -112,18 +123,22 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
-	timerValue -= dt;
-	if (timerValue <= 0.0f)
+	if (app->entities->doLogic)
 	{
-		timerValue = 0.0f;
-		player->isDead = true;
+		timerValue -= dt;
+		if (timerValue <= 0.0f)
+		{
+			timerValue = 0.0f;
+			player->isDead = true;
+		}
 	}
+
 	if (app->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
 	{
 		app->audio->MuteVolume();
 	}
 
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	if (app->entities->exitRequest)
 	{
 		return false;
 	}
@@ -182,6 +197,8 @@ bool Scene::Update(float dt)
 // Called each loop iteration
 bool Scene::PostUpdate()
 {
+	cameraPos = { -app->render->camera.x, -app->render->camera.y };
+
 	uint w, h;
 	app->win->GetWindowSize(w, h);
 	uint wmb, hmb;
@@ -194,18 +211,23 @@ bool Scene::PostUpdate()
 	}
 
 	app->map->Draw();
-	
-	iPoint tmp(-app->render->camera.x, -app->render->camera.y);
-	app->render->DrawRectangle({ tmp.x, tmp.y + 102, 288, 5 }, 0, 0, 0, 255);
 
-	sprintf_s(score, 8, "%d", scoreValue);
-	app->fonts->DrawText(tmp.x, tmp.y + 66, font, scoreTitle.GetString());
-	app->fonts->DrawText(tmp.x + offsetScore, tmp.y + 66, font, score);
+	sprintf_s(scoreFruit, 4, "%2d", fruitCounter);
+	sprintf_s(scoreCoin, 4, "%2d", coinCounter);
+	app->render->DrawTexture(ui, cameraPos.x + 2, cameraPos.y + 64, false, &uiCoin);
+	app->fonts->DrawText(cameraPos.x + 8, cameraPos.y + 62, font, scoreCoin);
+	app->render->DrawTexture(ui, cameraPos.x, cameraPos.y + 100, false, &uiFruit);
+	app->fonts->DrawText(cameraPos.x + 8, cameraPos.y + 98, font, scoreFruit);
 
-	//Would like it on top right side of the screen ;w;
+	sprintf_s(score, 6, "%03d", scoreValue);
+	app->fonts->DrawText(cameraPos.x + cameraSize.x - offsetScore - 12, cameraPos.y + 36, font, scoreTitle.GetString());
+	app->fonts->DrawText(cameraPos.x + cameraSize.x - (36 * 3) - 30, cameraPos.y + 36, font, ":");
+	app->fonts->DrawText(cameraPos.x + cameraSize.x - (36 * 3), cameraPos.y + 36, font, score);
+
 	sprintf_s(timer, 6, "%03d", (int)timerValue);
-	app->fonts->DrawText(tmp.x, tmp.y + 106, font, timerTitle.GetString());
-	app->fonts->DrawText(tmp.x + offsetTimer, tmp.y + 106, font, timer);
+	app->fonts->DrawText(cameraPos.x + cameraSize.x - offsetTimer - 12, cameraPos.y + 2, font, timerTitle.GetString());
+	app->fonts->DrawText(cameraPos.x + cameraSize.x - (36 * 3) - 30, cameraPos.y + 2, font, ":");
+	app->fonts->DrawText(cameraPos.x + cameraSize.x - (36 * 3), cameraPos.y + 2, font, timer);
 
 	return true;
 }
@@ -220,6 +242,7 @@ bool Scene::CleanUp()
 	app->tex->UnLoad(clouds);
 	app->tex->UnLoad(mountainsBack);
 	app->tex->UnLoad(mountainsFront);
+	app->tex->UnLoad(ui);
 	app->fonts->Unload(font);
 
 	app->entities->Disable();

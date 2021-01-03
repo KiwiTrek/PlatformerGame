@@ -36,6 +36,8 @@ private:
 
 	int jumpCounter;
 	int lives = 3;
+	int fruitCounter;
+	int coinCounter;
 	int hitCD = 5;
 	int playerSize;
 

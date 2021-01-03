@@ -52,7 +52,7 @@ bool DeathScene::Start()
 	timer = 0.0f;
 	alpha = 0.0f;
 
-	btnTitle = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 1, { 193, 498, 217, 109 }, "TITLE", this);
+	btnTitle = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 1, { 193, 498, 217, 109 }, "BACK to", this, 0, true, "TITLE");
 	btnExit = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 2, { 867, 498, 217, 109 }, "EXIT", this);
 
 	return true;

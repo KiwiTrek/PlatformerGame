@@ -31,6 +31,13 @@ public:
 	bool UnloadFx(uint index);
 	bool SetFxVolume(uint index);
 
+	// Get/Set
+	int GetMusicVolume();
+	void SetMusicVolume(int volume);
+
+	int GetFxVolume();
+	void SetFxVolumeValue(int fxVolume);
+
 	// Play a previously loaded WAV
 	bool PlayFx(uint fx, int repeat = 0);
 

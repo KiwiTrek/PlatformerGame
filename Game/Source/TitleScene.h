@@ -52,6 +52,12 @@ private:
 	float dtTmp;
 
 	GuiButton* btnSettings;
+	SString settingsTitle;
+	bool settings;
+	GuiSlider* sldrMusic;
+	GuiSlider* sldrFx;
+	GuiCheckBox* chckFullscreen;
+	GuiCheckBox* chckVSync;
 
 	GuiButton* btnCredits;
 	bool credits;
@@ -74,9 +80,6 @@ private:
 
 	GuiButton* btnExit;
 	bool exitRequest;
-
-	//GuiCheckBox* chckTest;
-	//GuiSlider* sldrTest;
 };
 
 #endif // __TITLE_SCENE_H__

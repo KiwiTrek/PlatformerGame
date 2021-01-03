@@ -162,6 +162,10 @@ bool Player::Update(float dt)
 	nextPos.x = entityRect.x;
 	nextPos.y = entityRect.y;
 
+	if (app->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
+	{
+		isDead = true;
+	}
 	if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && currentAnim == &idle)
 	{
 		app->SaveRequest();
@@ -169,10 +173,6 @@ bool Player::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN && currentAnim == &idle)
 	{
 		app->LoadRequest();
-	}
-	if (app->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
-	{
-		isDead = true;
 	}
 	if (app->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
 	{
@@ -413,7 +413,8 @@ bool Player::Update(float dt)
 				heartRecovered.Reset();
 				app->map->SetTileProperty(entityRect.x / app->generalTileSize, entityRect.y / app->generalTileSize, "NoDraw", 1, true, true);
 				app->audio->PlayFx(fruitFx);
-				app->scene->scoreValue += 50;
+				app->scene->scoreValue += 100;
+				app->scene->fruitCounter++;
 			}
 		}
 
