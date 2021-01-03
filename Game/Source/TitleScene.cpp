@@ -81,12 +81,12 @@ bool TitleScene::Start()
 	float tmpValue = 0;
 	settings = false;
 	settingsTitle.Create("- SETTINGS -");
-	sldrMusic = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 91, { (1280 / 4) + 132, 150, 54, 54 }, "Music Volume", this, 10);
+	sldrMusic = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 101, { (1280 / 4) + 132, 150, 54, 54 }, "Music Volume", this, 10);
 	sldrMusic->value = app->audio->GetMusicVolume();
 	sldrMusic->maxValue = 128;
 	tmpValue = (float)(sldrMusic->limits.w - sldrMusic->bounds.w) / (float)sldrMusic->maxValue;
 	sldrMusic->bounds.x = sldrMusic->limits.x + (sldrMusic->value * tmpValue);
-	sldrFx = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 92, { (1280 / 4) + 132, 260, 54, 54 }, "SFX Volume", this, 10);
+	sldrFx = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 102, { (1280 / 4) + 132, 260, 54, 54 }, "SFX Volume", this, 10);
 	sldrFx->value = app->audio->GetFxVolume();
 	sldrFx->maxValue = 128;
 	tmpValue = (float)(sldrFx->limits.w - sldrFx->bounds.w) / (float)sldrFx->maxValue;
@@ -220,12 +220,8 @@ bool TitleScene::CleanUp()
 
 bool TitleScene::OnGuiMouseClickEvent(GuiControl* control)
 {
-	switch (control->type)
+	switch (control->id)
 	{
-	case GuiControlType::BUTTON:
-	{
-		switch (control->id)
-		{
 		case 1:	//Play
 		{
 			app->transition->FadeEffect(this, (Module*)app->scene, false, floor(1200.0f * dtTmp));
@@ -252,12 +248,12 @@ bool TitleScene::OnGuiMouseClickEvent(GuiControl* control)
 			settings = false;
 			break;
 		}
-		case 91: //MUSIC
+		case 101: //MUSIC
 		{
 			app->audio->SetMusicVolume(sldrMusic->value);
 			break;
 		}
-		case 92: //FX
+		case 102: //FX
 		{
 			app->audio->SetFxVolumeValue(sldrFx->value);
 			break;
@@ -266,9 +262,6 @@ bool TitleScene::OnGuiMouseClickEvent(GuiControl* control)
 		{
 			break;
 		}
-		}
-	}
-	default: break;
 	}
 
 	return true;

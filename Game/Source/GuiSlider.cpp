@@ -38,8 +38,9 @@ GuiSlider::~GuiSlider()
 
 bool GuiSlider::Update(float dt)
 {
-	int tmpValue = (float)maxValue / (float)(limits.w - bounds.w);
+	float tmpValue = (float)maxValue / (float)(limits.w - bounds.w);
 	value = (bounds.x - limits.x) * tmpValue;
+	LOG("%d", value);
 	if (state != GuiControlState::DISABLED)
 	{
 		int mouseX, mouseY;
