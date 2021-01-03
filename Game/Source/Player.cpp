@@ -17,7 +17,13 @@
 
 Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 {
-	spawnPos = GetSpawnPoint();
+	if (x == -1 && y == -1)
+	{
+		spawnPos = GetSpawnPoint();
+	}
+	else {
+		spawnPos = { x,y };
+	}
 	pendingToDelete = false;
 	entityRect = { spawnPos.x, spawnPos.y, app->generalTileSize, app->generalTileSize };
 	collider = app->collisions->AddCollider(entityRect, Collider::Type::PLAYER, (Module*)app->entities);
@@ -438,6 +444,8 @@ bool Player::Update(float dt)
 			heartLess = true;
 			if (lives == 0)
 			{
+				pendingToDelete = true;
+				collider->pendingToDelete = true;
 				isDead = true;
 			}
 			else

@@ -35,9 +35,14 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	bool Load(pugi::xml_node&);
+	bool Save(pugi::xml_node&);
+
+	// Loading variables
 	int scoreValue = 0;
 	int coinCounter = 0;
 	int fruitCounter = 0;
+
 private:
 	Entity* player = nullptr;
 	iPoint cameraPos;

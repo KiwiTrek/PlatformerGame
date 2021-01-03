@@ -28,7 +28,7 @@ class Entity
 {
 public:
 
-    Entity(int x, int y, EntityType type, EnemyType eType = EnemyType::NO_TYPE) : type(type), active(true) {}
+    Entity(int x, int y, EntityType type, EnemyType eType = EnemyType::NO_TYPE) : type(type), eType(eType), active(true) {}
 
     virtual bool Update(float dt)
     {
@@ -77,6 +77,9 @@ public:
 
     //Public vars from player (SHOULD BE TMP)
     bool isDead = false;
+
+    //Public vars from enemy (SHOULD BE TMP)
+    EnemyType eType;
 };
 
 #endif // __ENTITY_H__

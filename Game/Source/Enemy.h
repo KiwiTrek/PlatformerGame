@@ -35,7 +35,6 @@ public:
 	DynArray<iPoint> path;
 	int pathCount = 0;
 
-	EnemyType type = EnemyType::NO_TYPE;
 protected:
 	Entity* player;
 	// General enemy size

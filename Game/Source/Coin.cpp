@@ -20,7 +20,7 @@ Coin::Coin(int x, int y) : Entity(x, y, EntityType::COIN)
 
 	physics.axisX = false;
 	physics.axisY = false;
-	physics.positiveSpeedY = true;
+	physics.positiveSpeedY = false;
 	physics.verlet = false;
 
 	// Fx

@@ -216,7 +216,7 @@ bool EntityManager::CleanUp()
 	return true;
 }
 
-Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playerPointer, EnemyType eType)
+Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playerPointer, EnemyType eType, int listNumber)
 {
 	Entity* ret = nullptr;
 
@@ -252,6 +252,7 @@ Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playe
 	case EntityType::COIN:
 	{
 		ret = new Coin(x, y);
+		break;
 	}
 	default:
 	{
@@ -260,7 +261,20 @@ Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playe
 	}
 
 	// Created entities are added to the list
-	if (ret != nullptr) entities.Add(ret);
+	if (ret != nullptr)
+	{
+		switch (listNumber)
+		{
+		case 0:
+			entities.Add(ret);
+			break;
+		case 1:
+			loadingEntities.Add(ret);
+			break;
+		default:
+			break;
+		}
+	}
 
 	return ret;
 }
@@ -448,77 +462,128 @@ bool EntityManager::OnGuiMouseClickEvent(GuiControl* control)
 	return true;
 }
 
-//bool EnemyManagement::Load(pugi::xml_node& save)
-//{
-//	LOG("Loading enemy data");
-//	bool ret = true;
-//	int i = 0;
-//
-//	int x = 0;
-//	int y = 0;
-//	EnemyType type = EnemyType::NO_TYPE;
-//	bool destroyed = false;
-//
-//	for (pugi::xml_node enemy = save.child("enemy"); enemy && ret; enemy = enemy.next_sibling("enemy"))
-//	{
-//		destroyed = enemy.child("destroyed").attribute("value").as_bool();
-//		if (destroyed == true && enemies[i] != nullptr)
-//		{
-//			enemies[i]->pendingToDelete = true;
-//		}
-//		else
-//		{
-//			x = enemy.child("coordinates").attribute("x").as_int();
-//			y = enemy.child("coordinates").attribute("y").as_int();
-//			switch (enemy.child("type").attribute("value").as_int())
-//			{
-//			case 1:
-//				type = EnemyType::GROUND;
-//				break;
-//			case 2:
-//				type = EnemyType::FLYING;
-//				break;
-//			default:
-//				type = EnemyType::NO_TYPE;
-//				break;
-//			}
-//
-//			if (enemies[i] == nullptr)
-//			{
-//				AddEnemy(type, x, y, i);
-//			}
-//			else
-//			{
-//				enemies[i]->enemyRect.x = x;
-//				enemies[i]->enemyRect.y = y;
-//			}
-//		}
-//		i++;
-//	}
-//
-//	return ret;
-//}
-//
-//bool EnemyManagement::Save(pugi::xml_node& save)
-//{
-//	LOG("Saving enemy data");
-//	bool ret = true;
-//
-//	for (uint i = 0; i < MAX_ENEMIES; ++i)
-//	{
-//		pugi::xml_node enemy = save.append_child("enemy");
-//		if (enemies[i] != nullptr)
-//		{
-//			pugi::xml_node enemyCoords = enemy.append_child("coordinates");
-//			enemyCoords.append_attribute("x").set_value(enemies[i]->enemyRect.x);
-//			enemyCoords.append_attribute("y").set_value(enemies[i]->enemyRect.y);
-//			enemy.append_child("type").append_attribute("value").set_value(enemies[i]->type);
-//			enemy.append_child("destroyed").append_attribute("value").set_value(enemies[i]->pendingToDelete);
-//		}
-//		else
-//		{
-//			enemy.append_child("destroyed").append_attribute("value").set_value(true);
-//		}
-//	}
-//	return ret;
-//}
+bool EntityManager::Load(pugi::xml_node& save)
+{
+	LOG("Loading entities data");
+	bool ret = true;
+	ListItem<Entity*>* e = entities.start;
+	while (e != nullptr)
+	{
+		ListItem<Entity*>* eNext = e->next;
+		DestroyEntity(e->data);
+		e = eNext;
+	}
+	entities.Clear();
+
+	int x = 0;
+	int y = 0;
+	EntityType type = EntityType::UNKNOWN;
+	EnemyType eType = EnemyType::NO_TYPE;
+	Player* pp = nullptr;
+
+	for (pugi::xml_node entity = save.child("entity"); entity && ret; entity = entity.next_sibling("entity"))
+	{
+		x = entity.child("coordinates").attribute("x").as_int();
+		y = entity.child("coordinates").attribute("y").as_int();
+		switch (entity.child("type").attribute("value").as_int())
+		{
+		case 0:
+			type = EntityType::PLAYER;
+			break;
+		case 1:
+			type = EntityType::ENEMY;
+			break;
+		case 2:
+			type = EntityType::COIN;
+			break;
+		default:
+			type = EntityType::UNKNOWN;
+			break;
+		}
+		switch (entity.child("eType").attribute("value").as_int())
+		{
+		case 1:
+			eType = EnemyType::GROUND;
+			break;
+		case 2:
+			eType = EnemyType::FLYING;
+			break;
+		default:
+			eType = EnemyType::NO_TYPE;
+			break;
+		}
+
+		if (type == EntityType::PLAYER)
+		{
+			pp = (Player*)CreateEntity(x, y, type, nullptr, eType);
+			pp->lives = entity.child("lives").attribute("value").as_int();
+		}
+		else
+		{
+			CreateEntity(x, y, type, pp, eType);
+		}
+	}
+
+	//entities = loadingEntities;
+	//loadingEntities.Clear();
+	return ret;
+}
+
+bool EntityManager::Save(pugi::xml_node& save)
+{
+	LOG("Saving entities data");
+	bool ret = true;
+
+	//for (int i = 0; entities.At(i) != nullptr;)
+	ListItem<Entity*>* e = entities.start;
+	while (e != nullptr)
+	{
+		pugi::xml_node entity = save.append_child("entity");
+		pugi::xml_node entityCoords = entity.append_child("coordinates");
+		entityCoords.append_attribute("x").set_value(e->data->entityRect.x);
+		entityCoords.append_attribute("y").set_value(e->data->entityRect.y);
+		int type = 0;
+		switch (e->data->type)
+		{
+		case EntityType::PLAYER:
+		{
+			Player* pp = (Player*)e->data;
+			entity.append_child("lives").append_attribute("value").set_value(pp->lives);
+			type = 0;
+			break;
+		}
+		case EntityType::ENEMY:
+		{
+			type = 1;
+			break;
+		}
+		case EntityType::COIN:
+		{
+			type = 2;
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
+		entity.append_child("type").append_attribute("value").set_value(type);
+		int eType = 0;
+		switch (e->data->eType)
+		{
+		case EnemyType::GROUND:
+			eType = 1;
+			break;
+		case EnemyType::FLYING:
+			eType = 2;
+			break;
+		default:
+			break;
+		}
+		entity.append_child("eType").append_attribute("value").set_value(eType);
+
+		//++i;
+		e = e->next;
+	}
+	return ret;
+}

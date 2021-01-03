@@ -10,9 +10,8 @@
 
 #include "Log.h"
 
-Enemy::Enemy(int x, int y, EnemyType enemyType, Entity* playerPointer) : Entity(x,y,EntityType::ENEMY, enemyType)
+Enemy::Enemy(int x, int y, EnemyType enemyType, Entity* playerPointer) : Entity(x, y, EntityType::ENEMY, enemyType)
 {
-	type = enemyType;
 	player = playerPointer;
 	spawnPos.x = x;
 	spawnPos.y = y;

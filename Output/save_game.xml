@@ -10,316 +10,38 @@
 	<logoScene />
 	<titleScene />
 	<deathScene />
-	<scene />
-	<map />
-	<player>
-		<coordinates x="196" y="704" />
+	<scene>
 		<score value="0" />
-		<life value="3" />
-	</player>
+		<coin value="0" />
+		<fruit value="0" />
+		<timer value="493.640381" />
+	</scene>
+	<map />
 	<fonts />
-	<enemyManagement>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-		<enemy>
-			<destroyed value="true" />
-		</enemy>
-	</enemyManagement>
+	<guiManager />
+	<entityManager>
+		<entity>
+			<coordinates x="1432" y="512" />
+			<lives value="3" />
+			<type value="0" />
+			<eType value="0" />
+		</entity>
+		<entity>
+			<coordinates x="6592" y="192" />
+			<type value="1" />
+			<eType value="2" />
+		</entity>
+		<entity>
+			<coordinates x="2304" y="512" />
+			<type value="1" />
+			<eType value="1" />
+		</entity>
+		<entity>
+			<coordinates x="1920" y="448" />
+			<type value="2" />
+			<eType value="0" />
+		</entity>
+	</entityManager>
 	<collisions />
 	<transition />
 	<renderer />

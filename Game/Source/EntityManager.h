@@ -39,7 +39,7 @@ public:
 	bool CleanUp();
 
 	// Additional methods
-	Entity* CreateEntity(int x, int y, EntityType type, Entity* playerPointer = nullptr, EnemyType eType = EnemyType::NO_TYPE);
+	Entity* CreateEntity(int x, int y, EntityType type, Entity* playerPointer = nullptr, EnemyType eType = EnemyType::NO_TYPE, int listNumber = 0);
 	void DestroyEntity(Entity* entity);
 
 	bool UpdateAll(float dt, bool doLogic);
@@ -50,9 +50,13 @@ public:
 	// Declare on mouse click event
 	bool OnGuiMouseClickEvent(GuiControl* control);
 
+	bool Load(pugi::xml_node&);
+	bool Save(pugi::xml_node&);
+
 public:
 
 	List<Entity*> entities;
+	List<Entity*> loadingEntities;
 
 	float accumulatedTime = 0.0f;
 	float updateMsCycle = 0.0f;

@@ -82,7 +82,7 @@ bool Scene::Start()
 	scoreValue = 0;
 
 	app->entities->Enable();
-	player = app->entities->CreateEntity(0, 0, EntityType::PLAYER);
+	player = app->entities->CreateEntity(-1, -1, EntityType::PLAYER);
 	app->entities->CreateEntity(app->map->data.tileWidth * 103, app->map->data.tileHeight * 3, EntityType::ENEMY, player, EnemyType::FLYING);
 	app->entities->CreateEntity(app->map->data.tileWidth * 36, app->map->data.tileHeight * 8, EntityType::ENEMY, player, EnemyType::GROUND);
 	app->entities->CreateEntity(app->map->data.tileWidth * 30, app->map->data.tileHeight * 7, EntityType::COIN);
@@ -123,6 +123,16 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
+	ListItem<Entity*>* e = app->entities->entities.start;
+	while (e != nullptr)
+	{
+		if (e->data->type == EntityType::PLAYER)
+		{
+			player = e->data;
+		}
+		e = e->next;
+	}
+
 	if (app->entities->doLogic)
 	{
 		timerValue -= dt;
@@ -249,4 +259,30 @@ bool Scene::CleanUp()
 	app->map->Disable();
 
 	return true;
+}
+
+bool Scene::Load(pugi::xml_node& save)
+{
+	LOG("Loading scene variables");
+	bool ret = true;
+
+	scoreValue = save.child("score").attribute("value").as_int();
+	coinCounter = save.child("coin").attribute("value").as_int();
+	fruitCounter = save.child("fruit").attribute("value").as_int();
+	timerValue = save.child("timer").attribute("value").as_float(500.0f);
+
+	return ret;
+}
+
+bool Scene::Save(pugi::xml_node& save)
+{
+	LOG("Saving scene variables");
+	bool ret = true;
+
+	save.append_child("score").append_attribute("value").set_value(scoreValue);
+	save.append_child("coin").append_attribute("value").set_value(coinCounter);
+	save.append_child("fruit").append_attribute("value").set_value(fruitCounter);
+	save.append_child("timer").append_attribute("value").set_value(timerValue);
+
+	return ret;
 }

@@ -28,6 +28,9 @@ public:
 
 	SDL_Texture* playerHeart;
 
+	// Loading variables
+	int lives = 3;
+
 private:
 	// Gets the coordinates of the spawn point
 	iPoint GetSpawnPoint();
@@ -35,9 +38,6 @@ private:
 	Collider* hurtBox = nullptr;
 
 	int jumpCounter;
-	int lives = 3;
-	int fruitCounter;
-	int coinCounter;
 	int hitCD = 5;
 	int playerSize;
 

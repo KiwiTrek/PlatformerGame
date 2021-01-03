@@ -52,8 +52,8 @@ bool DeathScene::Start()
 	timer = 0.0f;
 	alpha = 0.0f;
 
-	btnTitle = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 1, { 193, 498, 217, 109 }, "BACK to", this, 0, true, "TITLE");
-	btnExit = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 2, { 867, 498, 217, 109 }, "EXIT", this);
+	btnTitle = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 1, { -app->render->camera.x + 193, -app->render->camera.y + 498, 217, 109 }, "BACK to", this, 0, true, "TITLE");
+	btnExit = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 2, { -app->render->camera.x + 867, -app->render->camera.y + 498, 217, 109 }, "EXIT", this);
 
 	return true;
 }
@@ -108,8 +108,8 @@ bool DeathScene::PostUpdate()
 
 	app->render->DrawTexture(deathScreen, NULL, NULL, true);
 
-	btnTitle->Draw();
-	btnExit->Draw();
+	btnTitle->Draw(-app->render->camera.x, -app->render->camera.y);
+	btnExit->Draw(-app->render->camera.x, -app->render->camera.y);
 	app->render->DrawRectangle(btnTitle->bounds, 0, 0, 0, (uchar)(255 - (255 * alpha)));
 	app->render->DrawRectangle(btnExit->bounds, 0, 0, 0, (uchar)(255 - (255 * alpha)));
 
