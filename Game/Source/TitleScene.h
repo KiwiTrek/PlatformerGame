@@ -57,7 +57,7 @@ private:
 	GuiSlider* sldrMusic;
 	GuiSlider* sldrFx;
 	GuiCheckBox* chckFullscreen;
-	GuiCheckBox* chckVSync;
+	GuiCheckBox* chckVsync;
 
 	GuiButton* btnCredits;
 	bool credits;

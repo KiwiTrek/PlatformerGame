@@ -2,6 +2,7 @@
 
 #include "App.h"
 
+#include "Window.h"
 #include "Collisions.h"
 #include "Map.h"
 #include "Render.h"
@@ -123,6 +124,7 @@ bool EntityManager::Start()
 	tmp.Create("%s%s", folderMap.GetString(), "level_1_tileset.png");
 	coin = app->tex->Load(tmp.GetString());
 
+	app->gui->Enable();
 	// Pause Menu
 	cameraPos = { -app->render->camera.x, -app->render->camera.y };
 	cameraSize = { app->render->camera.w, app->render->camera.h };
@@ -130,22 +132,33 @@ bool EntityManager::Start()
 	pauseFont = app->gui->titleFont;
 	pauseTitle.Create("- PAUSE SCREEN -");
 	offsetTitle = pauseTitle.Length() * TITLE_FONT_SIZE;
-	btnResume = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 1, { cameraPos.x + (cameraSize.x / 2), 150, 217, 109 }, "RESUME", this);
-	btnSettings = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 2, { cameraPos.x + (cameraSize.x / 2), 260, 217, 109 }, "SETTINGS", this);
-	btnTitle = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 3, { cameraPos.x + (cameraSize.x / 2), 370, 217, 109 }, "BACK to", this, 0, true, "TITLE");
-	btnExit = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 4, { cameraPos.x + (cameraSize.x / 2), 480, 217, 109 }, "EXIT", this);
+	btnResume = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 1, { (cameraSize.x / 2) - (217 / 2), 175, 217, 109 }, "RESUME", this);
+	btnSettings = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 2, { (cameraSize.x / 2) - (217 / 2), 300, 217, 109 }, "SETTINGS", this);
+	btnTitle = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 3, { (cameraSize.x / 2) - (217 / 2), 425, 217, 109 }, "BACK to", this, 0, true, "TITLE");
+	btnExit = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 4, { (cameraSize.x / 2) - (217 / 2), 550, 217, 109 }, "EXIT", this);
 	exitRequest = false;
 
 	// Settings menu
+	float tmpValue = 0;
 	settings = false;
-	settingsTitle.Create("- SETTINGS MENU -");
-	offsetSettings = settingsTitle.Length() * TITLE_FONT_SIZE;
-	sldrMusic = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 91, { cameraPos.x + (cameraSize.x / 2) + 84, 150, 54, 54 }, "Music Volume", this, 10);
-	sldrFx = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 92, { cameraPos.x + (cameraSize.x / 2) + 84, 260, 54, 54 }, "Music Volume", this, 10);
-	chckFullscreen = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 93, { cameraPos.x + (cameraSize.x / 2) + 84,370,54,54 }, "Fullscreen", this);
-	chckVSync = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 94, { cameraPos.x + (cameraSize.x / 2) + 184,370,54,54 }, "VSync", this);
+	settingsTitle.Create("- SETTINGS -");
+	offsetSettings = settingsTitle.Length() * 36;
+	sldrMusic = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 101, { (1280 / 4) + 132, 150, 54, 54 }, "Music Volume", this, 10);
+	sldrMusic->value = app->audio->GetMusicVolume();
+	sldrMusic->maxValue = 128;
+	tmpValue = (float)(sldrMusic->limits.w - sldrMusic->bounds.w) / (float)sldrMusic->maxValue;
+	sldrMusic->bounds.x = sldrMusic->limits.x + (sldrMusic->value * tmpValue);
+	sldrFx = (GuiSlider*)app->gui->CreateGuiControl(GuiControlType::SLIDER, 102, { (1280 / 4) + 132, 260, 54, 54 }, "SFX Volume", this, 10);
+	sldrFx->value = app->audio->GetFxVolume();
+	sldrFx->maxValue = 128;
+	tmpValue = (float)(sldrFx->limits.w - sldrFx->bounds.w) / (float)sldrFx->maxValue;
+	sldrFx->bounds.x = sldrFx->limits.x + (tmpValue * sldrFx->value);
+	chckFullscreen = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 103, { (1280 / 4) + 132,380,54,54 }, "Fullscreen", this);
+	chckFullscreen->checked = app->win->fullscreenWindow;
+	chckVsync = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 104, { (1280 / 4) + 132,440,54,54 }, "VSync", this);
+	chckVsync->checked = app->vsync;
 
-	btnBack = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 6, { cameraPos.x + 976, cameraPos.x + 553, 217, 109 }, "BACK", this);
+	btnBack = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 105, { cameraPos.x + 976, cameraPos.x + 553, 217, 109 }, "BACK", this);
 
 	doLogic = true;
 
@@ -186,6 +199,19 @@ bool EntityManager::CleanUp()
 	btnTitle = nullptr;
 	app->gui->DestroyGuiControl(btnExit);
 	btnExit = nullptr;
+
+	app->gui->DestroyGuiControl(sldrMusic);
+	sldrMusic = nullptr;
+	app->gui->DestroyGuiControl(sldrFx);
+	sldrFx = nullptr;
+	app->gui->DestroyGuiControl(chckFullscreen);
+	chckFullscreen = nullptr;
+	app->gui->DestroyGuiControl(chckVsync);
+	chckVsync = nullptr;
+	app->gui->DestroyGuiControl(btnBack);
+	btnBack = nullptr;
+
+	app->gui->Disable();
 
 	return true;
 }
@@ -252,28 +278,26 @@ bool EntityManager::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 	{
 		doLogic = false;
-		btnResume->bounds.x = (cameraSize.x / 2) - (btnResume->bounds.w / 2);
-		btnResume->bounds.y = 175;
-
-		btnSettings->bounds.x = (cameraSize.x / 2) - (btnSettings->bounds.w / 2);
-		btnSettings->bounds.y = 300;
-
-		btnTitle->bounds.x = (cameraSize.x / 2) - (btnTitle->bounds.w / 2);
-		btnTitle->bounds.y = 425;
-
-		btnExit->bounds.x = (cameraSize.x / 2) - (btnExit->bounds.w / 2);
-		btnExit->bounds.y = 550;
 	}
 
 	UpdateAll(dt, doLogic);
 
-	if (!app->entities->doLogic)
+	if (!app->entities->doLogic && !settings)
 	{
 		app->entities->doLogic = false;
 		btnResume->Update(dt);
 		btnSettings->Update(dt);
 		btnTitle->Update(dt);
 		btnExit->Update(dt);
+	}
+	
+	if (settings)
+	{
+		sldrMusic->Update(dt);
+		sldrFx->Update(dt);
+		chckFullscreen->Update(dt);
+		chckVsync->Update(dt);
+		btnBack->Update(dt);
 	}
 
 	return true;
@@ -332,6 +356,18 @@ bool EntityManager::PostUpdate()
 		btnExit->Draw(cameraPos.x, cameraPos.y);
 	}
 
+	if (settings)
+	{
+		app->render->DrawRectangle({ cameraPos.x,cameraPos.y,cameraSize.x,cameraSize.y }, 0, 0, 0, 191);
+		offsetSettings = settingsTitle.Length() * TITLE_FONT_SIZE;
+		app->fonts->DrawText(cameraPos.x + ((cameraSize.x - offsetSettings) / 2), cameraPos.y + 84, pauseFont, settingsTitle.GetString());
+		sldrMusic->Draw(cameraPos.x, cameraPos.y);
+		sldrFx->Draw(cameraPos.x, cameraPos.y);
+		chckFullscreen->Draw(cameraPos.x, cameraPos.y);
+		chckVsync->Draw(cameraPos.x, cameraPos.y);
+		btnBack->Draw(cameraPos.x, cameraPos.y);
+	}
+
 	return true;
 }
 
@@ -356,39 +392,57 @@ void EntityManager::OnCollision(Collider* c1, Collider* c2)
 
 bool EntityManager::OnGuiMouseClickEvent(GuiControl* control)
 {
-	switch (control->type)
+	switch (control->id)
 	{
-	case GuiControlType::BUTTON:
+	case 1:	//Resume
 	{
-		switch (control->id)
-		{
-		case 1:	//Resume
-		{
-			doLogic = false;
-			app->entities->doLogic = true;
-			break;
-		}
-		case 2: //Settings
-		{
-			break;
-		}
-		case 3:	//Title
-		{
-			app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, floor(1200.0f * dtTmp));
-			break;
-		}
-		case 4: //Exit
-		{
-			exitRequest = true;
-			break;
-		}
-		default:
-		{
-			break;
-		}
-		}
+		doLogic = false;
+		app->entities->doLogic = true;
+		break;
 	}
-	default: break;
+	case 2: //Settings
+	{
+		settings = true;
+		break;
+	}
+	case 3:	//Title
+	{
+		app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, floor(1200.0f * dtTmp));
+		break;
+	}
+	case 4: //Exit
+	{
+		exitRequest = true;
+		break;
+	}
+	case 101: // MUSIC
+	{
+		app->audio->SetMusicVolume(sldrMusic->value);
+		break;
+	}
+	case 102: // FX
+	{
+		app->audio->SetFxVolumeValue(sldrFx->value);
+		break;
+	}
+	case 103: // FULLSCREEN
+	{
+		app->win->ToggleFullscreen(chckFullscreen->checked);
+		break;
+	}
+	case 104: // VSYNC
+	{
+		app->render->ToggleVsync(chckVsync->checked, (Module*)app->scene);
+		break;
+	}
+	case 105: // Back
+	{
+		settings = false;
+	}
+	default:
+	{
+		break;
+	}
 	}
 
 	return true;

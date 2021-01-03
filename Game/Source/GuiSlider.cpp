@@ -40,7 +40,6 @@ bool GuiSlider::Update(float dt)
 {
 	float tmpValue = (float)maxValue / (float)(limits.w - bounds.w);
 	value = (bounds.x - limits.x) * tmpValue;
-	LOG("%d", value);
 	if (state != GuiControlState::DISABLED)
 	{
 		int mouseX, mouseY;
@@ -89,16 +88,16 @@ bool GuiSlider::Update(float dt)
 	return false;
 }
 
-bool GuiSlider::Draw()
+bool GuiSlider::Draw(int cPosX, int cPosY)
 {
-	app->fonts->DrawText(limits.x - offsetText, limits.y, titleFont, text.GetString());
+	app->fonts->DrawText(cPosX + limits.x - offsetText, cPosY + limits.y, titleFont, text.GetString());
 
 	for (int i = 1; i != widthInUnits - 1; ++i)
 	{
-		app->render->DrawTexture(texture, limits.x + (i * 54), limits.y, false, &normalLimitsMiddle);
+		app->render->DrawTexture(texture, cPosX + limits.x + (i * 54), cPosY + limits.y, false, &normalLimitsMiddle);
 	}
-	app->render->DrawTexture(texture, limits.x, limits.y, false, &normalLimitsBegin);
-	app->render->DrawTexture(texture, limits.x + limits.w - bounds.w, limits.y, false, &normalLimitsEnd);
+	app->render->DrawTexture(texture, cPosX + limits.x, cPosY + limits.y, false, &normalLimitsBegin);
+	app->render->DrawTexture(texture, cPosX + limits.x + limits.w - bounds.w, cPosY + limits.y, false, &normalLimitsEnd);
 
 	// Draw the right button depending on state
 	switch (state)
@@ -107,27 +106,27 @@ bool GuiSlider::Draw()
 	{
 		for (int i = 1; i != widthInUnits - 1; ++i)
 		{
-			app->render->DrawTexture(texture, limits.x + (i * 54), limits.y, false, &disabledLimitsMiddle);
+			app->render->DrawTexture(texture, cPosX + limits.x + (i * 54), cPosY + limits.y, false, &disabledLimitsMiddle);
 		}
-		app->render->DrawTexture(texture, limits.x, limits.y, false, &disabledLimitsBegin);
-		app->render->DrawTexture(texture, limits.x + limits.w - bounds.w, limits.y, false, &disabledLimitsEnd);
+		app->render->DrawTexture(texture, cPosX + limits.x, cPosY + limits.y, false, &disabledLimitsBegin);
+		app->render->DrawTexture(texture, cPosX + limits.x + limits.w - bounds.w, cPosY + limits.y, false, &disabledLimitsEnd);
 
-		app->render->DrawTexture(texture, bounds.x, bounds.y + (bounds.h / 4), false, &disabled);
+		app->render->DrawTexture(texture, cPosX + bounds.x, cPosY + bounds.y + (bounds.h / 4), false, &disabled);
 		break;
 	}
 	case GuiControlState::NORMAL:
 	{
-		app->render->DrawTexture(texture, bounds.x, bounds.y + (bounds.h / 4), false, &normal);
+		app->render->DrawTexture(texture, cPosX + bounds.x, cPosY + bounds.y + (bounds.h / 4), false, &normal);
 		break;
 	}
 	case GuiControlState::FOCUSED:
 	{
-		app->render->DrawTexture(texture, bounds.x, bounds.y + (bounds.h / 4), false, &focused);
+		app->render->DrawTexture(texture, cPosX + bounds.x, cPosY + bounds.y + (bounds.h / 4), false, &focused);
 		break;
 	}
 	case GuiControlState::PRESSED:
 	{
-		app->render->DrawTexture(texture, bounds.x, bounds.y + (bounds.h / 4), false, &pressed);
+		app->render->DrawTexture(texture, cPosX + bounds.x, cPosY + bounds.y + (bounds.h / 4), false, &pressed);
 		break;
 	}
 	default:

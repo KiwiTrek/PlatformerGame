@@ -33,7 +33,7 @@ bool Window::Awake(pugi::xml_node& config)
 		bool fullscreen = config.child("fullscreen").attribute("value").as_bool(false);
 		bool borderless = config.child("borderless").attribute("value").as_bool(false);
 		bool resizable = config.child("resizable").attribute("value").as_bool(false);
-		bool fullscreenWindow = config.child("fullscreenWindow").attribute("value").as_bool(false);
+		fullscreenWindow = config.child("fullscreenWindow").attribute("value").as_bool(false);
 
 		width = config.child("resolution").attribute("width").as_int(640);
 		height = config.child("resolution").attribute("height").as_int(480);
@@ -105,4 +105,18 @@ void Window::GetWindowSize(uint& width, uint& height) const
 uint Window::GetScale() const
 {
 	return scale;
+}
+
+void Window::ToggleFullscreen(bool fullscreen)
+{
+	if (fullscreen)
+	{
+		fullscreenWindow = true;
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	}
+	else
+	{
+		fullscreenWindow = false;
+		SDL_SetWindowFullscreen(window, 0);
+	}
 }

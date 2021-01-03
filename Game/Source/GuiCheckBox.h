@@ -14,7 +14,7 @@ public:
     virtual ~GuiCheckBox();
 
     bool Update(float dt);
-    bool Draw();
+    bool Draw(int cPosX = 0, int cPosY = 0);
 
 public:
     bool checked;

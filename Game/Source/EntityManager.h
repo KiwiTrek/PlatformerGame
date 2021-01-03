@@ -83,20 +83,20 @@ public:
 	iPoint cameraPos;
 	iPoint cameraSize;
 
-	bool settings;
+	GuiButton* btnSettings;
 	SString settingsTitle;
+	bool settings;
 	int offsetSettings;
 	GuiSlider* sldrMusic;
 	GuiSlider* sldrFx;
 	GuiCheckBox* chckFullscreen;
-	GuiCheckBox* chckVSync;
+	GuiCheckBox* chckVsync;
 	GuiButton* btnBack;
 
 	int pauseFont;
 	SString pauseTitle;
 	int offsetTitle;
 	GuiButton* btnResume;
-	GuiButton* btnSettings;
 	GuiButton* btnTitle;
 	float dtTmp;
 	GuiButton* btnExit;

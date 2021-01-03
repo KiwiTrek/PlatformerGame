@@ -3,6 +3,7 @@
 #include "Render.h"
 #include "Input.h"
 #include "Map.h"
+#include "Transition.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -245,4 +246,26 @@ bool Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uin
 	}
 
 	return ret;
+}
+
+// UNSTABLE GLITCH!!!!!
+// Toggling vsync
+// Toggling fullscreen
+// Untoggling vsync
+// Untoggling fullscreen
+// Screen turns black
+// Requires improvement
+void Render::ToggleVsync(bool vsync, Module* restart)
+{
+	app->vsync = vsync;
+	SDL_DestroyRenderer(renderer);
+	Uint32 flags = SDL_RENDERER_ACCELERATED;
+
+	if (vsync)
+	{
+		flags |= SDL_RENDERER_PRESENTVSYNC;
+	}
+
+	renderer = SDL_CreateRenderer(app->win->window, -1, flags);
+	app->transition->FadeEffect(restart, restart, false, 0.0f);
 }

@@ -63,6 +63,8 @@ bool TitleScene::Start()
 	tmp.Create("%s%s", folderAudioMusic.GetString(), "title_screen.ogg");
 	app->audio->PlayMusic(tmp.GetString(), 0.0f);
 
+	app->gui->Enable();
+
 	exitRequest = false;
 
 	credits = false;
@@ -91,9 +93,10 @@ bool TitleScene::Start()
 	sldrFx->maxValue = 128;
 	tmpValue = (float)(sldrFx->limits.w - sldrFx->bounds.w) / (float)sldrFx->maxValue;
 	sldrFx->bounds.x = sldrFx->limits.x + (tmpValue * sldrFx->value);
-	LOG("%d", (sldrFx->bounds.x - sldrFx->limits.x));
-	chckFullscreen = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 93, { (1280 / 4) + 132,380,54,54 }, "Fullscreen", this);
-	chckVSync = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 94, { (1280 / 4) + 132,440,54,54 }, "VSync", this);
+	chckFullscreen = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 103, { (1280 / 4) + 132,380,54,54 }, "Fullscreen", this);
+	chckFullscreen->checked = app->win->fullscreenWindow;
+	chckVsync = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 104, { (1280 / 4) + 132,440,54,54 }, "VSync", this);
+	chckVsync->checked = app->vsync;
 
 	return true;
 }
@@ -125,7 +128,7 @@ bool TitleScene::Update(float dt)
 		sldrMusic->Update(dt);
 		sldrFx->Update(dt);
 		chckFullscreen->Update(dt);
-		chckVSync->Update(dt);
+		chckVsync->Update(dt);
 	}
 
 	return true;
@@ -189,7 +192,7 @@ bool TitleScene::PostUpdate()
 		sldrMusic->Draw();
 		sldrFx->Draw();
 		chckFullscreen->Draw();
-		chckVSync->Draw();
+		chckVsync->Draw();
 		btnBack->Draw();
 	}
 
@@ -214,6 +217,17 @@ bool TitleScene::CleanUp()
 	btnExit = nullptr;
 	app->gui->DestroyGuiControl(btnBack);
 	btnBack = nullptr;
+
+	app->gui->DestroyGuiControl(sldrMusic);
+	sldrMusic = nullptr;
+	app->gui->DestroyGuiControl(sldrFx);
+	sldrFx = nullptr;
+	app->gui->DestroyGuiControl(chckFullscreen);
+	chckFullscreen = nullptr;
+	app->gui->DestroyGuiControl(chckVsync);
+	chckVsync = nullptr;
+
+	app->gui->Disable();
 
 	return true;
 }
@@ -248,14 +262,24 @@ bool TitleScene::OnGuiMouseClickEvent(GuiControl* control)
 			settings = false;
 			break;
 		}
-		case 101: //MUSIC
+		case 101: // MUSIC
 		{
 			app->audio->SetMusicVolume(sldrMusic->value);
 			break;
 		}
-		case 102: //FX
+		case 102: // FX
 		{
 			app->audio->SetFxVolumeValue(sldrFx->value);
+			break;
+		}
+		case 103: // FULLSCREEN
+		{
+			app->win->ToggleFullscreen(chckFullscreen->checked);
+			break;
+		}
+		case 104: // VSYNC
+		{
+			app->render->ToggleVsync(chckVsync->checked, (Module*)this);
 			break;
 		}
 		default:
