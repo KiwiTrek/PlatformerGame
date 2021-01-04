@@ -6043,7 +6043,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile gid="55"/>
+   <tile/>
    <tile/>
    <tile/>
    <tile/>
@@ -6737,7 +6737,6 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile gid="58"/>
    <tile/>
    <tile/>
    <tile/>
@@ -6900,7 +6899,6 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile gid="56"/>
    <tile/>
    <tile/>
    <tile/>
@@ -7058,7 +7056,9 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile gid="57"/>
+   <tile/>
+   <tile/>
+   <tile/>
    <tile/>
    <tile/>
    <tile/>

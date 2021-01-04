@@ -40,7 +40,7 @@ Collisions::Collisions()
 	matrix[Collider::Type::PLAYER][Collider::Type::SOLID] = false;
 	matrix[Collider::Type::PLAYER][Collider::Type::SPIKE] = false;
 	matrix[Collider::Type::PLAYER][Collider::Type::PLAYER] = false;
-	matrix[Collider::Type::PLAYER][Collider::Type::FRUIT] = false;
+	matrix[Collider::Type::PLAYER][Collider::Type::FRUIT] = true;
 	matrix[Collider::Type::PLAYER][Collider::Type::COIN] = true;
 	matrix[Collider::Type::PLAYER][Collider::Type::CHECKPOINT] = false;
 	matrix[Collider::Type::PLAYER][Collider::Type::GOAL] = false;
@@ -50,7 +50,7 @@ Collisions::Collisions()
 	matrix[Collider::Type::FRUIT][Collider::Type::AIR] = false;
 	matrix[Collider::Type::FRUIT][Collider::Type::SOLID] = false;
 	matrix[Collider::Type::FRUIT][Collider::Type::SPIKE] = false;
-	matrix[Collider::Type::FRUIT][Collider::Type::PLAYER] = false;
+	matrix[Collider::Type::FRUIT][Collider::Type::PLAYER] = true;
 	matrix[Collider::Type::FRUIT][Collider::Type::FRUIT] = false;
 	matrix[Collider::Type::FRUIT][Collider::Type::COIN] = false;
 	matrix[Collider::Type::FRUIT][Collider::Type::CHECKPOINT] = false;

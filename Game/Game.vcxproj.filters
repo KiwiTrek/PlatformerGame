@@ -87,6 +87,9 @@
     <ClCompile Include="Source\Coin.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Fruit.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App.h" />
@@ -208,6 +211,9 @@
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source\Coin.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Fruit.h">
       <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>

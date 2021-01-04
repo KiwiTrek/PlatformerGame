@@ -82,6 +82,7 @@ public:
 	SDL_Texture* ground;
 	SDL_Texture* flying;
 	SDL_Texture* coin;
+	SDL_Texture* fruit;
 
 	// Pause menu
 	iPoint cameraPos;

@@ -410,6 +410,7 @@ bool Player::Update(float dt)
 		}
 
 		// Fruit collection
+		/*
 		if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId", true, true) == Collider::Type::FRUIT)
 		{
 			if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "NoDraw", true, true) == 0)
@@ -423,6 +424,7 @@ bool Player::Update(float dt)
 				app->scene->fruitCounter++;
 			}
 		}
+		*/
 
 		// Win condition
 		if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId", true, true) == Collider::Type::GOAL)
@@ -658,5 +660,11 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 			currentAnim = &hit;
 			isHit = true;
 		}
+	}
+	else if (c2->type == Collider::Type::FRUIT)
+	{
+		lives++;
+		heartMore = true;
+		heartRecovered.Reset();
 	}
 }

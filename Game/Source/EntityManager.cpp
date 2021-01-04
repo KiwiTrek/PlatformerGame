@@ -18,6 +18,7 @@
 #include "EnemyFlying.h"
 #include "EnemyGround.h"
 #include "Coin.h"
+#include "Fruit.h"
 
 #include "Scene.h"
 
@@ -123,6 +124,10 @@ bool EntityManager::Start()
 	tmp.Clear();
 	tmp.Create("%s%s", folderMap.GetString(), "level_1_tileset.png");
 	coin = app->tex->Load(tmp.GetString());
+
+	tmp.Clear();
+	tmp.Create("%s%s", folderMap.GetString(), "level_1_tileset.png");
+	fruit = app->tex->Load(tmp.GetString());
 
 	app->gui->Enable();
 	// Pause Menu
@@ -254,6 +259,11 @@ Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playe
 		ret = new Coin(x, y);
 		break;
 	}
+	case EntityType::FRUIT:
+	{
+		ret = new Fruit(x, y);
+		break;
+	}
 	default:
 	{
 		break;
@@ -349,13 +359,17 @@ bool EntityManager::PostUpdate()
 	ListItem<Entity*>* e = entities.start;
 	while (e != nullptr)
 	{
-		if (e->data->currentAnim != nullptr)
-		{
-			e->data->Draw();
-		}
+		//if (e->data->currentAnim != nullptr)
+		//{
+		//	e->data->Draw();
+		//}
 		if (e->data->pendingToDelete == true)
 		{
 			DestroyEntity(e->data);
+		}
+		else
+		{
+			e->data->Draw();
 		}
 		e = e->next;
 	}
@@ -496,6 +510,9 @@ bool EntityManager::Load(pugi::xml_node& save)
 		case 2:
 			type = EntityType::COIN;
 			break;
+		case 3:
+			type = EntityType::FRUIT;
+			break;
 		default:
 			type = EntityType::UNKNOWN;
 			break;
@@ -560,6 +577,11 @@ bool EntityManager::Save(pugi::xml_node& save)
 		case EntityType::COIN:
 		{
 			type = 2;
+			break;
+		}
+		case EntityType::FRUIT:
+		{
+			type = 3;
 			break;
 		}
 		default:
