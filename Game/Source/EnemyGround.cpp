@@ -50,7 +50,6 @@ EnemyGround::EnemyGround(int x, int y, EnemyType typeOfEnemy, Entity* playerPoin
 	hurt.Reset();
 	attack.Reset();
 
-	entityTex = app->entities->ground;
 	physics.verlet = true;
 
 	invert = true;

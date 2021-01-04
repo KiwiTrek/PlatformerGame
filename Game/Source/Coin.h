@@ -22,7 +22,7 @@ public:
 
 private:
 	Animation rotating;
-
+	SDL_Texture* coinTex;
 	uint coinFx;
 };
 

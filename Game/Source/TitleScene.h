@@ -42,6 +42,8 @@ public:
 	// Declare on mouse click event
 	bool OnGuiMouseClickEvent(GuiControl* control);
 
+	bool loadRequest;
+
 private:
 	SDL_Texture* titleScreen;
 	SString folderTexture;

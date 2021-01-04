@@ -39,7 +39,7 @@ public:
 	bool CleanUp();
 
 	// Additional methods
-	Entity* CreateEntity(int x, int y, EntityType type, Entity* playerPointer = nullptr, EnemyType eType = EnemyType::NO_TYPE, int listNumber = 0);
+	Entity* CreateEntity(int x, int y, EntityType type, Entity* playerPointer = nullptr, EnemyType eType = EnemyType::NO_TYPE);
 	void DestroyEntity(Entity* entity);
 
 	bool UpdateAll(float dt, bool doLogic);
@@ -56,10 +56,7 @@ public:
 public:
 
 	List<Entity*> entities;
-	List<Entity*> loadingEntities;
 
-	float accumulatedTime = 0.0f;
-	float updateMsCycle = 0.0f;
 	bool doLogic = false;
 
 	SString folderTexture;
@@ -85,6 +82,7 @@ public:
 	SDL_Texture* fruit;
 
 	// Pause menu
+	bool pause;
 	iPoint cameraPos;
 	iPoint cameraSize;
 

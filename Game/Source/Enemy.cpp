@@ -52,7 +52,21 @@ bool Enemy::Draw()
 {
 	if (currentAnim != nullptr)
 	{
-		app->render->DrawTexture(entityTex, entityRect.x, entityRect.y, false, &(currentAnim->GetCurrentFrame()), invert);
+		switch (eType)
+		{
+		case GROUND:
+		{
+			app->render->DrawTexture(app->entities->ground, entityRect.x, entityRect.y, false, &(currentAnim->GetCurrentFrame()), invert);
+			break;
+		}
+		case FLYING:
+		{
+			app->render->DrawTexture(app->entities->flying, entityRect.x, entityRect.y, false, &(currentAnim->GetCurrentFrame()), invert);
+			break;
+		}
+		default:
+			break;
+		}
 	}
 
 	if (app->render->drawAll)

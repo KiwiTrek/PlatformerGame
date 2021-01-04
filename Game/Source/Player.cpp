@@ -21,8 +21,28 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	{
 		spawnPos = GetSpawnPoint();
 	}
-	else {
+	else
+	{
 		spawnPos = { x,y };
+		//app->render->camera.x = -(spawnPos.x - app->render->camera.w / 2);
+		//app->render->camera.y = -(spawnPos.y - app->render->camera.h / 2 - app->generalTileSize);
+		//if (app->render->camera.x >= 0)
+		//{
+		//	app->render->camera.x = 0;
+		//}
+		//if (app->render->camera.y >= 0)
+		//{
+		//	app->render->camera.y = 0;
+		//}
+
+		//while ((app->render->camera.w - app->render->camera.x) > (app->map->data.width * app->map->data.tileWidth))
+		//{
+		//	app->render->camera.x += app->map->data.tileWidth;
+		//}
+		//while ((app->render->camera.h - app->render->camera.y) > (app->map->data.height * app->map->data.tileHeight))
+		//{
+		//	app->render->camera.y += app->map->data.tileHeight;
+		//}
 	}
 	pendingToDelete = false;
 	entityRect = { spawnPos.x, spawnPos.y, app->generalTileSize, app->generalTileSize };
@@ -59,10 +79,6 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	hitFx = app->entities->hitFx;
 	slashFx = app->entities->slashFx;
 	checkpointFx = app->entities->checkpointFx;
-
-	// Textures
-	playerHeart = app->entities->playerHeart;
-	entityTex = app->entities->playerTex;
 
 	// Animations
 	for (int i = 0; i != 9; ++i)
@@ -191,23 +207,33 @@ bool Player::Update(float dt)
 
 	if (isDead == false)
 	{
+		if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+		{
+			app->entities->pause = true;
+		}
+
 		if (godMode)
 		{
+			resultingMove = 250.0f;
+			if (app->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
+			{
+				resultingMove *= 3;
+			}
 			if (app->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 			{
-				nextPos.y -= floor(250.0f * dt);
+				nextPos.y -= floor(resultingMove * dt);
 				physics.positiveSpeedY = false;
 				keyPressed = true;
 			}
 			if (app->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 			{
-				nextPos.y += floor(250.0f * dt);
+				nextPos.y += floor(resultingMove * dt);
 				physics.positiveSpeedY = true;
 				keyPressed = true;
 			}
 			if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_D) != KEY_REPEAT)
 			{
-				nextPos.x -= floor(250.0f * dt);
+				nextPos.x -= floor(resultingMove * dt);
 				currentAnim = &run;
 				if (invert == false)
 				{
@@ -217,7 +243,7 @@ bool Player::Update(float dt)
 			}
 			if (app->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && app->input->GetKey(SDL_SCANCODE_A) != KEY_REPEAT)
 			{
-				nextPos.x += floor(250.0f * dt);
+				nextPos.x += floor(resultingMove * dt);
 				currentAnim = &run;
 				if (invert == true)
 				{
@@ -225,8 +251,10 @@ bool Player::Update(float dt)
 				}
 				keyPressed = true;
 			}
+			app->render->camera.x = -(entityRect.x - app->render->camera.w / 2 + entityRect.w);
+			app->render->camera.y = -(entityRect.y - app->render->camera.h / 2 - app->generalTileSize + entityRect.h);
 		}
-		else if (hitCD == 0)
+		else if (!isHit)
 		{
 			if (jumpCounter > 0)
 			{
@@ -409,23 +437,6 @@ bool Player::Update(float dt)
 			onceCheckpoint = true;
 		}
 
-		// Fruit collection
-		/*
-		if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId", true, true) == Collider::Type::FRUIT)
-		{
-			if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "NoDraw", true, true) == 0)
-			{
-				lives++;
-				heartMore = true;
-				heartRecovered.Reset();
-				app->map->SetTileProperty(entityRect.x / app->generalTileSize, entityRect.y / app->generalTileSize, "NoDraw", 1, true, true);
-				app->audio->PlayFx(fruitFx);
-				app->scene->scoreValue += 100;
-				app->scene->fruitCounter++;
-			}
-		}
-		*/
-
 		// Win condition
 		if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId", true, true) == Collider::Type::GOAL)
 		{
@@ -470,14 +481,6 @@ bool Player::Update(float dt)
 		if (hitCD != 0)
 		{
 			hitCD--;
-			if (invert)
-			{
-				entityRect.x += floor(250.0f * dt);
-			}
-			else
-			{
-				entityRect.x -= floor(250.0f * dt);
-			}
 		}
 	}
 
@@ -514,16 +517,16 @@ bool Player::Draw()
 	{
 		if (isAttacking)
 		{
-			app->render->DrawTexture(entityTex, entityRect.x - 40, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
+			app->render->DrawTexture(app->entities->playerTex, entityRect.x - 40, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
 		}
 		else
 		{
-			app->render->DrawTexture(entityTex, entityRect.x + 8, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
+			app->render->DrawTexture(app->entities->playerTex, entityRect.x + 8, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
 		}
 	}
 	else
 	{
-		app->render->DrawTexture(entityTex, entityRect.x, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
+		app->render->DrawTexture(app->entities->playerTex, entityRect.x, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
 	}
 
 	if (app->render->drawAll)
@@ -538,11 +541,11 @@ bool Player::Draw()
 	iPoint tmp(-app->render->camera.x, -app->render->camera.y);
 	for (int i = lives - 1; i > 0; i--)
 	{
-		app->render->DrawTexture(playerHeart, tmp.x + (i * 68) - app->generalTileSize, tmp.y, false, &heartRecovered.GetLastFrame());
+		app->render->DrawTexture(app->entities->playerHeart, tmp.x + (i * 68) - app->generalTileSize, tmp.y, false, &heartRecovered.GetLastFrame());
 	}
 	if (heartMore && !heartLess)
 	{
-		app->render->DrawTexture(playerHeart, tmp.x + (lives * 68) - app->generalTileSize, tmp.y, false, &heartRecovered.GetCurrentFrame());
+		app->render->DrawTexture(app->entities->playerHeart, tmp.x + (lives * 68) - app->generalTileSize, tmp.y, false, &heartRecovered.GetCurrentFrame());
 		if (heartRecovered.HasFinished())
 		{
 			heartMore = false;
@@ -550,8 +553,8 @@ bool Player::Draw()
 	}
 	else if (heartLess && !heartMore)
 	{
-		app->render->DrawTexture(playerHeart, tmp.x + ((lives + 1) * 68) - app->generalTileSize, tmp.y, false, &heartDestroyed.GetCurrentFrame());
-		app->render->DrawTexture(playerHeart, tmp.x + (lives * 68) - app->generalTileSize, tmp.y, false, &heartRecovered.GetLastFrame());
+		app->render->DrawTexture(app->entities->playerHeart, tmp.x + ((lives + 1) * 68) - app->generalTileSize, tmp.y, false, &heartDestroyed.GetCurrentFrame());
+		app->render->DrawTexture(app->entities->playerHeart, tmp.x + (lives * 68) - app->generalTileSize, tmp.y, false, &heartRecovered.GetLastFrame());
 		if (heartDestroyed.HasFinished())
 		{
 			heartLess = false;
@@ -559,40 +562,11 @@ bool Player::Draw()
 	}
 	else
 	{
-		app->render->DrawTexture(playerHeart, tmp.x + (lives * 68) - app->generalTileSize, tmp.y, false, &heartRecovered.GetLastFrame());
+		app->render->DrawTexture(app->entities->playerHeart, tmp.x + (lives * 68) - app->generalTileSize, tmp.y, false, &heartRecovered.GetLastFrame());
 	}
 
 	return true;
 }
-
-/*
-bool Player::Load(pugi::xml_node& save)
-{
-	LOG("Loading player coordinates");
-	bool ret = true;
-
-	entityRect.x = save.child("coordinates").attribute("x").as_int();
-	entityRect.y = save.child("coordinates").attribute("y").as_int();
-	score = save.child("score").attribute("value").as_int(0);
-	lives = save.child("life").attribute("value").as_int(3);
-
-	return ret;
-}
-
-bool Player::Save(pugi::xml_node& save)
-{
-	LOG("Saving player coordinates");
-	bool ret = true;
-
-	pugi::xml_node player = save.append_child("coordinates");
-	player.append_attribute("x").set_value(entityRect.x);
-	player.append_attribute("y").set_value(entityRect.y);
-	save.append_child("score").append_attribute("value").set_value(score);
-	save.append_child("life").append_attribute("value").set_value(lives);
-
-	return ret;
-}
-*/
 
 iPoint Player::GetSpawnPoint()
 {
@@ -646,7 +620,7 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 	if (c2->type == Collider::Type::ENEMY && hitCD == 0 && !isAttacking)
 	{
 		LOG("Enemy collision!\n");
-		hitCD = 15;
+		hitCD = 50;
 		heartLess = true;
 		heartDestroyed.Reset();
 		lives--;

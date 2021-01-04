@@ -10,6 +10,7 @@
 #include "GuiManager.h"
 #include "Collisions.h"
 #include "Transition.h"
+#include "TitleScene.h"
 #include "DeathScene.h"
 #include "PathFinding.h"
 
@@ -339,37 +340,6 @@ bool Scene::Start()
 		case 2:
 			tmp = 2;
 			break;
-		case 3:
-			tmp = 26;
-			break;
-		case 4:
-			tmp = 27;
-			break;
-		case 5:
-			tmp = 28;
-			break;
-		case 6:
-			tmp = 75;
-			break;
-		default:
-			break;
-		}
-		app->entities->CreateEntity(app->map->data.tileWidth * (9 + tmp), app->map->data.tileHeight * 11, EntityType::COIN);
-	}
-	for (int i = 0; i != 7; i++)
-	{
-		int tmp = 0;
-		switch (i)
-		{
-		case 0:
-			tmp = 0;
-			break;
-		case 1:
-			tmp = 1;
-			break;
-		case 2:
-			tmp = 2;
-			break;
 		default:
 			break;
 		}
@@ -400,6 +370,12 @@ bool Scene::Start()
 	cameraPos = { -app->render->camera.x, -app->render->camera.y };
 	cameraSize = { app->render->camera.w, app->render->camera.h };
 
+	if (app->titleScene->loadRequest)
+	{
+		app->titleScene->loadRequest = false;
+		app->LoadRequest();
+	}
+
 	return true;
 }
 
@@ -420,11 +396,6 @@ bool Scene::Update(float dt)
 			timerValue = 0.0f;
 			player->isDead = true;
 		}
-	}
-
-	if (app->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
-	{
-		app->audio->MuteVolume();
 	}
 
 	if (app->entities->exitRequest)
@@ -495,7 +466,7 @@ bool Scene::PostUpdate()
 	for (int i = 0; (wmb * i) <= (w - app->render->camera.x); i++)
 	{
 		app->render->DrawTexture(mountainsBack, wmb * i, app->map->data.tileHeight * 7, false, nullptr, false, 0.4f);
-		app->render->DrawTexture(clouds, wmb * i, app->map->data.tileHeight * 3, false, nullptr, false, 0.5f);
+		app->render->DrawTexture(clouds, wmb * i, app->map->data.tileHeight * 2, false, nullptr, false, 0.5f);
 		app->render->DrawTexture(mountainsFront, wmb * i, app->map->data.tileHeight * 9, false, nullptr, false, 0.85f);
 	}
 

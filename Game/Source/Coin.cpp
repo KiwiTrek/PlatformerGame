@@ -26,9 +26,6 @@ Coin::Coin(int x, int y) : Entity(x, y, EntityType::COIN)
 	// Fx
 	coinFx = app->entities->coinFx;
 
-	// Textures
-	entityTex = app->entities->coin;
-
 	for (int i = 0; i != 6; ++i)
 	{
 		rotating.PushBack({ (i * 64) + 384,0, 64, 64 });
@@ -49,7 +46,7 @@ bool Coin::Update(float dt)
 
 bool Coin::Draw()
 {
-	app->render->DrawTexture(entityTex, entityRect.x, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
+	app->render->DrawTexture(app->entities->coin, entityRect.x, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
 
 	if (app->render->drawAll)
 	{

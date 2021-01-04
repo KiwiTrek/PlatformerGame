@@ -42,7 +42,6 @@ EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy, Entity* playerPoin
 	hurt.Reset();
 	attack.Reset();
 
-	entityTex = app->entities->flying;
 	physics.verlet = false;
 
 	invert = true;

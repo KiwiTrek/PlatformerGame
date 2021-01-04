@@ -227,18 +227,6 @@ bool Audio::SetFxVolume(uint index)
 	return false;
 }
 
-void Audio::MuteVolume()
-{
-	if (Mix_VolumeMusic(-1) == 0)
-	{
-		Mix_VolumeMusic(MIX_MAX_VOLUME);
-	}
-	else
-	{
-		Mix_VolumeMusic(0);
-	}
-}
-
 int Audio::GetMusicVolume()
 {
 	return Mix_VolumeMusic(-1);

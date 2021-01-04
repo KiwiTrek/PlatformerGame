@@ -25,16 +25,13 @@ public:
 	// Collision response
 	void OnCollision(Collider* c1, Collider* c2);
 
-
-	SDL_Texture* playerHeart;
-
 	// Loading variables
 	int lives = 3;
+	float resultingMove = 0.0f;
 
 private:
 	// Gets the coordinates of the spawn point
 	iPoint GetSpawnPoint();
-
 	Collider* hurtBox = nullptr;
 
 	int jumpCounter;

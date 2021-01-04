@@ -61,6 +61,7 @@ public:
 	const char* GetOrganization() const;
 
 	// Request Save/Load
+	bool CheckSaveFile();
 	void LoadRequest();
 	void SaveRequest();
 	void CapRequest();

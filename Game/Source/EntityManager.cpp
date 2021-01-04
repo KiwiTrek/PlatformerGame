@@ -166,6 +166,7 @@ bool EntityManager::Start()
 	btnBack = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 105, { cameraPos.x + 976, cameraPos.x + 553, 217, 109 }, "BACK", this);
 
 	doLogic = true;
+	pause = false;
 
 	return true;
 }
@@ -221,7 +222,7 @@ bool EntityManager::CleanUp()
 	return true;
 }
 
-Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playerPointer, EnemyType eType, int listNumber)
+Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playerPointer, EnemyType eType)
 {
 	Entity* ret = nullptr;
 
@@ -273,17 +274,7 @@ Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playe
 	// Created entities are added to the list
 	if (ret != nullptr)
 	{
-		switch (listNumber)
-		{
-		case 0:
-			entities.Add(ret);
-			break;
-		case 1:
-			loadingEntities.Add(ret);
-			break;
-		default:
-			break;
-		}
+		entities.Add(ret);
 	}
 
 	return ret;
@@ -299,16 +290,11 @@ bool EntityManager::Update(float dt)
 		app->CapRequest();
 	}
 
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
-	{
-		doLogic = false;
-	}
-
 	UpdateAll(dt, doLogic);
 
-	if (!app->entities->doLogic && !settings)
+	if (pause && !settings)
 	{
-		app->entities->doLogic = false;
+		doLogic = false;
 		btnResume->Update(dt);
 		btnSettings->Update(dt);
 		btnTitle->Update(dt);
@@ -336,17 +322,6 @@ bool EntityManager::UpdateAll(float dt, bool doLogic)
 		while (e != nullptr)
 		{
 			e->data->Update(dt);
-			//if (e->data->currentAnim != nullptr)
-			//{
-			//	e->data->currentAnim->Update(dt);
-			//}
-			//e->data->physics.UpdatePhysics(e->data->nextPos, dt);
-			//e->data->physics.ResolveCollisions(e->data->entityRect, e->data->nextPos, e->data->invert);
-			//if (e->data->collider != nullptr)
-			//{
-			//	e->data->collider->SetPos(e->data->entityRect.x, e->data->entityRect.y, e->data->currentAnim->GetCurrentFrame().w, e->data->currentAnim->GetCurrentFrame().h);
-			//}
-			//e->data->PostUpdate(dt);
 			e = e->next;
 		}
 	}
@@ -359,10 +334,6 @@ bool EntityManager::PostUpdate()
 	ListItem<Entity*>* e = entities.start;
 	while (e != nullptr)
 	{
-		//if (e->data->currentAnim != nullptr)
-		//{
-		//	e->data->Draw();
-		//}
 		if (e->data->pendingToDelete == true)
 		{
 			DestroyEntity(e->data);
@@ -401,7 +372,10 @@ bool EntityManager::PostUpdate()
 
 void EntityManager::DestroyEntity(Entity* entity)
 {
-	entity->collider->pendingToDelete = true;
+	if (entity->collider != nullptr)
+	{
+		entity->collider->pendingToDelete = true;
+	}
 	int i = entities.Find(entity);
 	delete entities[i];
 	entities.Del(entities.At(i));
@@ -424,8 +398,8 @@ bool EntityManager::OnGuiMouseClickEvent(GuiControl* control)
 	{
 	case 1:	//Resume
 	{
-		doLogic = false;
-		app->entities->doLogic = true;
+		doLogic = true;
+		pause = false;
 		break;
 	}
 	case 2: //Settings
@@ -540,9 +514,6 @@ bool EntityManager::Load(pugi::xml_node& save)
 			CreateEntity(x, y, type, pp, eType);
 		}
 	}
-
-	//entities = loadingEntities;
-	//loadingEntities.Clear();
 	return ret;
 }
 

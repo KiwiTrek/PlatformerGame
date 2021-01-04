@@ -68,6 +68,7 @@ SDL_Texture* const Textures::Load(const char* path)
 	{
 		texture = LoadSurface(surface);
 		SDL_FreeSurface(surface);
+		LOG("Successfully loaded texture from %s", path);
 	}
 
 	return texture;

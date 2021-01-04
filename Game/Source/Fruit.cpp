@@ -27,14 +27,11 @@ Fruit::Fruit(int x, int y) : Entity(x, y, EntityType::FRUIT)
 
 	// Fx
 	fruitFx = app->entities->fruitFx;
-
-	// Textures
-	entityTex = app->entities->fruit;
 }
 
 bool Fruit::Draw()
 {
-	app->render->DrawTexture(entityTex, entityRect.x, entityRect.y, false, &fruitSect, invert);
+	app->render->DrawTexture(app->entities->fruit, entityRect.x, entityRect.y, false, &fruitSect, invert);
 
 	if (app->render->drawAll)
 	{

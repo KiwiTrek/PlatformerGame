@@ -41,9 +41,6 @@ public:
 	// Play a previously loaded WAV
 	bool PlayFx(uint fx, int repeat = 0);
 
-	// Set volume to 0
-	void MuteVolume();
-
 	// Save/Load
 	bool Load(pugi::xml_node&);
 	bool Save(pugi::xml_node&);

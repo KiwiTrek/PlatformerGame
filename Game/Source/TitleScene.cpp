@@ -78,7 +78,10 @@ bool TitleScene::Start()
 	btnCredits = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 4, { 753, 553, 217, 109 }, "CREDITS", this);
 	btnExit = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 5, { 976, 553, 217, 109 }, "EXIT", this);
 
-	btnContinue->state = GuiControlState::DISABLED;
+	if (!app->CheckSaveFile())
+	{
+		btnContinue->state = GuiControlState::DISABLED;
+	}
 
 	float tmpValue = 0;
 	settings = false;
@@ -97,6 +100,8 @@ bool TitleScene::Start()
 	chckFullscreen->checked = app->win->fullscreenWindow;
 	chckVsync = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 104, { (1280 / 4) + 132,440,54,54 }, "VSync", this);
 	chckVsync->checked = app->vsync;
+
+	loadRequest = false;
 
 	return true;
 }
@@ -239,6 +244,12 @@ bool TitleScene::OnGuiMouseClickEvent(GuiControl* control)
 		case 1:	//Play
 		{
 			app->transition->FadeEffect(this, (Module*)app->scene, false, floor(1200.0f * dtTmp));
+			break;
+		}
+		case 2: //Continue
+		{
+			app->transition->FadeEffect(this, (Module*)app->scene, false, floor(1200.0f * dtTmp));
+			loadRequest = true;
 			break;
 		}
 		case 3: //Settings
