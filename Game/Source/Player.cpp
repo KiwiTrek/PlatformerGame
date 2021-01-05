@@ -20,32 +20,18 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	if (x == -1 && y == -1)
 	{
 		spawnPos = GetSpawnPoint();
+		entityRect = { spawnPos.x, spawnPos.y, app->generalTileSize, app->generalTileSize };
 	}
 	else
 	{
-		spawnPos = { x,y };
-		//app->render->camera.x = -(spawnPos.x - app->render->camera.w / 2);
-		//app->render->camera.y = -(spawnPos.y - app->render->camera.h / 2 - app->generalTileSize);
-		//if (app->render->camera.x >= 0)
-		//{
-		//	app->render->camera.x = 0;
-		//}
-		//if (app->render->camera.y >= 0)
-		//{
-		//	app->render->camera.y = 0;
-		//}
-
-		//while ((app->render->camera.w - app->render->camera.x) > (app->map->data.width * app->map->data.tileWidth))
-		//{
-		//	app->render->camera.x += app->map->data.tileWidth;
-		//}
-		//while ((app->render->camera.h - app->render->camera.y) > (app->map->data.height * app->map->data.tileHeight))
-		//{
-		//	app->render->camera.y += app->map->data.tileHeight;
-		//}
+		if (firstCheckpoint)
+		{
+			spawnPos = { 77 * app->generalTileSize, 3 * app->generalTileSize };
+		}
+		entityRect = { x, y, app->generalTileSize, app->generalTileSize };
+		updateCamera = true;
 	}
 	pendingToDelete = false;
-	entityRect = { spawnPos.x, spawnPos.y, app->generalTileSize, app->generalTileSize };
 	collider = app->collisions->AddCollider(entityRect, Collider::Type::PLAYER, (Module*)app->entities);
 
 	playerSize = 128;
@@ -172,6 +158,29 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 
 bool Player::Update(float dt)
 {
+	if (updateCamera == true)
+	{
+		updateCamera = false;
+		app->render->camera.x = -(entityRect.x - app->render->camera.w / 2);
+		app->render->camera.y = -(entityRect.y - app->render->camera.h / 2 - app->generalTileSize);
+		if (app->render->camera.x >= 0)
+		{
+			app->render->camera.x = 0;
+		}
+		if (app->render->camera.y >= 0)
+		{
+			app->render->camera.y = 0;
+		}
+
+		while ((app->render->camera.w - app->render->camera.x) > (app->map->data.width * app->map->data.tileWidth))
+		{
+			app->render->camera.x += app->map->data.tileWidth;
+		}
+		while ((app->render->camera.h - app->render->camera.y) > (app->map->data.height * app->map->data.tileHeight))
+		{
+			app->render->camera.y += app->map->data.tileHeight;
+		}
+	}
 	currentAnim->Update(dt);
 	if (heartMore)
 	{
@@ -429,12 +438,14 @@ bool Player::Update(float dt)
 				//2,11
 				entityRect.x = 2 * app->generalTileSize;
 				entityRect.y = 11 * app->generalTileSize;
+				firstCheckpoint = false;
 			}
 			else
 			{
 				//77,3
 				entityRect.x = 77 * app->generalTileSize;
 				entityRect.y = 3 * app->generalTileSize;
+				firstCheckpoint = true;
 			}
 			LOG("%d,%d", entityRect.x, entityRect.y);
 
@@ -443,8 +454,6 @@ bool Player::Update(float dt)
 
 			physics.speed.x = 0.0f;
 			physics.speed.y = 0.0f;
-
-			firstCheckpoint = !firstCheckpoint;
 		}
 
 		// Checkpoint
@@ -456,6 +465,7 @@ bool Player::Update(float dt)
 				spawnPos.y = entityRect.y;
 				app->audio->PlayFx(checkpointFx);
 				onceCheckpoint = false;
+				firstCheckpoint = true;
 			}
 		}
 		else
@@ -534,6 +544,9 @@ bool Player::Update(float dt)
 	{
 		entityRect.x -= floor(250.0f * dt);
 	}
+
+	LOG("%d,%d", entityRect.x, entityRect.y);
+
 	return true;
 }
 

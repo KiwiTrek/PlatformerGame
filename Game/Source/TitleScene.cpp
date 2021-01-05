@@ -323,6 +323,7 @@ bool TitleScene::OnGuiMouseClickEvent(GuiControl* control)
 		}
 		case 104: // VSYNC
 		{
+			app->win->ToggleFullscreen(false);
 			app->render->ToggleVsync(chckVsync->checked, (Module*)this);
 			break;
 		}

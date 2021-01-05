@@ -168,6 +168,15 @@ bool EntityManager::Start()
 	doLogic = true;
 	pause = false;
 
+	ListItem<Entity*>* e = entities.start;
+	while (e != nullptr)
+	{
+		ListItem<Entity*>* eNext = e->next;
+		DestroyEntity(e->data);
+		e = eNext;
+	}
+	entities.Clear();
+
 	return true;
 }
 
@@ -181,6 +190,7 @@ bool EntityManager::CleanUp()
 		DestroyEntity(e->data);
 		e = eNext;
 	}
+	entities.Clear();
 
 	app->tex->UnLoad(playerTex);
 	app->tex->UnLoad(ground);
@@ -464,6 +474,7 @@ bool EntityManager::OnGuiMouseClickEvent(GuiControl* control)
 	}
 	case 104: // VSYNC
 	{
+		app->win->ToggleFullscreen(false);
 		app->render->ToggleVsync(chckVsync->checked, (Module*)app->scene);
 		break;
 	}
@@ -537,7 +548,8 @@ bool EntityManager::Load(pugi::xml_node& save)
 		if (type == EntityType::PLAYER)
 		{
 			pp = (Player*)CreateEntity(x, y, type, nullptr, eType);
-			pp->lives = entity.child("lives").attribute("value").as_int();
+			pp->lives = entity.child("lives").attribute("value").as_int(3);
+			pp->firstCheckpoint = entity.child("checkpoint").attribute("value").as_bool();
 		}
 		else
 		{
@@ -567,6 +579,7 @@ bool EntityManager::Save(pugi::xml_node& save)
 		{
 			Player* pp = (Player*)e->data;
 			entity.append_child("lives").append_attribute("value").set_value(pp->lives);
+			entity.append_child("checkpoint").append_attribute("value").set_value(pp->firstCheckpoint);
 			type = 0;
 			break;
 		}

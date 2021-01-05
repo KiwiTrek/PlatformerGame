@@ -55,7 +55,6 @@ public:
 		iPoint tiledPos(currentFrame.x / app->generalTileSize, currentFrame.y / app->generalTileSize);
 		iPoint correctedPos;
 		iPoint checkedPos;
-		//LOG("past: %d,%d current: %d,%d\n", playerRect.x, playerRect.y, nextFrame.x, nextFrame.y);
 
 		// X axis
 		if (!goingLeft) { // right
@@ -94,7 +93,6 @@ public:
 			i--;
 			correctedPos.y = -MIN(currentFrame.y - nextFrame.y, currentFrame.y - (tiledPos.y - i) * app->generalTileSize);
 		}
-		LOG("%d", correctedPos.x);
 		currentFrame.x += correctedPos.x;
 		currentFrame.y += correctedPos.y;
 

@@ -11,28 +11,29 @@
 	<titleScene />
 	<deathScene />
 	<scene>
-		<score value="550" />
-		<coin value="11" />
+		<score value="1350" />
+		<coin value="27" />
 		<fruit value="0" />
-		<timer value="465.375488" />
+		<timer value="457.094543" />
 	</scene>
 	<map />
 	<fonts />
 	<guiManager />
 	<entityManager>
 		<entity>
-			<coordinates x="7546" y="256" />
+			<coordinates x="5239" y="192" />
 			<lives value="3" />
+			<checkpoint value="true" />
 			<type value="0" />
 			<eType value="0" />
 		</entity>
 		<entity>
-			<coordinates x="7271" y="222" />
+			<coordinates x="6592" y="192" />
 			<type value="1" />
 			<eType value="2" />
 		</entity>
 		<entity>
-			<coordinates x="2280" y="512" />
+			<coordinates x="2456" y="768" />
 			<type value="1" />
 			<eType value="1" />
 		</entity>
@@ -62,57 +63,12 @@
 			<eType value="0" />
 		</entity>
 		<entity>
-			<coordinates x="4480" y="128" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="4544" y="128" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="4992" y="128" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="5056" y="128" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
 			<coordinates x="5120" y="128" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>
 		<entity>
 			<coordinates x="5184" y="128" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="3584" y="256" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="3648" y="256" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="3712" y="256" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="3776" y="256" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="4736" y="256" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>
@@ -132,32 +88,7 @@
 			<eType value="0" />
 		</entity>
 		<entity>
-			<coordinates x="3520" y="320" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="3584" y="320" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="3648" y="320" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
 			<coordinates x="3712" y="320" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="3776" y="320" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="3840" y="320" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>
@@ -182,17 +113,22 @@
 			<eType value="0" />
 		</entity>
 		<entity>
-			<coordinates x="3072" y="384" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="3136" y="384" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
 			<coordinates x="4736" y="384" />
+			<type value="2" />
+			<eType value="0" />
+		</entity>
+		<entity>
+			<coordinates x="6592" y="384" />
+			<type value="2" />
+			<eType value="0" />
+		</entity>
+		<entity>
+			<coordinates x="6656" y="384" />
+			<type value="2" />
+			<eType value="0" />
+		</entity>
+		<entity>
+			<coordinates x="6912" y="384" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>
@@ -212,22 +148,12 @@
 			<eType value="0" />
 		</entity>
 		<entity>
-			<coordinates x="3008" y="448" />
+			<coordinates x="4736" y="448" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>
 		<entity>
-			<coordinates x="1152" y="512" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="1216" y="512" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="1088" y="576" />
+			<coordinates x="4736" y="512" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>
@@ -252,17 +178,12 @@
 			<eType value="0" />
 		</entity>
 		<entity>
-			<coordinates x="576" y="704" />
+			<coordinates x="2240" y="704" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>
 		<entity>
-			<coordinates x="640" y="704" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="704" y="704" />
+			<coordinates x="2304" y="704" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>

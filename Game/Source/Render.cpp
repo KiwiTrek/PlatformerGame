@@ -253,13 +253,6 @@ bool Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uin
 	return ret;
 }
 
-// UNSTABLE GLITCH!!!!!
-// Toggling vsync
-// Toggling fullscreen
-// Untoggling vsync
-// Untoggling fullscreen
-// Screen turns black
-// Requires improvement
 void Render::ToggleVsync(bool vsync, Module* restart)
 {
 	app->vsync = vsync;
@@ -272,5 +265,16 @@ void Render::ToggleVsync(bool vsync, Module* restart)
 	}
 
 	renderer = SDL_CreateRenderer(app->win->window, -1, flags);
+	if (renderer == NULL)
+	{
+		LOG("Could not create the renderer! SDL_Error: %s\n", SDL_GetError());
+	}
+	else
+	{
+		camera.w = app->win->screenSurface->w;
+		camera.h = app->win->screenSurface->h;
+		camera.x = 0;
+		camera.y = 0;
+	}
 	app->transition->FadeEffect(restart, restart, false, 0.0f);
 }

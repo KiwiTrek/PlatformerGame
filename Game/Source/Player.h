@@ -28,6 +28,7 @@ public:
 	// Loading variables
 	int lives = 3;
 	float resultingMove = 0.0f;
+	bool firstCheckpoint = true;
 
 private:
 	// Gets the coordinates of the spawn point
@@ -47,7 +48,7 @@ private:
 	bool debugDraw = false;
 	bool once = true;
 	bool onceCheckpoint = true;
-	bool firstCheckpoint = true;
+	bool updateCamera = false;
 
 	Animation idle;
 	Animation run;

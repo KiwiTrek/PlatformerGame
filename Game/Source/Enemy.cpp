@@ -45,6 +45,8 @@ bool Enemy::Update(float dt)
 		collider->SetPos(entityRect.x, entityRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
 	}
 
+	LOG("%d,%d", entityRect.x, entityRect.y);
+
 	return true;
 }
 
