@@ -121,12 +121,21 @@ GuiControl* GuiManager::CreateGuiControl(GuiControlType type, uint32 id, SDL_Rec
 
 void GuiManager::DestroyGuiControl(GuiControl* entity)
 {
-	delete entity;
-	entity = nullptr;
+	int i = controls.Find(entity);
+	delete controls[i];
+	controls.Del(controls.At(i));
 }
 
 bool GuiManager::CleanUp()
 {
+	ListItem<GuiControl*>* e = controls.start;
+	while (e != nullptr)
+	{
+		ListItem<GuiControl*>* eNext = e->next;
+		DestroyGuiControl(e->data);
+		e = eNext;
+	}
+
 	app->tex->UnLoad(atlas);
 
 	app->fonts->Unload(defaultFont);

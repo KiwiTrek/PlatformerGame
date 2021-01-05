@@ -210,29 +210,62 @@ bool TitleScene::CleanUp()
 
 	app->tex->UnLoad(titleScreen);
 
-	app->gui->DestroyGuiControl(btnPlay);
-	btnPlay = nullptr;
-	app->gui->DestroyGuiControl(btnContinue);
-	btnContinue = nullptr;
-	app->gui->DestroyGuiControl(btnSettings);
-	btnSettings = nullptr;
-	app->gui->DestroyGuiControl(btnCredits);
-	btnCredits = nullptr;
-	app->gui->DestroyGuiControl(btnExit);
-	btnExit = nullptr;
-	app->gui->DestroyGuiControl(btnBack);
-	btnBack = nullptr;
+	/*if (btnPlay != nullptr)
+	{
+		app->gui->DestroyGuiControl(btnPlay);
+		btnPlay = nullptr;
+	}
+	if (btnContinue != nullptr)
+	{
+		app->gui->DestroyGuiControl(btnContinue);
+		btnContinue = nullptr;
+	}
+	if (btnSettings != nullptr)
+	{
+		app->gui->DestroyGuiControl(btnSettings);
+		btnSettings = nullptr;
+	}
+	if (btnCredits != nullptr)
+	{
+		app->gui->DestroyGuiControl(btnCredits);
+		btnCredits = nullptr;
+	}
+	if (btnExit != nullptr)
+	{
+		app->gui->DestroyGuiControl(btnExit);
+		btnExit = nullptr;
+	}
+	if (btnBack != nullptr)
+	{
+		app->gui->DestroyGuiControl(btnBack);
+		btnBack = nullptr;
+	}
 
-	app->gui->DestroyGuiControl(sldrMusic);
-	sldrMusic = nullptr;
-	app->gui->DestroyGuiControl(sldrFx);
-	sldrFx = nullptr;
-	app->gui->DestroyGuiControl(chckFullscreen);
-	chckFullscreen = nullptr;
-	app->gui->DestroyGuiControl(chckVsync);
-	chckVsync = nullptr;
+	if (sldrMusic != nullptr)
+	{
+		app->gui->DestroyGuiControl(sldrMusic);
+		sldrMusic = nullptr;
+	}
+	if (sldrFx != nullptr)
+	{
+		app->gui->DestroyGuiControl(sldrFx);
+		sldrFx = nullptr;
+	}
+	if (chckFullscreen != nullptr)
+	{
+		app->gui->DestroyGuiControl(chckFullscreen);
+		chckFullscreen = nullptr;
+	}
+	if (chckVsync != nullptr)
+	{
+		app->gui->DestroyGuiControl(chckVsync);
+		chckVsync = nullptr;
+	}*/
 
-	app->gui->Disable();
+	if (app->gui->active)
+	{
+		app->gui->Disable();
+	}
 
 	return true;
 }

@@ -197,27 +197,57 @@ bool EntityManager::CleanUp()
 	app->audio->UnloadFx(enemyDestroyedFx);
 	app->audio->UnloadFx(coinFx);
 
-	app->gui->DestroyGuiControl(btnResume);
-	btnResume = nullptr;
-	app->gui->DestroyGuiControl(btnSettings);
-	btnSettings = nullptr;
-	app->gui->DestroyGuiControl(btnTitle);
-	btnTitle = nullptr;
-	app->gui->DestroyGuiControl(btnExit);
-	btnExit = nullptr;
+	//if (btnResume != nullptr)
+	//{
+	//	app->gui->DestroyGuiControl(btnResume);
+	//	btnResume = nullptr;
+	//}
+	//if (btnSettings != nullptr)
+	//{
+	//	app->gui->DestroyGuiControl(btnSettings);
+	//	btnSettings = nullptr;
+	//}
+	//if (btnTitle != nullptr)
+	//{
+	//	app->gui->DestroyGuiControl(btnTitle);
+	//	btnTitle = nullptr;
+	//}
+	//if (btnExit != nullptr)
+	//{
+	//	app->gui->DestroyGuiControl(btnExit);
+	//	btnExit = nullptr;
+	//}
 
-	app->gui->DestroyGuiControl(sldrMusic);
-	sldrMusic = nullptr;
-	app->gui->DestroyGuiControl(sldrFx);
-	sldrFx = nullptr;
-	app->gui->DestroyGuiControl(chckFullscreen);
-	chckFullscreen = nullptr;
-	app->gui->DestroyGuiControl(chckVsync);
-	chckVsync = nullptr;
-	app->gui->DestroyGuiControl(btnBack);
-	btnBack = nullptr;
+	//if (sldrMusic != nullptr)
+	//{
+	//	app->gui->DestroyGuiControl(sldrMusic);
+	//	sldrMusic = nullptr;
+	//}
+	//if (sldrFx != nullptr)
+	//{
+	//	app->gui->DestroyGuiControl(sldrFx);
+	//	sldrFx = nullptr;
+	//}
+	//if (chckFullscreen != nullptr)
+	//{
+	//	app->gui->DestroyGuiControl(chckFullscreen);
+	//	chckFullscreen = nullptr;
+	//}
+	//if (chckVsync != nullptr)
+	//{
+	//	app->gui->DestroyGuiControl(chckVsync);
+	//	chckVsync = nullptr;
+	//}
+	//if (btnBack != nullptr)
+	//{
+	//	app->gui->DestroyGuiControl(btnBack);
+	//	btnBack = nullptr;
+	//}
 
-	app->gui->Disable();
+	if (app->gui->active)
+	{
+		app->gui->Disable();
+	}
 
 	return true;
 }

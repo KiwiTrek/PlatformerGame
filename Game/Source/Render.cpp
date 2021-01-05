@@ -58,6 +58,7 @@ bool Render::Start()
 
 	SDL_RenderGetViewport(renderer, &viewport);
 	drawAll = false;
+	drawAllGui = false;
 	return true;
 }
 
@@ -72,6 +73,10 @@ bool Render::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 	{
 		drawAll = !drawAll;
+	}
+	if (app->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
+	{
+		drawAllGui = !drawAllGui;
 	}
 	return true;
 }

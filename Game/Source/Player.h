@@ -47,6 +47,7 @@ private:
 	bool debugDraw = false;
 	bool once = true;
 	bool onceCheckpoint = true;
+	bool firstCheckpoint = true;
 
 	Animation idle;
 	Animation run;

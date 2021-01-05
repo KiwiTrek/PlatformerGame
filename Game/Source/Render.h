@@ -51,6 +51,7 @@ public:
 public:
 	// Debug drawing
 	bool drawAll;
+	bool drawAllGui;
 
 	SDL_Renderer* renderer;
 	SDL_Rect camera = { 0,0,0,0 };

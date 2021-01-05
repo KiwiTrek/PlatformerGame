@@ -59,7 +59,7 @@ public:
 
     // Possible properties, it depends on how generic we
     // want our Entity class, maybe it's not renderable...
-    iPoint position;        // Use a float instead?
+    //iPoint position;        // Use a float instead?
     SDL_Rect entityRect;
     Physics physics;
     iPoint nextPos;

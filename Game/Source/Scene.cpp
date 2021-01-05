@@ -81,7 +81,7 @@ bool Scene::Start()
 	app->collisions->Enable();
 
 	scoreValue = 0;
-
+	LOG("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 	app->entities->Enable();
 	player = app->entities->CreateEntity(-1, -1, EntityType::PLAYER);
 	app->entities->CreateEntity(app->map->data.tileWidth * 103, app->map->data.tileHeight * 3, EntityType::ENEMY, player, EnemyType::FLYING);

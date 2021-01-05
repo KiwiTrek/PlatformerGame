@@ -60,6 +60,6 @@ void Coin::OnCollision(Collider* c1, Collider* c2)
 	app->scene->coinCounter++;
 	app->scene->scoreValue += 50;
 	app->audio->PlayFx(coinFx);
-	pendingToDelete = true;
+	this->pendingToDelete = true;
 	this->collider->pendingToDelete = true;
 }

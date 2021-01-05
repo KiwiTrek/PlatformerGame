@@ -124,12 +124,21 @@ bool DeathScene::CleanUp()
 
 	app->tex->UnLoad(deathScreen);
 
-	app->gui->DestroyGuiControl(btnTitle);
-	btnTitle = nullptr;
-	app->gui->DestroyGuiControl(btnExit);
-	btnExit = nullptr;
+	//if (btnTitle != nullptr)
+	//{
+	//	app->gui->DestroyGuiControl(btnTitle);
+	//	btnTitle = nullptr;
+	//}
+	//if (btnExit != nullptr)
+	//{
+	//	app->gui->DestroyGuiControl(btnExit);
+	//	btnExit = nullptr;
+	//}
 
-	app->gui->Disable();
+	if (app->gui->active)
+	{
+		app->gui->Disable();
+	}
 
 	return true;
 }

@@ -63,6 +63,7 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	debugDraw = false;
 	once = true;
 	onceCheckpoint = true;
+	firstCheckpoint = true;
 	heartLess = false;
 	heartMore = false;
 
@@ -419,6 +420,31 @@ bool Player::Update(float dt)
 		if (!isAttacking && currentAnim != &attack)
 		{
 			collider->SetPos(entityRect.x, entityRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
+		}
+
+		if (app->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN && currentAnim == &idle)
+		{
+			if (firstCheckpoint)
+			{
+				//2,11
+				entityRect.x = 2 * app->generalTileSize;
+				entityRect.y = 11 * app->generalTileSize;
+			}
+			else
+			{
+				//77,3
+				entityRect.x = 77 * app->generalTileSize;
+				entityRect.y = 3 * app->generalTileSize;
+			}
+			LOG("%d,%d", entityRect.x, entityRect.y);
+
+			app->render->camera.x = -(entityRect.x - app->render->camera.w / 2);
+			app->render->camera.y = -(entityRect.y - app->render->camera.h / 2 - app->generalTileSize);
+
+			physics.speed.x = 0.0f;
+			physics.speed.y = 0.0f;
+
+			firstCheckpoint = !firstCheckpoint;
 		}
 
 		// Checkpoint
