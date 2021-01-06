@@ -1,5 +1,5 @@
 # Adventure in Dreamworld
-![TitleScreen](https://github.com/WillyTrek19/PlatformerGame/blob/master/Output/Assets/Textures/title_screen.png)
+![TitleScreen](https://github.com/WillyTrek19/PlatformerGame/blob/master/Output/Assets/Textures/Screens/Title/title.png)
 ## Description
 
 Venture forth an incredible adventure crossing from the deepest of seas to the mysterious floating islands. Grab fruits along the way to challenge your skills of jumping, double jumping and wall jumping. Be careful with the monsters along the way and, at the end of the day, reach the camp in the middle of the floating islands for a well deserved rest!
@@ -10,7 +10,7 @@ Venture forth an incredible adventure crossing from the deepest of seas to the m
  - You can jump and double jump!
  - You can even wall jump! Climb up your way through the steepest of holes!
  - Beat up the enemies along your way with your mighty sword!
- - Collect all the fruits for a greater challenge!
+ - Collect all the fruits & coins for a greater challenge!
  
 ## Controls
 
@@ -25,14 +25,16 @@ Venture forth an incredible adventure crossing from the deepest of seas to the m
 	- A = Go left
 	- S = Go down
 	- D = Go right
+	- LShift = Velocity x3
 
  - DEBUG buttons:
  	- M: Mute Audio
  	- F1: Start from level 1
 	- F3: Restart current level
+	- F4: Kill the player
 	- F5: Save current state
 	- F6: Load current state
-	- F7: Kill the player
+	- F8: View GUI bounds rectangles and state in different colors
 	- F9: Toggle Colliders & Paths
 	- F10: God mode
 	- F11: Cap game to 30 fps or 60 fps
@@ -42,7 +44,7 @@ Venture forth an incredible adventure crossing from the deepest of seas to the m
  - Guillem Álava Burgueño ([Github](https://github.com/WillyTrek19)) - Level Designer & Programer
  - Sergi Colomer Ferrer ([Github](https://github.com/Lladruc37)) - Physics Engineer & Programer
  
- ![Our Logo](https://github.com/WillyTrek19/PlatformerGame/blob/master/Output/Assets/Textures/logo_screen.jpg)
+ ![Our Logo](https://github.com/WillyTrek19/PlatformerGame/blob/master/Output/Assets/Textures/Screens/Logo/logo.png)
  
 ## License
 
