@@ -60,7 +60,7 @@ int Fonts::Load(const char* texturePath, const char* characters, uint rows)
 	font.rows = rows;
 
 	font.totalLength = strlen(characters);
-	strcpy(font.table, characters);
+	strcpy_s(font.table, characters);
 	font.columns = (font.totalLength / rows);
 	app->tex->GetSize(font.texture, font.charW, font.charH);
 	font.charW = font.charW / font.columns;
