@@ -29,7 +29,6 @@ Venture forth an incredible adventure crossing from the deepest of seas to the m
 	- LShift = Velocity x3
 
  - DEBUG buttons:
- 	- M: Mute Audio
  	- F1: Start from level 1
 	- F3: Restart current level
 	- F4: Kill the player
