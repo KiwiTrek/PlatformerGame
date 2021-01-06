@@ -2,7 +2,7 @@
 
 <config>
     <app framerateCap="60">
-        <title>Adventure in Dream World (ALPHA)</title>
+        <title>Adventure in Dream World (GOLD)</title>
         <organization>UPC CITM</organization>
         <generalTileSize value="64"/>
     </app>

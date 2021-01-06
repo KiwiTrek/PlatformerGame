@@ -489,7 +489,6 @@ bool Player::Update(float dt)
 		{
 			lives--;
 			heartLess = true;
-			heartDestroyed.Reset();
 			if (lives == 0)
 			{
 				isDead = true;
@@ -583,6 +582,7 @@ bool Player::Draw()
 		if (heartRecovered.HasFinished())
 		{
 			heartMore = false;
+			heartRecovered.Reset();
 		}
 	}
 	else if (heartLess && !heartMore)
@@ -592,6 +592,7 @@ bool Player::Draw()
 		if (heartDestroyed.HasFinished())
 		{
 			heartLess = false;
+			heartDestroyed.Reset();
 		}
 	}
 	else
@@ -655,7 +656,6 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 	{
 		hitCD = 50;
 		heartLess = true;
-		heartDestroyed.Reset();
 		lives--;
 		if (lives == 0)
 		{
@@ -672,6 +672,5 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 	{
 		lives++;
 		heartMore = true;
-		heartRecovered.Reset();
 	}
 }
