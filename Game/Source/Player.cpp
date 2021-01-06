@@ -153,8 +153,6 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	wallJump.Reset();
 	heartRecovered.Reset();
 	heartDestroyed.Reset();
-
-	heartRecovered.currentFrame = heartRecovered.totalFrames - 1;
 }
 
 bool Player::Update(float dt)
@@ -656,6 +654,7 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 	{
 		hitCD = 50;
 		heartLess = true;
+		heartRecovered.Reset();
 		lives--;
 		if (lives == 0)
 		{
