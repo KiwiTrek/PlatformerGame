@@ -66,7 +66,7 @@
     </titleScene>
 
     <entityManager>
-        <folderTexture>Assets/Textures/Characters/</folderTexture>
+        <folderTexture>Assets/Textures/Entities/</folderTexture>
         <folderAudioFx>Assets/Audio/Fx/</folderAudioFx>
         <folderMap>Assets/Maps/</folderMap>
     </entityManager>
