@@ -11,65 +11,66 @@ class Collider;
 
 enum class EntityType
 {
-    PLAYER,
-    ENEMY,
-    COIN,
-    FRUIT,
-    UNKNOWN
+	PLAYER,
+	ENEMY,
+	COIN,
+	FRUIT,
+	UNKNOWN
 };
 
 enum EnemyType
 {
-    NO_TYPE,
-    GROUND,
-    FLYING
+	NO_TYPE,
+	GROUND,
+	FLYING
 };
 
 class Entity
 {
 public:
-    // Constructor
-    Entity(int x, int y, EntityType type, EnemyType eType = EnemyType::NO_TYPE) : type(type), eType(eType), active(true) {}
+	// Constructor
+	Entity(int x, int y, EntityType type, EnemyType eType = EnemyType::NO_TYPE) : type(type), eType(eType), active(true)
+	{}
 
-    // Called each loop iteration
-    virtual bool Update(float dt)
-    {
-        return true;
-    }
+	// Called each loop iteration
+	virtual bool Update(float dt)
+	{
+		return true;
+	}
 
-    // Blit
-    virtual bool Draw()
-    {
-        return true;
-    }
+	// Blit
+	virtual bool Draw()
+	{
+		return true;
+	}
 
-    // Collision response
-    virtual void OnCollision(Collider* c1, Collider* c2)
-    {}
+	// Collision response
+	virtual void OnCollision(Collider* c1, Collider* c2)
+	{}
 
 public:
-    EntityType type;
-    SDL_Rect entityRect;
-    Collider* collider;
-    Physics physics;
-    iPoint nextPos;
-    uint destroyedFx;
+	EntityType type;
+	SDL_Rect entityRect;
+	Collider* collider;
+	Physics physics;
+	iPoint nextPos;
+	uint destroyedFx;
 
-    bool pendingToDelete = false;
-    bool active = true;
+	bool pendingToDelete = false;
+	bool active = true;
 
-    // Original spawn position
-    iPoint spawnPos;
+	// Original spawn position
+	iPoint spawnPos;
 
-    // Animation related variables
-    Animation* currentAnim = nullptr;
-    bool invert = false;
+	// Animation related variables
+	Animation* currentAnim = nullptr;
+	bool invert = false;
 
-    //Public vars from player
-    bool isDead = false;
+	//Public vars from player
+	bool isDead = false;
 
-    //Public vars from enemy
-    EnemyType eType;
+	//Public vars from enemy
+	EnemyType eType;
 };
 
 #endif // __ENTITY_H__

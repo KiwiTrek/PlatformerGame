@@ -34,7 +34,7 @@ bool GuiManager::Awake(pugi::xml_node& config)
 bool GuiManager::Start()
 {
 	// Atlas
-	SString tmp("%s%s", folderTexture.GetString(), "button_atlas.png");
+	SString tmp("%s%s", folderTexture.GetString(), "gui_atlas.png");
 	atlas = app->tex->Load(tmp.GetString());
 
 	// Default

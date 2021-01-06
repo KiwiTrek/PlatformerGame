@@ -3,38 +3,35 @@
 
 #include "GuiControl.h"
 
-#include "Point.h"
-#include "SString.h"
-
 class GuiCheckBox : public GuiControl
 {
 public:
-    // Constructor
-    GuiCheckBox(uint32 id, SDL_Rect bounds, const char* text);
+	// Constructor
+	GuiCheckBox(uint32 id, SDL_Rect bounds, const char* text);
 
-    // Destructor
-    virtual ~GuiCheckBox();
+	// Destructor
+	virtual ~GuiCheckBox();
 
-    // Called each loop iteration
-    bool Update(float dt);
+	// Called each loop iteration
+	bool Update(float dt);
 
-    // Blit
-    bool Draw(int cPosX = 0, int cPosY = 0);
+	// Blit
+	bool Draw(int cPosX = 0, int cPosY = 0);
 
 public:
-    bool checked;
+	bool checked;
 
 private:
-    // Gui Checkbox specific properties
-    SDL_Rect disabled;
-    SDL_Rect normal;
-    SDL_Rect focused;
-    SDL_Rect pressed;
+	// GUI Checkbox specific properties
+	SDL_Rect disabled;
+	SDL_Rect normal;
+	SDL_Rect focused;
+	SDL_Rect pressed;
 
-    SDL_Rect disabledChecked;
-    SDL_Rect normalChecked;
-    SDL_Rect focusedChecked;
-    SDL_Rect pressedChecked;
+	SDL_Rect disabledChecked;
+	SDL_Rect normalChecked;
+	SDL_Rect focusedChecked;
+	SDL_Rect pressedChecked;
 };
 
 #endif // __GUICHECKBOX_H__

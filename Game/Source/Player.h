@@ -20,6 +20,7 @@ public:
 	// Collision response
 	void OnCollision(Collider* c1, Collider* c2);
 
+public:
 	// Loading variables
 	int lives = 3;
 	float resultingMove = 0.0f;

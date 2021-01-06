@@ -86,7 +86,7 @@ public:
 	SDL_Texture* coin;
 	SDL_Texture* fruit;
 
-	// Gui
+	// GUI
 	bool pause;
 	iPoint cameraPos;
 	iPoint cameraSize;

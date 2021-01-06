@@ -1,5 +1,5 @@
-#ifndef __MODULETRANSITION_H__
-#define __MODULETRANSITION_H__
+#ifndef __MODULE_TRANSITION_H__
+#define __MODULE_TRANSITION_H__
 
 #include "Module.h"
 #include "SDL_rect.h"
@@ -50,4 +50,4 @@ private:
 	Module* moduleToDisable = nullptr;
 };
 
-#endif //__MODULEFADETOBLACK_H__
+#endif //__MODULE_TRANSITION_H__

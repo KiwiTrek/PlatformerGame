@@ -131,7 +131,6 @@ public:
 		{
 			speed.y = 0.0f;
 		}
-
 	}
 
 	// Collisions related variables

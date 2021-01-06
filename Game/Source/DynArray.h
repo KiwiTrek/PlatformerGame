@@ -39,19 +39,19 @@ public:
 	}
 
 	// Operators
-	tdata& operator[](uint index)
+	tdata& operator [](uint index)
 	{
 		ASSERT(index < numElements);
 		return data[index];
 	}
 
-	const tdata& operator[](uint index) const
+	const tdata& operator [](uint index) const
 	{
 		assert(index < numElements);
 		return data[index];
 	}
 
-	const DynArray<tdata>& operator+= (const DynArray<tdata>& array)
+	const DynArray<tdata>& operator +=(const DynArray<tdata>& array)
 	{
 		if (numElements + array.numElements > memCapacity)
 			Alloc(numElements + array.numElements);

@@ -29,24 +29,24 @@
     </map>
 
     <deathScene>
-        <folderTexture>Assets/Textures/</folderTexture>
+        <folderTexture>Assets/Textures/Screens/Gameplay/</folderTexture>
         <folderAudioMusic>Assets/Audio/Music/</folderAudioMusic>
     </deathScene>
 
     <logoScene>
         <timer value ="0.0"/>
-        <folderTexture>Assets/Textures/</folderTexture>
+        <folderTexture>Assets/Textures/Screens/Logo/</folderTexture>
         <folderAudioFx>Assets/Audio/Fx/</folderAudioFx>
     </logoScene>
 
     <scene>
         <camera x ="0" y="-128"/>
-        <folderTexture>Assets/Textures/Scene/</folderTexture>
+        <folderTexture>Assets/Textures/Screens/Gameplay/</folderTexture>
         <folderAudioMusic>Assets/Audio/Music/</folderAudioMusic>
     </scene>
 
     <titleScene>
-        <folderTexture>Assets/Textures/</folderTexture>
+        <folderTexture>Assets/Textures/Screens/Title/</folderTexture>
         <folderAudioMusic>Assets/Audio/Music/</folderAudioMusic>
         <credits>
             <title>- CREDITS -</title>
@@ -66,13 +66,13 @@
     </titleScene>
 
     <entityManager>
-        <folderTexture>Assets/Textures/</folderTexture>
+        <folderTexture>Assets/Textures/Characters/</folderTexture>
         <folderAudioFx>Assets/Audio/Fx/</folderAudioFx>
         <folderMap>Assets/Maps/</folderMap>
     </entityManager>
 
     <guiManager>
-        <folderTexture>Assets/Textures/Gui/</folderTexture>
+        <folderTexture>Assets/Textures/GUI/</folderTexture>
     </guiManager>
 
     <pathfinding>

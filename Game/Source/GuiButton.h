@@ -3,36 +3,33 @@
 
 #include "GuiControl.h"
 
-#include "Point.h"
-#include "SString.h"
-
 class GuiButton : public GuiControl
 {
 public:
-    // Constructor
-    GuiButton(uint32 id, SDL_Rect bounds, const char* text);
-    GuiButton(uint32 id, SDL_Rect bounds, const char* text, const char* secondText);
+	// Constructor
+	GuiButton(uint32 id, SDL_Rect bounds, const char* text);
+	GuiButton(uint32 id, SDL_Rect bounds, const char* text, const char* secondText);
 
-    // Destructor
-    virtual ~GuiButton();
+	// Destructor
+	virtual ~GuiButton();
 
-    // Called each loop iteration
-    bool Update(float dt);
+	// Called each loop iteration
+	bool Update(float dt);
 
-    // Blit
-    bool Draw(int cPosX = 0, int cPosY = 0);
+	// Blit
+	bool Draw(int cPosX = 0, int cPosY = 0);
 
 private:
-    // Second text variables
-    SString secondText;
-    int offsetTextSecond;
-    bool secondaryText;
+	// Second text variables
+	SString secondText;
+	int offsetTextSecond;
+	bool secondaryText;
 
-    // Gui Button specific properties
-    SDL_Rect disabled;
-    SDL_Rect normal;
-    SDL_Rect focused;
-    SDL_Rect pressed;
+	// GUI Button specific properties
+	SDL_Rect disabled;
+	SDL_Rect normal;
+	SDL_Rect focused;
+	SDL_Rect pressed;
 };
 
 #endif // __GUIBUTTON_H__

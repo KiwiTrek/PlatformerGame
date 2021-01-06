@@ -20,4 +20,4 @@ private:
 	Animation attack;
 };
 
-#endif // __ENEMY_GROUND_H__
+#endif // __ENEMY_FLYING_H__

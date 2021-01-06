@@ -52,7 +52,7 @@ private:
 
 	SDL_Texture* titleScreen;
 
-	// Gui
+	// GUI
 	GuiButton* btnPlay;
 	GuiButton* btnContinue;
 	float dtTmp;

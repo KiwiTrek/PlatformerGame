@@ -59,7 +59,7 @@ private:
 	SString folderTexture;
 	SString folderAudioMusic;
 
-	// Gui
+	// GUI
 	int font = -1;
 
 	// Timer handling

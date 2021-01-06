@@ -55,7 +55,7 @@ bool TitleScene::Start()
 {
 	app->render->SetBackgroundColor({ 0,0,0,0 });
 
-	SString tmp("%s%s", folderTexture.GetString(), "title_screen.png");
+	SString tmp("%s%s", folderTexture.GetString(), "title.png");
 	titleScreen = app->tex->Load(tmp.GetString());
 
 	tmp.Clear();

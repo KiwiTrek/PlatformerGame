@@ -49,7 +49,7 @@ private:
 	float alpha;
 	float timer;
 
-	// Gui
+	// GUI
 	GuiButton* btnTitle;
 	float dtTmp;
 

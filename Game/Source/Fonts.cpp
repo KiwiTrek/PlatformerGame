@@ -35,7 +35,7 @@ int Fonts::Load(const char* texturePath, const char* characters, uint rows)
 	SDL_Texture* tex = app->tex->Load(texturePath);
 	if (tex == nullptr || strlen(characters) >= MAX_FONT_CHARS)
 	{
-		LOG("Could not load font at %s with characters '%s'\n", texturePath, characters);
+		LOG("Could not load font at %s with characters '%s'", texturePath, characters);
 		return id;
 	}
 
@@ -50,7 +50,7 @@ int Fonts::Load(const char* texturePath, const char* characters, uint rows)
 
 	if (id == MAX_FONTS)
 	{
-		LOG("Cannot load font %s. Array is full (max %d).\n", texturePath, MAX_FONTS);
+		LOG("Cannot load font %s. Array is full (max %d).", texturePath, MAX_FONTS);
 		return id;
 	}
 
@@ -66,7 +66,7 @@ int Fonts::Load(const char* texturePath, const char* characters, uint rows)
 	font.charW = font.charW / font.columns;
 	font.charH = font.charH / font.rows;
 
-	LOG("Successfully loaded BMP font from %s\n", texturePath);
+	LOG("Successfully loaded BMP font from %s", texturePath);
 
 	return id;
 }
@@ -77,7 +77,7 @@ void Fonts::Unload(int fontId)
 	{
 		app->tex->UnLoad(fonts[fontId].texture);
 		fonts[fontId].texture = nullptr;
-		LOG("Successfully Unloaded BMP font_id %d\n", fontId);
+		LOG("Successfully Unloaded BMP font_id %d", fontId);
 	}
 }
 
@@ -85,7 +85,7 @@ void Fonts::DrawText(int x, int y, int fontId, const char* text) const
 {
 	if (text == nullptr || fontId < 0 || fontId >= MAX_FONTS || fonts[fontId].texture == nullptr)
 	{
-		LOG("Unable to render text with bmp font id %d\n", fontId);
+		LOG("Unable to render text with bmp font id %d", fontId);
 		return;
 	}
 

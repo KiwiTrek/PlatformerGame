@@ -83,4 +83,3 @@ private:
 };
 
 #endif // !__COLLISIONS_H__
-

@@ -38,7 +38,7 @@ bool LogoScene::Awake(pugi::xml_node& config)
 
 bool LogoScene::Start()
 {
-	SString tmp("%s%s", folderTexture.GetString(), "logo_screen.png");
+	SString tmp("%s%s", folderTexture.GetString(), "logo.png");
 	logo = app->tex->Load(tmp.GetString());
 
 	tmp.Clear();

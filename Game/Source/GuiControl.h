@@ -24,13 +24,11 @@ enum class GuiControlState
 class GuiControl
 {
 public:
-	// Constructor
-	GuiControl(GuiControlType type, uint32 id) : type(type), id(id), state(GuiControlState::NORMAL) {}
-	GuiControl(GuiControlType type, SDL_Rect bounds, const char* text) :
-		type(type),
-		state(GuiControlState::NORMAL),
-		bounds(bounds),
-		text(text)
+	// Constructors
+	GuiControl(GuiControlType type, uint32 id) : type(type), id(id), state(GuiControlState::NORMAL)
+	{}
+
+	GuiControl(GuiControlType type, SDL_Rect bounds, const char* text) : type(type), state(GuiControlState::NORMAL), bounds(bounds), text(text)
 	{
 		texture = NULL;
 		defaultFont = -1;
