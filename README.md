@@ -19,6 +19,7 @@ Venture forth an incredible adventure crossing from the deepest of seas to the m
 	- A = Go left
 	- D = Go right
 	- J = Attack
+	- ESC = Pause the game
 
  - DEBUG (God mode) controls:
 	- W = Go up
