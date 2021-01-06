@@ -14,6 +14,7 @@ public:
 
 	EnemyType type;
 private:
+	// Animation
 	Animation idle;
 	Animation walking;
 	Animation hurt;

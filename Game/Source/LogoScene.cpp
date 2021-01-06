@@ -5,12 +5,11 @@
 #include "Render.h"
 #include "Window.h"
 #include "Transition.h"
-#include "Defs.h"
 
 #include "LogoScene.h"
 
+#include "Defs.h"
 #include "Log.h"
-
 
 LogoScene::LogoScene() : Module()
 {
@@ -28,22 +27,24 @@ void LogoScene::Init()
 bool LogoScene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
-	bool ret = true;
-	timer = config.child("timer").attribute("value").as_float(0.0f);
 
 	folderTexture.Create(config.child("folderTexture").child_value());
 	folderAudioFx.Create(config.child("folderAudioFx").child_value());
 
-	return ret;
+	timer = config.child("timer").attribute("value").as_float(0.0f);
+
+	return true;
 }
 
 bool LogoScene::Start()
 {
 	SString tmp("%s%s", folderTexture.GetString(), "logo_screen.png");
 	logo = app->tex->Load(tmp.GetString());
+
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioFx.GetString(), "logo.wav");
 	logoFx = app->audio->LoadFx(tmp.GetString());
+
 	app->audio->SetFxVolume(logoFx);
 
 	window = { 0,0,0,0 };
@@ -76,7 +77,7 @@ bool LogoScene::Update(float dt)
 	}
 	else if (state == 2)
 	{
-		// Waiting for 3 seconds
+		// Wait for 3 seconds
 		timer += dt;
 		if (timer >= 0.5f && onceTimer)
 		{
@@ -105,11 +106,9 @@ bool LogoScene::Update(float dt)
 
 bool LogoScene::PostUpdate()
 {
-	bool ret = true;
-
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 	{
-		ret = false;
+		return false;
 	}
 	
 	uint w, h;
@@ -121,7 +120,7 @@ bool LogoScene::PostUpdate()
 	app->render->DrawTexture(logo, NULL, NULL, true);
 	app->render->DrawRectangle(window, 255, 255, 255, (uchar)(255 - (255 * logoAlpha)));
 
-	return ret;
+	return true;
 }
 
 bool LogoScene::CleanUp()

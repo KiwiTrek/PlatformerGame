@@ -3,9 +3,8 @@
 
 #include "Entity.h"
 
-#include "SDL.h"
-
 struct Collider;
+
 class Coin : public Entity
 {
 public:
@@ -15,14 +14,19 @@ public:
 	// Called each loop iteration
 	bool Update(float dt);
 
+	// Blit
 	bool Draw();
 
 	// Collision response
 	void OnCollision(Collider* c1, Collider* c2);
 
 private:
-	Animation rotating;
 	SDL_Texture* coinTex;
+
+	// Animation
+	Animation rotating;
+
+	// Fx
 	uint coinFx;
 };
 

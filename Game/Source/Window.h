@@ -24,7 +24,7 @@ public:
 	// Change/Set window title
 	void SetTitle(const char* title);
 
-	// Changes window state to fullscreen
+	// Changes window state to/from fullscreen
 	void ToggleFullscreen(bool fullscreen);
 
 	// Returns the window size
@@ -37,7 +37,7 @@ public:
 	// The window where rendering happens
 	SDL_Window* window;
 
-	// Determines window fullscreen;
+	// Determines window fullscreen
 	bool fullscreenWindow;
 
 	// The surface contained by the window

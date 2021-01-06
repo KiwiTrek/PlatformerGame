@@ -1,7 +1,6 @@
 #include "Player.h"
 
 #include "App.h"
-
 #include "Textures.h"
 #include "Input.h"
 #include "Audio.h"
@@ -12,11 +11,12 @@
 #include "Map.h"
 #include "Collisions.h"
 #include "EntityManager.h"
-
-#include "Log.h"
+#include "Animation.h"
+#include "Physics.h"
 
 Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 {
+	// Spawning position of the player
 	if (x == -1 && y == -1)
 	{
 		spawnPos = GetSpawnPoint();
@@ -31,6 +31,7 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 		entityRect = { x, y, app->generalTileSize, app->generalTileSize };
 		updateCamera = true;
 	}
+
 	pendingToDelete = false;
 	collider = app->collisions->AddCollider(entityRect, Collider::Type::PLAYER, (Module*)app->entities);
 
@@ -52,7 +53,6 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	firstCheckpoint = true;
 	heartLess = false;
 	heartMore = false;
-
 	physics.axisX = true;
 	physics.axisY = true;
 	physics.positiveSpeedY = true;
@@ -67,7 +67,7 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	slashFx = app->entities->slashFx;
 	checkpointFx = app->entities->checkpointFx;
 
-	// Animations
+	// Animation
 	for (int i = 0; i != 9; ++i)
 	{
 		idle.PushBack({ 10 + (playerSize * i),1329,56,73 });
@@ -140,6 +140,8 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	heartRecovered.speed = 35.0f;
 	heartRecovered.loop = false;
 
+	currentAnim = &idle;
+
 	idle.Reset();
 	run.Reset();
 	jumpPrep.Reset();
@@ -152,7 +154,6 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 	heartRecovered.Reset();
 	heartDestroyed.Reset();
 
-	currentAnim = &idle;
 	heartRecovered.currentFrame = heartRecovered.totalFrames - 1;
 }
 
@@ -181,6 +182,7 @@ bool Player::Update(float dt)
 			app->render->camera.y += app->map->data.tileHeight;
 		}
 	}
+
 	currentAnim->Update(dt);
 	if (heartMore)
 	{
@@ -343,7 +345,7 @@ bool Player::Update(float dt)
 			}
 		}
 
-		//Animation reset to idle
+		// Animation reset to idle
 		if (keyPressed == false)
 		{
 			physics.speed.x = 0.0f;
@@ -435,20 +437,16 @@ bool Player::Update(float dt)
 		{
 			if (firstCheckpoint)
 			{
-				//2,11
 				entityRect.x = 2 * app->generalTileSize;
 				entityRect.y = 11 * app->generalTileSize;
 				firstCheckpoint = false;
 			}
 			else
 			{
-				//77,3
 				entityRect.x = 77 * app->generalTileSize;
 				entityRect.y = 3 * app->generalTileSize;
 				firstCheckpoint = true;
 			}
-			LOG("%d,%d", entityRect.x, entityRect.y);
-
 			app->render->camera.x = -(entityRect.x - app->render->camera.w / 2);
 			app->render->camera.y = -(entityRect.y - app->render->camera.h / 2 - app->generalTileSize);
 
@@ -491,10 +489,9 @@ bool Player::Update(float dt)
 		{
 			lives--;
 			heartLess = true;
+			heartDestroyed.Reset();
 			if (lives == 0)
 			{
-				pendingToDelete = true;
-				collider->pendingToDelete = true;
 				isDead = true;
 			}
 			else
@@ -544,8 +541,6 @@ bool Player::Update(float dt)
 	{
 		entityRect.x -= floor(250.0f * dt);
 	}
-
-	LOG("%d,%d", entityRect.x, entityRect.y);
 
 	return true;
 }
@@ -658,7 +653,6 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 {
 	if (c2->type == Collider::Type::ENEMY && hitCD == 0 && !isAttacking)
 	{
-		LOG("Enemy collision!\n");
 		hitCD = 50;
 		heartLess = true;
 		heartDestroyed.Reset();

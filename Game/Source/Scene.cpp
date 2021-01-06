@@ -24,7 +24,6 @@ Scene::Scene() : Module()
 	name.Create("scene");
 }
 
-// Destructor
 Scene::~Scene()
 {}
 
@@ -33,32 +32,33 @@ void Scene::Init()
 	active = false;
 }
 
-// Called before render is available
 bool Scene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
-	bool ret = true;
 
 	folderTexture.Create(config.child("folderTexture").child_value());
 	folderAudioMusic.Create(config.child("folderAudioMusic").child_value());
 
-	return ret;
+	return true;
 }
 
-// Called before the first frame
 bool Scene::Start()
 {
 	SString tmp("%s%s", folderTexture.GetString(), "clouds.png");
 	clouds = app->tex->Load(tmp.GetString());
+
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "mountain_depth_back.png");
 	mountainsBack = app->tex->Load(tmp.GetString());
+
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "mountain_depth_front.png");
 	mountainsFront = app->tex->Load(tmp.GetString());
+
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "ui_elements.png");
 	ui = app->tex->Load(tmp.GetString());
+
 	uiCoin = { 0,0,32,32 };
 	uiFruit = { 32,0,32,32 };
 
@@ -78,11 +78,13 @@ bool Scene::Start()
 
 	app->render->SetBackgroundColor(app->map->data.backgroundColor);
 
-	app->collisions->Enable();
-
 	scoreValue = 0;
-	LOG("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+	fruitCounter = 0;
+	coinCounter = 0;
+
+	app->collisions->Enable();
 	app->entities->Enable();
+
 	player = app->entities->CreateEntity(-1, -1, EntityType::PLAYER);
 	app->entities->CreateEntity(app->map->data.tileWidth * 103, app->map->data.tileHeight * 3, EntityType::ENEMY, player, EnemyType::FLYING);
 	app->entities->CreateEntity(app->map->data.tileWidth * 36, app->map->data.tileHeight * 8, EntityType::ENEMY, player, EnemyType::GROUND);
@@ -364,9 +366,6 @@ bool Scene::Start()
 	timerTitle.Create("Time");
 	offsetTimer = timerTitle.Length() * 36 + (36 * 3);
 
-	fruitCounter = 0;
-	coinCounter = 0;
-
 	cameraPos = { -app->render->camera.x, -app->render->camera.y };
 	cameraSize = { app->render->camera.w, app->render->camera.h };
 
@@ -379,13 +378,11 @@ bool Scene::Start()
 	return true;
 }
 
-// Called each loop iteration
 bool Scene::PreUpdate()
 {
 	return true;
 }
 
-// Called each loop iteration
 bool Scene::Update(float dt)
 {
 	if (app->entities->doLogic)
@@ -403,7 +400,7 @@ bool Scene::Update(float dt)
 		return false;
 	}
 
-	//DEBUG
+	// DEBUG
 	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
 		player->spawnPos = { 0,0 };
@@ -415,7 +412,7 @@ bool Scene::Update(float dt)
 		app->transition->FadeEffect(this, this, false);
 	}
 
-	//Player restraint
+	// Player camera restraint
 	if ((app->render->camera.x + player->entityRect.x) < (app->map->data.tileWidth * 6))
 	{
 		app->render->camera.x += (250.0f * dt);
@@ -454,11 +451,11 @@ bool Scene::Update(float dt)
 	return true;
 }
 
-// Called each loop iteration
 bool Scene::PostUpdate()
 {
 	cameraPos = { -app->render->camera.x, -app->render->camera.y };
 
+	// Background
 	uint w, h;
 	app->win->GetWindowSize(w, h);
 	uint wmb, hmb;
@@ -472,6 +469,7 @@ bool Scene::PostUpdate()
 
 	app->map->Draw();
 
+	// Fruit & Coin
 	sprintf_s(scoreFruit, 4, "%2d", fruitCounter);
 	sprintf_s(scoreCoin, 4, "%02d", coinCounter);
 	app->render->DrawTexture(ui, cameraPos.x + 2, cameraPos.y + 64, false, &uiCoin);
@@ -479,11 +477,13 @@ bool Scene::PostUpdate()
 	app->render->DrawTexture(ui, cameraPos.x, cameraPos.y + 100, false, &uiFruit);
 	app->fonts->DrawText(cameraPos.x + 8, cameraPos.y + 98, font, scoreFruit);
 
+	// Score
 	sprintf_s(score, 6, "%03d", scoreValue);
 	app->fonts->DrawText(cameraPos.x + cameraSize.x - offsetScore - 12, cameraPos.y + 36, font, scoreTitle.GetString());
 	app->fonts->DrawText(cameraPos.x + cameraSize.x - (36 * 3) - 30, cameraPos.y + 36, font, ":");
 	app->fonts->DrawText(cameraPos.x + cameraSize.x - (36 * 3), cameraPos.y + 36, font, score);
 
+	// Timer
 	sprintf_s(timer, 6, "%03d", (int)timerValue);
 	app->fonts->DrawText(cameraPos.x + cameraSize.x - offsetTimer - 12, cameraPos.y + 2, font, timerTitle.GetString());
 	app->fonts->DrawText(cameraPos.x + cameraSize.x - (36 * 3) - 30, cameraPos.y + 2, font, ":");
@@ -492,10 +492,10 @@ bool Scene::PostUpdate()
 	return true;
 }
 
-// Called before quitting
 bool Scene::CleanUp()
 {
 	LOG("Freeing scene");
+
 	app->render->camera.x = 0;
 	app->render->camera.y = 0;
 
@@ -514,13 +514,13 @@ bool Scene::CleanUp()
 bool Scene::Load(pugi::xml_node& save)
 {
 	LOG("Loading scene variables");
-	bool ret = true;
 
 	scoreValue = save.child("score").attribute("value").as_int();
 	coinCounter = save.child("coin").attribute("value").as_int();
 	fruitCounter = save.child("fruit").attribute("value").as_int();
 	timerValue = save.child("timer").attribute("value").as_float(500.0f);
 
+	// Store the current player entity
 	ListItem<Entity*>* e = app->entities->entities.start;
 	while (e != nullptr)
 	{
@@ -531,18 +531,17 @@ bool Scene::Load(pugi::xml_node& save)
 		e = e->next;
 	}
 
-	return ret;
+	return true;
 }
 
 bool Scene::Save(pugi::xml_node& save)
 {
 	LOG("Saving scene variables");
-	bool ret = true;
 
 	save.append_child("score").append_attribute("value").set_value(scoreValue);
 	save.append_child("coin").append_attribute("value").set_value(coinCounter);
 	save.append_child("fruit").append_attribute("value").set_value(fruitCounter);
 	save.append_child("timer").append_attribute("value").set_value(timerValue);
 
-	return ret;
+	return true;
 }

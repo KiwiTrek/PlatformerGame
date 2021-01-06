@@ -2,10 +2,12 @@
 #define __TITLE_SCENE_H__
 
 #include "Module.h"
-
 #include "GuiButton.h"
 #include "GuiCheckBox.h"
 #include "GuiSlider.h"
+
+#define TITLE_FONT_SIZE 36
+#define TITLE_FONT_SMALL_SIZE TITLE_FONT_SIZE/2
 
 struct SDL_Texture;
 
@@ -39,16 +41,18 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	// Declare on mouse click event
+	// On mouse click response
 	bool OnGuiMouseClickEvent(GuiControl* control);
 
 	bool loadRequest;
 
 private:
-	SDL_Texture* titleScreen;
 	SString folderTexture;
 	SString folderAudioMusic;
 
+	SDL_Texture* titleScreen;
+
+	// Gui
 	GuiButton* btnPlay;
 	GuiButton* btnContinue;
 	float dtTmp;

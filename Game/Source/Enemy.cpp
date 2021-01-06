@@ -8,14 +8,13 @@
 #include "Render.h"
 #include "PathFinding.h"
 
-#include "Log.h"
-
 Enemy::Enemy(int x, int y, EnemyType enemyType, Entity* playerPointer) : Entity(x, y, EntityType::ENEMY, enemyType)
 {
 	player = playerPointer;
 	spawnPos.x = x;
 	spawnPos.y = y;
 	destroyedFx = app->entities->enemyDestroyedFx;
+	pendingToDelete = false;
 	physics.axisX = true;
 	physics.axisY = true;
 	path.Create(DEFAULT_PATH_LENGTH);
@@ -44,8 +43,6 @@ bool Enemy::Update(float dt)
 	{
 		collider->SetPos(entityRect.x, entityRect.y, currentAnim->GetCurrentFrame().w, currentAnim->GetCurrentFrame().h);
 	}
-
-	LOG("%d,%d", entityRect.x, entityRect.y);
 
 	return true;
 }

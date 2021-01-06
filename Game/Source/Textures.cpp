@@ -1,11 +1,10 @@
+#include "Textures.h"
+
 #include "App.h"
 #include "Render.h"
-#include "Textures.h"
 
 #include "Defs.h"
 #include "Log.h"
-
-#include "SDL_image.h"
 
 Textures::Textures() : Module()
 {
@@ -18,19 +17,18 @@ Textures::~Textures()
 bool Textures::Awake(pugi::xml_node& config)
 {
 	LOG("Init Image library");
-	bool ret = true;
 
-	// Load support for the PNG and JPG image format
+	// Load support for the PNG image format
 	int flags = IMG_INIT_PNG;
 	int init = IMG_Init(flags);
 
 	if ((init & flags) != flags)
 	{
 		LOG("Could not initialize Image lib. IMG_Init: %s", IMG_GetError());
-		ret = false;
+		return false;
 	}
 
-	return ret;
+	return true;
 }
 
 bool Textures::Start()

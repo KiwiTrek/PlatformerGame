@@ -5,8 +5,6 @@
 #include "List.h"
 #include "Point.h"
 
-#include "pugixml.hpp"
-
 // Map Types enum
 enum MapTypes
 {
@@ -38,6 +36,7 @@ struct Properties
 		list.Clear();
 	}
 
+	// Get/Set property
 	int GetProperty(const char* name, int defaultValue = 0) const;
 	void SetProperty(const char* name, int value);
 
@@ -55,7 +54,8 @@ struct TileSet
 {
 	int firstgId;
 	SString name;
-	int tileWidth, tileHeight;
+	int tileWidth;
+	int tileHeight;
 	int spacing;
 	int margin;
 
@@ -104,8 +104,10 @@ struct MapLayer
 
 struct MapData
 {
-	int width, height;
-	int tileWidth, tileHeight;
+	int width;
+	int height;
+	int tileWidth;
+	int tileHeight;
 	SDL_Color backgroundColor;
 	MapTypes type;
 	List<TileSet*> tileSets;
@@ -152,12 +154,14 @@ public:
 	MapData data;
 
 private:
+	// Load functions
 	bool LoadMap();
 	bool LoadTileSetDetails(pugi::xml_node& node, TileSet* set);
 	bool LoadTileSetImage(pugi::xml_node& node, TileSet* set);
 	bool LoadTileSetProperties(pugi::xml_node& node, TileSet* set);
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
 	bool LoadProperties(pugi::xml_node& node, Properties& properties);
+
 	MapTypes StrToMapType(SString str);
 	TileSet* GetTileSetFromTileId(int id) const;
 	bool StoreId(pugi::xml_node& node, MapLayer* layer, int index);

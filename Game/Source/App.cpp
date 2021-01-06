@@ -1,4 +1,5 @@
 #include "App.h"
+
 #include "Window.h"
 #include "Input.h"
 #include "Render.h"
@@ -55,10 +56,12 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(tex);
 	AddModule(audio);
 	AddModule(pathfinding);
+
 	AddModule(logoScene);
 	AddModule(titleScene);
 	AddModule(deathScene);
 	AddModule(scene);
+
 	AddModule(map);
 	AddModule(fonts);
 	AddModule(gui);
@@ -198,7 +201,6 @@ bool App::Update()
 pugi::xml_node App::LoadConfig(pugi::xml_document& configFile) const
 {
 	pugi::xml_node ret;
-
 	pugi::xml_parse_result result = configFile.load_file(CONFIG_FILENAME);
 
 	if (result == NULL)
@@ -222,7 +224,7 @@ void App::PrepareUpdate()
 	// Calculate the dt: differential time since last frame
 	dt = frameTime.ReadSec();
 
-	// We start the timer after read because we want to know how much time it took from the last frame to the new one
+	// Start the timer after read because we want to know how much time it took from the last frame to the new one
 	PERF_START(frameTime);
 }
 
@@ -419,21 +421,20 @@ void App::CapRequest()
 
 bool App::CheckSaveFile()
 {
-	bool ret = true;
 	pugi::xml_parse_result result = saveFile.load_file(SAVE_STATE_FILENAME);
 	if (result == NULL)
 	{
 		LOG("Could not load map xml file savegame.xml. pugi error: %s", result.description());
-		ret = false;
+		return false;
 	}
-	return ret;
+	return true;
 }
 
 bool App::LoadGame()
 {
 	bool ret = true;
-
 	pugi::xml_parse_result result = saveFile.load_file(SAVE_STATE_FILENAME);
+
 	if (result == NULL)
 	{
 		LOG("Could not load map xml file savegame.xml. pugi error: %s", result.description());
@@ -454,7 +455,6 @@ bool App::LoadGame()
 	}
 
 	return ret;
-
 }
 
 bool App::SaveGame()
@@ -466,7 +466,6 @@ bool App::SaveGame()
 
 	ListItem<Module*>* item;
 	item = modules.start;
-
 	while (item != NULL && ret == true)
 	{
 		ret = item->data->Save(saveState.append_child(item->data->name.GetString()));
@@ -480,8 +479,6 @@ bool App::SaveGame()
 
 bool App::ChangeCap()
 {
-	bool ret = true;
-
 	switch (cap)
 	{
 	case 60:
@@ -499,5 +496,5 @@ bool App::ChangeCap()
 		cappedMs = 1000 / cap;
 	}
 
-	return ret;
+	return true;
 }

@@ -1,7 +1,6 @@
 #include "EntityManager.h"
 
 #include "App.h"
-
 #include "Window.h"
 #include "Collisions.h"
 #include "Map.h"
@@ -13,14 +12,12 @@
 #include "Transition.h"
 #include "Fonts.h"
 #include "GuiManager.h"
-
+#include "Scene.h"
 #include "Player.h"
 #include "EnemyFlying.h"
 #include "EnemyGround.h"
 #include "Coin.h"
 #include "Fruit.h"
-
-#include "Scene.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -43,13 +40,12 @@ void EntityManager::Init()
 bool EntityManager::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Entity Manager");
-	bool ret = true;
 
 	folderAudioFx.Create(config.child("folderAudioFx").child_value());
 	folderTexture.Create(config.child("folderTexture").child_value());
 	folderMap.Create(config.child("folderMap").child_value());
 
-	return ret;
+	return true;
 }
 
 bool EntityManager::Start()
@@ -130,6 +126,7 @@ bool EntityManager::Start()
 	fruit = app->tex->Load(tmp.GetString());
 
 	app->gui->Enable();
+
 	// Pause Menu
 	cameraPos = { -app->render->camera.x, -app->render->camera.y };
 	cameraSize = { app->render->camera.w, app->render->camera.h };
@@ -162,7 +159,6 @@ bool EntityManager::Start()
 	chckFullscreen->checked = app->win->fullscreenWindow;
 	chckVsync = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 104, { (1280 / 4) + 132,440,54,54 }, "VSync", this);
 	chckVsync->checked = app->vsync;
-
 	btnBack = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 105, { cameraPos.x + 976, cameraPos.x + 553, 217, 109 }, "BACK", this);
 
 	doLogic = true;
@@ -180,9 +176,9 @@ bool EntityManager::Start()
 	return true;
 }
 
-// Called before quitting
 bool EntityManager::CleanUp()
 {
+	// Destroy entities
 	ListItem<Entity*>* e = entities.start;
 	while (e != nullptr)
 	{
@@ -192,11 +188,13 @@ bool EntityManager::CleanUp()
 	}
 	entities.Clear();
 
+	// Unload textures
 	app->tex->UnLoad(playerTex);
 	app->tex->UnLoad(ground);
 	app->tex->UnLoad(flying);
 	app->tex->UnLoad(coin);
 
+	// Unload fx
 	app->audio->UnloadFx(deadFx);
 	app->audio->UnloadFx(doubleJumpFx);
 	app->audio->UnloadFx(fruitFx);
@@ -206,53 +204,6 @@ bool EntityManager::CleanUp()
 	app->audio->UnloadFx(checkpointFx);
 	app->audio->UnloadFx(enemyDestroyedFx);
 	app->audio->UnloadFx(coinFx);
-
-	//if (btnResume != nullptr)
-	//{
-	//	app->gui->DestroyGuiControl(btnResume);
-	//	btnResume = nullptr;
-	//}
-	//if (btnSettings != nullptr)
-	//{
-	//	app->gui->DestroyGuiControl(btnSettings);
-	//	btnSettings = nullptr;
-	//}
-	//if (btnTitle != nullptr)
-	//{
-	//	app->gui->DestroyGuiControl(btnTitle);
-	//	btnTitle = nullptr;
-	//}
-	//if (btnExit != nullptr)
-	//{
-	//	app->gui->DestroyGuiControl(btnExit);
-	//	btnExit = nullptr;
-	//}
-
-	//if (sldrMusic != nullptr)
-	//{
-	//	app->gui->DestroyGuiControl(sldrMusic);
-	//	sldrMusic = nullptr;
-	//}
-	//if (sldrFx != nullptr)
-	//{
-	//	app->gui->DestroyGuiControl(sldrFx);
-	//	sldrFx = nullptr;
-	//}
-	//if (chckFullscreen != nullptr)
-	//{
-	//	app->gui->DestroyGuiControl(chckFullscreen);
-	//	chckFullscreen = nullptr;
-	//}
-	//if (chckVsync != nullptr)
-	//{
-	//	app->gui->DestroyGuiControl(chckVsync);
-	//	chckVsync = nullptr;
-	//}
-	//if (btnBack != nullptr)
-	//{
-	//	app->gui->DestroyGuiControl(btnBack);
-	//	btnBack = nullptr;
-	//}
 
 	if (app->gui->active)
 	{
@@ -268,7 +219,7 @@ Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playe
 
 	switch (type)
 	{
-		// L13: Create the corresponding type entity
+		// Create the corresponding type entity
 	case EntityType::PLAYER:
 	{
 		ret = new Player(x, y);
@@ -311,7 +262,7 @@ Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playe
 	}
 	}
 
-	// Created entities are added to the list
+	// Adds the created entity to the list
 	if (ret != nullptr)
 	{
 		entities.Add(ret);
@@ -323,8 +274,8 @@ Entity* EntityManager::CreateEntity(int x, int y, EntityType type, Entity* playe
 bool EntityManager::Update(float dt)
 {
 	cameraPos = { -app->render->camera.x, -app->render->camera.y };
-
 	dtTmp = dt;
+
 	if (app->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
 	{
 		app->CapRequest();
@@ -388,8 +339,8 @@ bool EntityManager::PostUpdate()
 	if (!app->entities->doLogic)
 	{
 		app->render->DrawRectangle({ cameraPos.x,cameraPos.y,cameraSize.x,cameraSize.y }, 0, 0, 0, 191);
-		app->fonts->DrawText(cameraPos.x + (cameraSize.x - offsetTitle) / 2,cameraPos.y + 100, pauseFont, pauseTitle.GetString());
-		btnResume->Draw(cameraPos.x,cameraPos.y);
+		app->fonts->DrawText(cameraPos.x + (cameraSize.x - offsetTitle) / 2, cameraPos.y + 100, pauseFont, pauseTitle.GetString());
+		btnResume->Draw(cameraPos.x, cameraPos.y);
 		btnSettings->Draw(cameraPos.x, cameraPos.y);
 		btnTitle->Draw(cameraPos.x, cameraPos.y);
 		btnExit->Draw(cameraPos.x, cameraPos.y);
@@ -436,43 +387,43 @@ bool EntityManager::OnGuiMouseClickEvent(GuiControl* control)
 {
 	switch (control->id)
 	{
-	case 1:	//Resume
+	case 1: // Resume
 	{
 		doLogic = true;
 		pause = false;
 		break;
 	}
-	case 2: //Settings
+	case 2: // Settings
 	{
 		settings = true;
 		break;
 	}
-	case 3:	//Title
+	case 3: // Title
 	{
 		app->transition->FadeEffect((Module*)app->scene, (Module*)app->titleScene, false, floor(1200.0f * dtTmp));
 		break;
 	}
-	case 4: //Exit
+	case 4: // Exit
 	{
 		exitRequest = true;
 		break;
 	}
-	case 101: // MUSIC
+	case 101: // Music
 	{
 		app->audio->SetMusicVolume(sldrMusic->value);
 		break;
 	}
-	case 102: // FX
+	case 102: // Fx
 	{
 		app->audio->SetFxVolumeValue(sldrFx->value);
 		break;
 	}
-	case 103: // FULLSCREEN
+	case 103: // Fullscreen
 	{
 		app->win->ToggleFullscreen(chckFullscreen->checked);
 		break;
 	}
-	case 104: // VSYNC
+	case 104: // Vsync
 	{
 		app->win->ToggleFullscreen(false);
 		app->render->ToggleVsync(chckVsync->checked, (Module*)app->scene);
@@ -495,6 +446,8 @@ bool EntityManager::Load(pugi::xml_node& save)
 {
 	LOG("Loading entities data");
 	bool ret = true;
+
+	// Clear the list
 	ListItem<Entity*>* e = entities.start;
 	while (e != nullptr)
 	{
@@ -504,6 +457,7 @@ bool EntityManager::Load(pugi::xml_node& save)
 	}
 	entities.Clear();
 
+	// Initialize the entity variables
 	int x = 0;
 	int y = 0;
 	EntityType type = EntityType::UNKNOWN;
@@ -564,7 +518,6 @@ bool EntityManager::Save(pugi::xml_node& save)
 	LOG("Saving entities data");
 	bool ret = true;
 
-	//for (int i = 0; entities.At(i) != nullptr;)
 	ListItem<Entity*>* e = entities.start;
 	while (e != nullptr)
 	{
@@ -618,7 +571,6 @@ bool EntityManager::Save(pugi::xml_node& save)
 		}
 		entity.append_child("eType").append_attribute("value").set_value(eType);
 
-		//++i;
 		e = e->next;
 	}
 	return ret;

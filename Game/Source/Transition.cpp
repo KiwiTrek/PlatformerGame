@@ -1,7 +1,8 @@
+#include "Transition.h"
+
 #include "App.h"
 #include "Window.h"
 #include "Render.h"
-#include "Transition.h"
 
 #include "Defs.h"
 #include "Log.h"

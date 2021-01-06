@@ -134,7 +134,7 @@ bool Collisions::Awake(pugi::xml_node&)
 
 bool Collisions::PreUpdate()
 {
-	// Remove all colliders scheduled for deletion
+	// Delete colliders scheduled for deletion
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 	{
 		if (colliders[i] != nullptr && colliders[i]->pendingToDelete == true)
@@ -147,6 +147,7 @@ bool Collisions::PreUpdate()
 	Collider* c1;
 	Collider* c2;
 
+	// Check collisions
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 	{
 		// skip empty colliders
@@ -214,7 +215,7 @@ bool Collisions::Save(pugi::xml_node&)
 Collider* Collisions::AddCollider(SDL_Rect rect, Collider::Type type, Module* listener)
 {
 	Collider* ret = nullptr;
-
+	// Adds the collider in the first null spot on the array
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 	{
 		if (colliders[i] == nullptr)

@@ -4,8 +4,7 @@
 #include "Module.h"
 #include "Point.h"
 #include "SString.h"
-
-#include "SDL/include/SDL.h"
+#include "SDL.h"
 
 enum class GuiControlType
 {
@@ -25,9 +24,8 @@ enum class GuiControlState
 class GuiControl
 {
 public:
-
+	// Constructor
 	GuiControl(GuiControlType type, uint32 id) : type(type), id(id), state(GuiControlState::NORMAL) {}
-
 	GuiControl(GuiControlType type, SDL_Rect bounds, const char* text) :
 		type(type),
 		state(GuiControlState::NORMAL),
@@ -42,21 +40,25 @@ public:
 		disabledFont = -1;
 	}
 
+	// Called each loop iteration
 	virtual bool Update(float dt)
 	{
 		return true;
 	}
 
+	// Blit
 	virtual bool Draw() const
 	{
 		return true;
 	}
 
+	// Sets texture
 	void SetTexture(SDL_Texture* tex)
 	{
 		texture = tex;
 	}
 
+	// Sets all fonts used in gui
 	void SetFonts(int defaultId, int titleId, int hoverId, int pressedId, int disabledId)
 	{
 		defaultFont = defaultId;
@@ -66,27 +68,30 @@ public:
 		disabledFont = disabledId;
 	}
 
+	// Sets the gui control observer
 	void SetObserver(Module* module)
 	{
 		observer = module;
 	}
 
+	// Notifies the gui control observer
 	void NotifyObserver()
 	{
 		observer->OnGuiMouseClickEvent(this);
 	}
 
 public:
-
 	uint32 id;
 	GuiControlType type;
 	GuiControlState state;
-
-	SString text;           // Control text
+	SString text;
 	int offsetText;
-	SDL_Rect bounds;        // Position and size
 
-	SDL_Texture* texture;   // Texture atlas reference
+	// Position and size
+	SDL_Rect bounds;
+
+	// Texture atlas reference
+	SDL_Texture* texture;
 
 	// Fonts
 	int defaultFont;
@@ -95,7 +100,8 @@ public:
 	int pressedFont;
 	int disabledFont;
 
-	Module* observer;        // Observer module
+	// Observer module
+	Module* observer;
 };
 
 #endif // __GUICONTROL_H__

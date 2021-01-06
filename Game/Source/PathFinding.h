@@ -2,15 +2,15 @@
 #define __PATHFINDING_H__
 
 #include "Module.h"
-
 #include "Point.h"
 #include "DynArray.h"
 #include "List.h"
-
 #include "SDL.h"
 
 #define DEFAULT_PATH_LENGTH 50
 #define INVALID_WALK_CODE 255
+
+struct PathList;
 
 class PathFinding : public Module
 {
@@ -58,12 +58,10 @@ private:
 	uint height;
 };
 
-struct PathList;
-
 // Struct to represent a node in the path creation
 struct PathNode
 {
-	// Constructors
+	// Constructor
 	PathNode();
 	PathNode(int costSoFar, int heuristic, const iPoint& pos, const PathNode* parent);
 	PathNode(const PathNode& node);
@@ -86,7 +84,7 @@ struct PathNode
 	// Position of the tile
 	iPoint pos;
 
-	// needed to reconstruct the path in the end
+	// Needed to reconstruct the path at the end
 	const PathNode* parent;
 };
 

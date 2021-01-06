@@ -1,5 +1,6 @@
-#include "App.h"
 #include "PathFinding.h"
+
+#include "App.h"
 #include "Map.h"
 #include "Render.h"
 #include "Textures.h"
@@ -20,16 +21,16 @@ PathFinding::~PathFinding()
 bool PathFinding::Awake(pugi::xml_node& config)
 {
 	LOG("Loading PathFinder");
-	bool ret = true;
 
 	folderTexture.Create(config.child("folderTexture").child_value());
 
-	return ret;
+	return true;
 }
 
 bool PathFinding::Start()
 {
 	SString tmp("%s%s", folderTexture.GetString(), "path_meta_data.png");
+
 	debugPath = app->tex->Load(tmp.GetString());
 
 	return true;
@@ -130,28 +131,28 @@ uint PathNode::FindWalkableAdjacents(PathList& listToFill)
 	iPoint cell;
 	uint before = listToFill.list.Count();
 
-	// north
+	// North
 	cell.Create(pos.x, pos.y + 1);
 	if (app->pathfinding->IsWalkable(cell))
 	{
 		listToFill.list.Add(PathNode(-1, -1, cell, this));
 	}
 
-	// south
+	// South
 	cell.Create(pos.x, pos.y - 1);
 	if (app->pathfinding->IsWalkable(cell))
 	{
 		listToFill.list.Add(PathNode(-1, -1, cell, this));
 	}
 
-	// east
+	// East
 	cell.Create(pos.x + 1, pos.y);
 	if (app->pathfinding->IsWalkable(cell))
 	{
 		listToFill.list.Add(PathNode(-1, -1, cell, this));
 	}
 
-	// west
+	// West
 	cell.Create(pos.x - 1, pos.y);
 	if (app->pathfinding->IsWalkable(cell))
 	{

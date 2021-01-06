@@ -8,10 +8,16 @@
 #include "Audio.h"
 #include "Render.h"
 
-#include "Log.h"
-
 EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy, Entity* playerPointer) : Enemy(x, y, typeOfEnemy, playerPointer)
 {
+	entityRect = { x, y, app->generalTileSize, app->generalTileSize };
+	collider = app->collisions->AddCollider(entityRect, Collider::Type::ENEMY, (Module*)app->entities);
+
+	invert = true;
+
+	physics.verlet = false;
+
+	// Animation
 	enemySize = app->generalTileSize;
 	for (int i = 0; i != 7; ++i)
 	{
@@ -35,16 +41,10 @@ EnemyFlying::EnemyFlying(int x, int y, EnemyType typeOfEnemy, Entity* playerPoin
 	attack.loop = false;
 
 	currentAnim = &flying;
-	entityRect = { x, y, app->generalTileSize, app->generalTileSize };
-	collider = app->collisions->AddCollider(entityRect, Collider::Type::ENEMY, (Module*)app->entities);
 
 	flying.Reset();
 	hurt.Reset();
 	attack.Reset();
-
-	physics.verlet = false;
-
-	invert = true;
 }
 
 bool EnemyFlying::Update(float dt)

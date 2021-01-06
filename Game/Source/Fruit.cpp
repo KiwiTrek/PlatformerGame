@@ -1,14 +1,11 @@
 #include "Fruit.h"
 
 #include "App.h"
-
 #include "Audio.h"
 #include "Render.h"
 #include "Scene.h"
 #include "EntityManager.h"
 #include "Animation.h"
-
-#include "Log.h"
 
 Fruit::Fruit(int x, int y) : Entity(x, y, EntityType::FRUIT)
 {
@@ -16,8 +13,7 @@ Fruit::Fruit(int x, int y) : Entity(x, y, EntityType::FRUIT)
 	entityRect = { x, y, app->generalTileSize, app->generalTileSize };
 	collider = app->collisions->AddCollider(entityRect, Collider::Type::FRUIT, (Module*)app->entities);
 	fruitSect = { 383,192,app->generalTileSize,app->generalTileSize };
-	//447 - 383;
-	//256 - 192;
+	
 	invert = false;
 
 	physics.axisX = false;

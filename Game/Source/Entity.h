@@ -28,19 +28,16 @@ enum EnemyType
 class Entity
 {
 public:
-
+    // Constructor
     Entity(int x, int y, EntityType type, EnemyType eType = EnemyType::NO_TYPE) : type(type), eType(eType), active(true) {}
 
+    // Called each loop iteration
     virtual bool Update(float dt)
     {
         return true;
     }
 
-    virtual bool PostUpdate(float dt)
-    {
-        return true;
-    }
-
+    // Blit
     virtual bool Draw()
     {
         return true;
@@ -51,22 +48,15 @@ public:
     {}
 
 public:
-
     EntityType type;
-    bool active = true;
-    //SString name;         // Entity name identifier?
-    //uint32 id;            // Entity identifier?
-
-    // Possible properties, it depends on how generic we
-    // want our Entity class, maybe it's not renderable...
-    //iPoint position;        // Use a float instead?
     SDL_Rect entityRect;
+    Collider* collider;
     Physics physics;
     iPoint nextPos;
-    Collider* collider;
     uint destroyedFx;
 
     bool pendingToDelete = false;
+    bool active = true;
 
     // Original spawn position
     iPoint spawnPos;
@@ -75,10 +65,10 @@ public:
     Animation* currentAnim = nullptr;
     bool invert = false;
 
-    //Public vars from player (SHOULD BE TMP)
+    //Public vars from player
     bool isDead = false;
 
-    //Public vars from enemy (SHOULD BE TMP)
+    //Public vars from enemy
     EnemyType eType;
 };
 

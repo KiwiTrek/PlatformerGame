@@ -1,6 +1,7 @@
+#include "Render.h"
+
 #include "App.h"
 #include "Window.h"
-#include "Render.h"
 #include "Input.h"
 #include "Map.h"
 #include "Transition.h"
@@ -23,7 +24,6 @@ Render::~Render()
 bool Render::Awake(pugi::xml_node& config)
 {
 	LOG("Create SDL rendering context");
-	bool ret = true;
 
 	Uint32 flags = SDL_RENDERER_ACCELERATED;
 
@@ -39,7 +39,7 @@ bool Render::Awake(pugi::xml_node& config)
 	if (renderer == NULL)
 	{
 		LOG("Could not create the renderer! SDL_Error: %s\n", SDL_GetError());
-		ret = false;
+		return false;
 	}
 	else
 	{
@@ -49,7 +49,7 @@ bool Render::Awake(pugi::xml_node& config)
 		camera.y = 0;
 	}
 
-	return ret;
+	return true;
 }
 
 bool Render::Start()
@@ -59,6 +59,7 @@ bool Render::Start()
 	SDL_RenderGetViewport(renderer, &viewport);
 	drawAll = false;
 	drawAllGui = false;
+
 	return true;
 }
 
@@ -91,7 +92,9 @@ bool Render::PostUpdate()
 bool Render::CleanUp()
 {
 	LOG("Destroying SDL render");
+
 	SDL_DestroyRenderer(renderer);
+
 	return true;
 }
 
@@ -112,7 +115,6 @@ void Render::ResetViewPort()
 
 bool Render::DrawTexture(SDL_Texture* texture, int x, int y, bool fullscreen, const SDL_Rect* section, bool invert, float speed, double angle, int pivotX, int pivotY) const
 {
-	bool ret = true;
 	uint scale = app->win->GetScale();
 
 	SDL_Rect rect;
@@ -161,15 +163,14 @@ bool Render::DrawTexture(SDL_Texture* texture, int x, int y, bool fullscreen, co
 	if (SDL_RenderCopyEx(renderer, texture, section, &rect, angle, p, flip) != 0)
 	{
 		LOG("Cannot blit to screen. SDL_RenderCopy error: %s", SDL_GetError());
-		ret = false;
+		return false;
 	}
 
-	return ret;
+	return true;
 }
 
 bool Render::DrawRectangle(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool filled, bool useCamera) const
 {
-	bool ret = true;
 	uint scale = app->win->GetScale();
 
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -189,22 +190,20 @@ bool Render::DrawRectangle(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint
 	if (result != 0)
 	{
 		LOG("Cannot draw quad to screen. SDL_RenderFillRect error: %s", SDL_GetError());
-		ret = false;
+		return false;
 	}
 
-	return ret;
+	return true;
 }
 
 bool Render::DrawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool useCamera) const
 {
-	bool ret = true;
 	uint scale = app->win->GetScale();
 
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(renderer, r, g, b, a);
 
 	int result = -1;
-
 	if (useCamera)
 	{
 		result = SDL_RenderDrawLine(renderer, camera.x + x1 * scale, camera.y + y1 * scale, camera.x + x2 * scale, camera.y + y2 * scale);
@@ -217,15 +216,14 @@ bool Render::DrawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b,
 	if (result != 0)
 	{
 		LOG("Cannot draw quad to screen. SDL_RenderFillRect error: %s", SDL_GetError());
-		ret = false;
+		return false;
 	}
 
-	return ret;
+	return true;
 }
 
 bool Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool useCamera) const
 {
-	bool ret = true;
 	uint scale = app->win->GetScale();
 
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -233,7 +231,6 @@ bool Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uin
 
 	int result = -1;
 	SDL_Point points[360];
-
 	float factor = (float)M_PI / 180.0f;
 
 	for (uint i = 0; i < 360; ++i)
@@ -247,10 +244,10 @@ bool Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uin
 	if (result != 0)
 	{
 		LOG("Cannot draw quad to screen. SDL_RenderFillRect error: %s", SDL_GetError());
-		ret = false;
+		return false;
 	}
 
-	return ret;
+	return true;
 }
 
 void Render::ToggleVsync(bool vsync, Module* restart)

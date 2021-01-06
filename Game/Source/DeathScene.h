@@ -2,7 +2,6 @@
 #define __DEATH_SCENE_H__
 
 #include "Module.h"
-
 #include "GuiButton.h"
 
 struct SDL_Texture;
@@ -37,17 +36,20 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	// On mouse click response
 	bool OnGuiMouseClickEvent(GuiControl* control);
 
 private:
-	SDL_Texture* deathScreen;
 	SString folderTexture;
 	SString folderAudioMusic;
+
+	SDL_Texture* deathScreen;
 
 	int state;
 	float alpha;
 	float timer;
 
+	// Gui
 	GuiButton* btnTitle;
 	float dtTmp;
 

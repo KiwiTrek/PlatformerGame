@@ -23,7 +23,7 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	// Play a music file
+	// Plays a music file
 	bool PlayMusic(const char* path, float fadeTime = DEFAULT_MUSIC_FADE_TIME);
 
 	// Load/Unload a WAV in memory
@@ -31,10 +31,11 @@ public:
 	bool UnloadFx(uint index);
 	bool SetFxVolume(uint index);
 
-	// Get/Set
+	// Get/Set music volume
 	int GetMusicVolume();
 	void SetMusicVolume(int volume);
 
+	// Get/Set fx volume
 	int GetFxVolume();
 	void SetFxVolumeValue(int fxVolume);
 

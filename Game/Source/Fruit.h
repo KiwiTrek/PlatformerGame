@@ -3,15 +3,15 @@
 
 #include "Entity.h"
 
-#include "SDL.h"
-
 struct Collider;
+
 class Fruit : public Entity
 {
 public:
 	// Constructor
 	Fruit(int x, int y);
 
+	// Blit
 	bool Draw();
 
 	// Collision response
@@ -20,6 +20,7 @@ public:
 private:
 	SDL_Rect fruitSect;
 
+	// Fx
 	uint fruitFx;
 };
 

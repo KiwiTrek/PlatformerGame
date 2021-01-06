@@ -36,8 +36,7 @@ GuiButton::GuiButton(uint32 id, SDL_Rect bounds, const char* text, const char* s
 }
 
 GuiButton::~GuiButton()
-{
-}
+{}
 
 bool GuiButton::Update(float dt)
 {
@@ -47,8 +46,8 @@ bool GuiButton::Update(float dt)
 		app->input->GetMousePosition(mouseX, mouseY);
 
 		// Check collision between mouse and button bounds
-		if ((mouseX > bounds.x) && (mouseX < (bounds.x + bounds.w)) &&
-			(mouseY > bounds.y) && (mouseY < (bounds.y + bounds.h)))
+		if ((mouseX > bounds.x) && (mouseX < (bounds.x + bounds.w))
+			&& (mouseY > bounds.y) && (mouseY < (bounds.y + bounds.h)))
 		{
 			state = GuiControlState::FOCUSED;
 
@@ -57,13 +56,16 @@ bool GuiButton::Update(float dt)
 				state = GuiControlState::PRESSED;
 			}
 
-			// If mouse button pressed -> Generate event!
+			// If mouse button pressed -> Generate event
 			if (app->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KeyState::KEY_UP)
 			{
 				NotifyObserver();
 			}
 		}
-		else state = GuiControlState::NORMAL;
+		else
+		{
+			state = GuiControlState::NORMAL;
+		}
 	}
 
 	return false;
@@ -76,7 +78,7 @@ bool GuiButton::Draw(int cPosX, int cPosY)
 	{
 	case GuiControlState::DISABLED:
 	{
-		app->render->DrawTexture(texture, cPosX + bounds.x,cPosY + bounds.y, false, &disabled);
+		app->render->DrawTexture(texture, cPosX + bounds.x, cPosY + bounds.y, false, &disabled);
 		if (secondaryText)
 		{
 			app->fonts->DrawText(cPosX + bounds.x + (bounds.w - offsetText) / 2, cPosY + bounds.y + (bounds.h / 2) - 11, disabledFont, text.GetString());

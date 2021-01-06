@@ -22,7 +22,7 @@ public:
 		}
 		if (axisY)
 		{
-			//Euler
+			// Euler
 			if (verlet == false)
 			{
 				pos.y = pos.y + speed.y * dt;
@@ -36,7 +36,7 @@ public:
 		}
 	}
 
-	// To know what direction the velocity is going
+	// Indicates the direction of the velocity
 	void CheckDirection()
 	{
 		if (speed.y >= 0.0f)
@@ -57,18 +57,22 @@ public:
 		iPoint checkedPos;
 
 		// X axis
-		if (!goingLeft) { // right
+		if (!goingLeft) // Right
+		{
 			tiledPos.x = (currentFrame.x + currentFrame.w) / app->generalTileSize;
 			int i = 0;
-			while (app->map->GetTileProperty(tiledPos.x + i, tiledPos.y, "CollisionId") == Collider::Type::AIR && i < 5) {
+			while (app->map->GetTileProperty(tiledPos.x + i, tiledPos.y, "CollisionId") == Collider::Type::AIR && i < 5)
+			{
 				i++;
 			}
 			i--;
 			correctedPos.x = MIN(nextFrame.x - currentFrame.x, (tiledPos.x + i) * app->generalTileSize - currentFrame.x);
 		}
-		else { // left
+		else // Left
+		{
 			int i = 0;
-			while (app->map->GetTileProperty(tiledPos.x - i, tiledPos.y, "CollisionId") == Collider::Type::AIR && i < 5) {
+			while (app->map->GetTileProperty(tiledPos.x - i, tiledPos.y, "CollisionId") == Collider::Type::AIR && i < 5)
+			{
 				i++;
 			}
 			i--;
@@ -76,18 +80,22 @@ public:
 		}
 
 		// Y axis
-		if (positiveSpeedY) {
+		if (positiveSpeedY) // Bottom
+		{
 			tiledPos.y = (currentFrame.y + currentFrame.h) / app->generalTileSize;
 			int i = 0;
-			while (app->map->GetTileProperty(tiledPos.x, tiledPos.y + i, "CollisionId") == Collider::Type::AIR && i < 5) {
+			while (app->map->GetTileProperty(tiledPos.x, tiledPos.y + i, "CollisionId") == Collider::Type::AIR && i < 5)
+			{
 				i++;
 			}
 			i--;
 			correctedPos.y = MIN(nextFrame.y - currentFrame.y, (tiledPos.y + i) * app->generalTileSize - currentFrame.y);
 		}
-		else {
+		else // Top
+		{
 			int i = 0;
-			while (app->map->GetTileProperty(tiledPos.x, tiledPos.y - i, "CollisionId") == Collider::Type::AIR && i < 5) {
+			while (app->map->GetTileProperty(tiledPos.x, tiledPos.y - i, "CollisionId") == Collider::Type::AIR && i < 5)
+			{
 				i++;
 			}
 			i--;
@@ -115,17 +123,22 @@ public:
 			speed.y = 0.0f;
 		}
 		else if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y + 1, "CollisionId") == Collider::Type::SOLID
-			|| app->map->GetTileProperty(currentFrameTile.x + 1, currentFrameTile.y + 1, "CollisionId") == Collider::Type::SOLID) {
+			|| app->map->GetTileProperty(currentFrameTile.x + 1, currentFrameTile.y + 1, "CollisionId") == Collider::Type::SOLID)
+		{
 			speed.y = 0.0f;
 		}
-		else if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId") == Collider::Type::SOLID) {
+		else if (app->map->GetTileProperty(currentFrameTile.x, currentFrameTile.y, "CollisionId") == Collider::Type::SOLID)
+		{
 			speed.y = 0.0f;
 		}
 
 	}
 
+	// Collisions related variables
 	bool axisX;
 	bool axisY;
+
+	// Speed related variables
 	bool positiveSpeedY;
 	bool verlet = true;
 	fPoint speed;

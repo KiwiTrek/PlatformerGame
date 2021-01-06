@@ -1,6 +1,9 @@
-#pragma once
+#ifndef __FONTS_H__
+#define __FONTS_H__
+
 #include "Module.h"
 #include "SDL_pixels.h"
+#include <string.h>
 
 #define MAX_FONTS 15
 #define MAX_FONT_CHARS 256
@@ -60,3 +63,5 @@ private:
 	// An array to keep track and store all loaded fonts
 	Font fonts[MAX_FONTS];
 };
+
+#endif // !__FONTS_H__

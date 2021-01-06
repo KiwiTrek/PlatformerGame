@@ -2,9 +2,7 @@
 
 #include "Defs.h"
 #include "Log.h"
-
 #include "SDL.h"
-
 #include <stdlib.h>
 
 enum MainState
@@ -45,7 +43,6 @@ int main(int argc, char* args[])
 			{
 				state = FAIL;
 			}
-
 			break;
 			// Awake all modules -----------------------------------------------
 		case AWAKE:
@@ -59,7 +56,6 @@ int main(int argc, char* args[])
 				LOG("ERROR: Awake failed");
 				state = FAIL;
 			}
-
 			break;
 			// Call all modules before first frame  ----------------------------
 		case START:

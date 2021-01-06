@@ -31,12 +31,11 @@ void DeathScene::Init()
 bool DeathScene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
-	bool ret = true;
 
 	folderTexture.Create(config.child("folderTexture").child_value());
 	folderAudioMusic.Create(config.child("folderAudioMusic").child_value());
 
-	return ret;
+	return true;
 }
 
 bool DeathScene::Start()
@@ -57,6 +56,8 @@ bool DeathScene::Start()
 	btnTitle = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 1, { -app->render->camera.x + 193, -app->render->camera.y + 498, 217, 109 }, "BACK to", this, 0, true, "TITLE");
 	btnExit = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 2, { -app->render->camera.x + 867, -app->render->camera.y + 498, 217, 109 }, "EXIT", this);
 
+	exitRequest = false;
+
 	return true;
 }
 
@@ -68,6 +69,7 @@ bool DeathScene::PreUpdate()
 bool DeathScene::Update(float dt)
 {
 	dtTmp = dt;
+
 	if (state == 0)
 	{
 		state = 1;
@@ -101,11 +103,9 @@ bool DeathScene::Update(float dt)
 
 bool DeathScene::PostUpdate()
 {
-	bool ret = true;
-
 	if (exitRequest)
 	{
-		ret = false;
+		return false;
 	}
 
 	app->render->DrawTexture(deathScreen, NULL, NULL, true);
@@ -115,7 +115,7 @@ bool DeathScene::PostUpdate()
 	app->render->DrawRectangle(btnTitle->bounds, 0, 0, 0, (uchar)(255 - (255 * alpha)));
 	app->render->DrawRectangle(btnExit->bounds, 0, 0, 0, (uchar)(255 - (255 * alpha)));
 
-	return ret;
+	return true;
 }
 
 bool DeathScene::CleanUp()
@@ -123,17 +123,6 @@ bool DeathScene::CleanUp()
 	LOG("Freeing scene");
 
 	app->tex->UnLoad(deathScreen);
-
-	//if (btnTitle != nullptr)
-	//{
-	//	app->gui->DestroyGuiControl(btnTitle);
-	//	btnTitle = nullptr;
-	//}
-	//if (btnExit != nullptr)
-	//{
-	//	app->gui->DestroyGuiControl(btnExit);
-	//	btnExit = nullptr;
-	//}
 
 	if (app->gui->active)
 	{
@@ -151,12 +140,12 @@ bool DeathScene::OnGuiMouseClickEvent(GuiControl* control)
 	{
 		switch (control->id)
 		{
-		case 1:	//Back to title
+		case 1:	// Back to title
 		{
 			app->transition->FadeEffect(this, (Module*)app->titleScene, false, floor(1200.0f * dtTmp));
 			break;
 		}
-		case 2:	//Exit
+		case 2:	// Exit
 		{
 			exitRequest = true;
 			break;

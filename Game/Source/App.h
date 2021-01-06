@@ -4,9 +4,7 @@
 #include "Module.h"
 #include "PerfTimer.h"
 #include "Timer.h"
-
 #include "List.h"
-
 #include "pugixml.hpp"
 
 #define CONFIG_FILENAME "config.xml"
@@ -60,10 +58,14 @@ public:
 	const char* GetTitle() const;
 	const char* GetOrganization() const;
 
-	// Request Save/Load
+	// Requests Savefile
 	bool CheckSaveFile();
+
+	// Requests Load/Save
 	void LoadRequest();
 	void SaveRequest();
+
+	// Requests Cap
 	void CapRequest();
 
 private:
@@ -88,6 +90,8 @@ private:
 	// Save/Load inside an XML file
 	bool LoadGame();
 	bool SaveGame();
+
+	// Changes framerate cap
 	bool ChangeCap();
 
 public:
@@ -119,9 +123,11 @@ private:
 	SString title;
 	SString organization;
 
-	List<Module *> modules;
+	List<Module*> modules;
 
-	bool saveRequest, loadRequest, capRequest;
+	bool saveRequest;
+	bool loadRequest;
+	bool capRequest;
 	pugi::xml_document saveFile;
 	pugi::xml_node save;
 

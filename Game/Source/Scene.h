@@ -9,9 +9,10 @@ struct SDL_Texture;
 class Scene : public Module
 {
 public:
-
+	// Constructor
 	Scene();
 
+	// Called when program is executed
 	void Init();
 
 	// Destructor
@@ -35,6 +36,7 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	// Load/Save
 	bool Load(pugi::xml_node&);
 	bool Save(pugi::xml_node&);
 
@@ -47,26 +49,31 @@ private:
 	Entity* player = nullptr;
 	iPoint cameraPos;
 	iPoint cameraSize;
-	
+
+	// Background
 	SDL_Color sky;
 	SDL_Texture* clouds;
 	SDL_Texture* mountainsBack;
 	SDL_Texture* mountainsFront;
+
 	SString folderTexture;
 	SString folderAudioMusic;
 
+	// Gui
 	int font = -1;
-	// Timer Handling
+
+	// Timer handling
 	float timerValue;
 	SString timerTitle;
 	int offsetTimer;
 	char timer[6] = { "\0" };
 
-	// Score Handling
+	// Score handling
 	SString scoreTitle;
 	int offsetScore;
 	char score[6] = { "\0" };
 
+	// Fruit & Coin handling
 	SDL_Texture* ui;
 	SDL_Rect uiFruit;
 	char scoreFruit[4] = { "\0" };

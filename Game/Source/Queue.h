@@ -9,36 +9,38 @@ struct QueueItem
 	tdata data;
 	QueueItem<tdata>* next;
 
+	// Constructor
 	inline QueueItem(const tdata& data) : data(data), next(NULL)
 	{}
 };
 
-
 template<class tdata>
 class Queue
 {
-
 public:
-
 	QueueItem<tdata>* start;
 
 public:
-
+	// Constructor
 	inline Queue() : start(NULL)
 	{}
 
+	// Destructor
 	~Queue()
 	{
 		Clear();
 	}
 
+	// Utils
 	uint Count() const
 	{
 		uint result = 0;
 		QueueItem<tdata>* tmp;
 
 		for (tmp = start; tmp != NULL; tmp = tmp->next)
+		{
 			++result;
+		}
 
 		return result;
 	}
@@ -48,7 +50,9 @@ public:
 		QueueItem<tdata>* tmp = start;
 
 		while (tmp != NULL && tmp->next != NULL)
+		{
 			tmp = tmp->next;
+		}
 
 		return tmp;
 	}
@@ -57,7 +61,6 @@ public:
 	{
 		QueueItem<tdata>* pDataItem;
 		pDataItem = new QueueItem<tdata>(item);
-
 		QueueItem<tdata>* last = GetLast();
 
 		if (last == NULL)
@@ -92,10 +95,14 @@ public:
 		QueueItem<tdata>* tmp;
 
 		for (tmp = start; tmp != NULL && i < index; tmp = tmp->next)
+		{
 			++i;
+		}
 
 		if (tmp != NULL)
+		{
 			return &(tmp->data);
+		}
 
 		return NULL;
 	}
@@ -115,6 +122,6 @@ public:
 
 		start = NULL;
 	}
-
 };
+
 #endif // __QUEUE_H__

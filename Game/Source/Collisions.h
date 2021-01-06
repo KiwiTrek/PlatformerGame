@@ -1,11 +1,10 @@
 #ifndef __COLLISIONS_H__
 #define __COLLISIONS_H__
 
-#define MAX_COLLIDERS 250
-
 #include "Module.h"
-
 #include "SDL.h"
+
+#define MAX_COLLIDERS 250
 
 class Collider
 {

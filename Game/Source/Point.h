@@ -2,16 +2,15 @@
 #define __POINT_H__
 
 #include "Defs.h"
-
 #include <math.h>
 
 template<class TYPE>
 class Point
 {
 public:
-
 	TYPE x, y;
 
+	// Constructors
 	Point()
 	{}
 
@@ -36,7 +35,7 @@ public:
 	}
 
 	// Math ------------------------------------------------
-	Point operator -(const Point &v) const
+	Point operator -(const Point& v) const
 	{
 		TYPE r;
 
@@ -46,7 +45,7 @@ public:
 		return(r);
 	}
 
-	Point operator + (const Point &v) const
+	Point operator +(const Point& v) const
 	{
 		TYPE r;
 
@@ -56,7 +55,7 @@ public:
 		return(r);
 	}
 
-	const Point& operator -=(const Point &v)
+	const Point& operator -=(const Point& v)
 	{
 		x -= v.x;
 		y -= v.y;
@@ -64,7 +63,7 @@ public:
 		return(*this);
 	}
 
-	const Point& operator +=(const Point &v)
+	const Point& operator +=(const Point& v)
 	{
 		x += v.x;
 		y += v.y;
@@ -126,7 +125,7 @@ public:
 		TYPE fx = x - v.x;
 		TYPE fy = y - v.y;
 
-		return sqrtf((fx*fx) + (fy*fy));
+		return sqrtf((fx * fx) + (fy * fy));
 	}
 
 	TYPE DistanceNoSqrt(const Point& v) const
@@ -134,7 +133,7 @@ public:
 		TYPE fx = x - v.x;
 		TYPE fy = y - v.y;
 
-		return (fx*fx) + (fy*fy);
+		return (fx * fx) + (fy * fy);
 	}
 
 	TYPE DistanceManhattan(const Point& v) const

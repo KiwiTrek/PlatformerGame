@@ -2,9 +2,7 @@
 #define __RENDER_H__
 
 #include "Module.h"
-
 #include "Point.h"
-
 #include "SDL.h"
 
 class Render : public Module

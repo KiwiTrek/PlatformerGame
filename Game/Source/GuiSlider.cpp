@@ -33,8 +33,7 @@ GuiSlider::GuiSlider(uint32 id, SDL_Rect bounds, int widthInUnits, const char* t
 }
 
 GuiSlider::~GuiSlider()
-{
-}
+{}
 
 bool GuiSlider::Update(float dt)
 {
@@ -49,8 +48,8 @@ bool GuiSlider::Update(float dt)
 		app->input->GetMouseMotion(motionX, motionY);
 
 		// Check collision between mouse and button bounds
-		if ((mouseX > bounds.x) && (mouseX < (bounds.x + bounds.w)) &&
-			(mouseY > bounds.y) && (mouseY < (bounds.y + bounds.h)))
+		if ((mouseX > bounds.x) && (mouseX < (bounds.x + bounds.w))
+			&& (mouseY > bounds.y) && (mouseY < (bounds.y + bounds.h)))
 		{
 			state = GuiControlState::FOCUSED;
 
@@ -66,7 +65,7 @@ bool GuiSlider::Update(float dt)
 
 		if (motionX != 0 && state == GuiControlState::PRESSED)
 		{
-			bounds.x = mouseX - (bounds.w/2);
+			bounds.x = mouseX - (bounds.w / 2);
 			NotifyObserver();
 		}
 
@@ -108,7 +107,7 @@ bool GuiSlider::Draw(int cPosX, int cPosY)
 		app->render->DrawRectangle({ cPosX + limits.x + limits.w - bounds.w, cPosY + limits.y, 54, 54 }, 255, 255, 0, 100);
 	}
 
-	// Draw the right button depending on state
+	// Draw the appropiate button depending on state
 	switch (state)
 	{
 	case GuiControlState::DISABLED:

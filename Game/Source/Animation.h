@@ -12,15 +12,18 @@ public:
 	{
 		frames[totalFrames++] = rect;
 	}
+
 	void Reset()
 	{
 		currentFrame = 0;
 		loopCount = 0;
 	}
+
 	bool HasFinished()
 	{
 		return !loop && loopCount > 0;
 	}
+
 	void Update(float dt)
 	{
 		currentFrame += speed * dt;

@@ -3,13 +3,12 @@
 
 #include "Module.h"
 #include "GuiControl.h"
-
 #include "List.h"
 
 class GuiManager : public Module
 {
 public:
-
+	// Constructor
 	GuiManager();
 
 	// Destructor
@@ -27,15 +26,15 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	// Additional methods
+	// Create/Destroy control
 	GuiControl* CreateGuiControl(GuiControlType type, uint32 id, SDL_Rect bounds, const char* text, Module* observer, int widthInUnits = 0, bool secondText = false, const char* text2 = nullptr);
 	void DestroyGuiControl(GuiControl* entity);
 
-	//void AddGuiControl(GuiControl* entity);
-
 public:
 	SString folderTexture;
+
 	SDL_Texture* atlas;
+
 	int defaultFont = -1;
 	int defaultFontSmall = -1;
 	int titleFont = -1;

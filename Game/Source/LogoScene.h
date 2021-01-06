@@ -36,10 +36,13 @@ public:
 	bool CleanUp();
 
 private:
-	SDL_Texture* logo;
-	uint logoFx;
 	SString folderTexture;
 	SString folderAudioFx;
+
+	// Logo
+	SDL_Texture* logo;
+	uint logoFx;
+
 	bool onceTimer = true;
 	SDL_Rect window;
 

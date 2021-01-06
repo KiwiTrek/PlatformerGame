@@ -3,9 +3,8 @@
 
 #include "Module.h"
 
-//#define NUM_KEYS 352
+#define MAX_KEYS 300
 #define NUM_MOUSE_BUTTONS 5
-//#define LAST_KEYS_PRESSED_BUFFER 50
 
 struct SDL_Rect;
 
@@ -47,16 +46,10 @@ public:
 	bool CleanUp();
 
 	// Check key states
-	KeyState GetKey(int id) const
-	{
-		return keyboard[id];
-	}
+	KeyState GetKey(int id) const;
 
 	// Check mouse button states
-	KeyState GetMouseButtonDown(int id) const
-	{
-		return mouseButtons[id - 1];
-	}
+	KeyState GetMouseButtonDown(int id) const;
 
 	// Check if a certain window event happened
 	bool GetWindowEvent(EventWindow ev);

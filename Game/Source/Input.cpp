@@ -1,13 +1,11 @@
-#include "App.h"
 #include "Input.h"
+
+#include "App.h"
 #include "Window.h"
+
 #include "Defs.h"
-
-#include "Log.h"
-
 #include "SDL.h"
-
-#define MAX_KEYS 300
+#include "Log.h"
 
 Input::Input() : Module()
 {
@@ -26,16 +24,15 @@ Input::~Input()
 bool Input::Awake(pugi::xml_node& config)
 {
 	LOG("Init SDL input event system");
-	bool ret = true;
 	SDL_Init(0);
 
 	if (SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
 	{
 		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
-		ret = false;
+		return false;
 	}
 
-	return ret;
+	return true;
 }
 
 bool Input::Start()
@@ -144,7 +141,9 @@ bool Input::PreUpdate()
 bool Input::CleanUp()
 {
 	LOG("Quitting SDL event subsystem");
+
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
+
 	return true;
 }
 
@@ -152,6 +151,16 @@ bool Input::CleanUp()
 bool Input::GetWindowEvent(EventWindow ev)
 {
 	return windowEvents[ev];
+}
+
+KeyState Input::GetKey(int id) const
+{
+	return keyboard[id];
+}
+
+KeyState Input::GetMouseButtonDown(int id) const
+{
+	return mouseButtons[id - 1];
 }
 
 void Input::GetMousePosition(int& x, int& y)

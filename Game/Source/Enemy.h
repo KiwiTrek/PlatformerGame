@@ -2,14 +2,9 @@
 #define __ENEMY_H__
 
 #include "Entity.h"
-#include "Point.h"
-#include "Animation.h"
-#include "Physics.h"
-#include "DynArray.h"
 
 struct SDL_Texture;
 class Collider;
-
 enum EnemyType;
 
 class Enemy : public Entity
@@ -21,10 +16,10 @@ public:
 	// Destructor
 	virtual ~Enemy();
 
-	// Called from inhering enemies' Udpate
+	// Called each loop iteration
 	virtual bool Update(float dt);
 
-	// Called from ModuleEnemies' Update
+	// Blit
 	virtual bool Draw();
 
 	// Collision response
@@ -37,6 +32,7 @@ public:
 
 protected:
 	Entity* player;
+
 	// General enemy size
 	int enemySize;
 
@@ -45,7 +41,6 @@ protected:
 	int i;
 	int counterTile;
 
-	// State changes
 	bool attackChange = false;
 	bool hurtChange = false;
 };

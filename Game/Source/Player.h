@@ -2,12 +2,9 @@
 #define __PLAYER_H__
 
 #include "Entity.h"
-#include "Animation.h"
-#include "Physics.h"
-
-#include "SDL.h"
 
 struct Collider;
+
 class Player : public Entity
 {
 public:
@@ -17,9 +14,7 @@ public:
 	// Called each loop iteration
 	bool Update(float dt);
 
-	// Called after all Updates
-	//bool PostUpdate(float dt);
-
+	// Blit
 	bool Draw();
 
 	// Collision response
@@ -33,6 +28,8 @@ public:
 private:
 	// Gets the coordinates of the spawn point
 	iPoint GetSpawnPoint();
+
+	// Attack hitbox
 	Collider* hurtBox = nullptr;
 
 	int jumpCounter;
@@ -50,6 +47,13 @@ private:
 	bool onceCheckpoint = true;
 	bool updateCamera = false;
 
+	// Heart related variables
+	bool heartLess;
+	Animation heartDestroyed; //19 f
+	bool heartMore;
+	Animation heartRecovered; //11 f
+
+	// Animation
 	Animation idle;
 	Animation run;
 	Animation jumpPrep;
@@ -60,11 +64,7 @@ private:
 	Animation death;
 	Animation wallJump;
 
-	bool heartLess;
-	Animation heartDestroyed; //19 f
-	bool heartMore;
-	Animation heartRecovered; //11 f
-
+	// Fx
 	uint jumpFx;
 	uint doubleJumpFx;
 	uint fruitFx;

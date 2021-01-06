@@ -1,4 +1,5 @@
 #include "App.h"
+
 #include "Audio.h"
 
 #include "Defs.h"
@@ -19,14 +20,13 @@ Audio::~Audio()
 bool Audio::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Audio Mixer");
-	bool ret = true;
 	SDL_Init(0);
 
 	if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
 	{
 		LOG("SDL_INIT_AUDIO could not initialize! SDL_Error: %s\n", SDL_GetError());
 		active = false;
-		ret = true;
+		return true;
 	}
 
 	// Load support for the OGG image formats
@@ -37,7 +37,7 @@ bool Audio::Awake(pugi::xml_node& config)
 	{
 		LOG("Could not initialize Mixer lib. Mix_Init: %s", Mix_GetError());
 		active = false;
-		ret = true;
+		return true;
 	}
 
 	// Initialize SDL_mixer
@@ -45,7 +45,7 @@ bool Audio::Awake(pugi::xml_node& config)
 	{
 		LOG("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
 		active = false;
-		ret = true;
+		return true;
 	}
 	else
 	{
@@ -54,7 +54,7 @@ bool Audio::Awake(pugi::xml_node& config)
 		LOG("Set volume to: %d\n", Mix_VolumeMusic(-1));
 	}
 
-	return ret;
+	return true;
 }
 
 bool Audio::CleanUp()
@@ -89,28 +89,24 @@ bool Audio::CleanUp()
 bool Audio::Load(pugi::xml_node& save)
 {
 	LOG("Loading SDL rendering info");
-	bool ret = true;
 
 	Mix_VolumeMusic(save.child("volume").attribute("value").as_int());
 
-	return ret;
+	return true;
 }
 
 bool Audio::Save(pugi::xml_node& save)
 {
 	LOG("Saving SDL rendering info");
-	bool ret = true;
 
 	pugi::xml_node volume = save.append_child("volume");
 	volume.append_attribute("value").set_value(Mix_VolumeMusic(-1));
 
-	return ret;
+	return true;
 }
 
 bool Audio::PlayMusic(const char* path, float fade_time)
 {
-	bool ret = true;
-
 	if (!active)
 	{
 		return false;
@@ -135,7 +131,7 @@ bool Audio::PlayMusic(const char* path, float fade_time)
 	if (music == NULL)
 	{
 		LOG("Cannot load music %s. Mix_GetError(): %s\n", path, Mix_GetError());
-		ret = false;
+		return false;
 	}
 	else
 	{
@@ -144,7 +140,7 @@ bool Audio::PlayMusic(const char* path, float fade_time)
 			if (Mix_FadeInMusic(music, -1, (int)(fade_time * 1000.0f)) < 0)
 			{
 				LOG("Cannot fade in music %s. Mix_GetError(): %s", path, Mix_GetError());
-				ret = false;
+				return false;
 			}
 		}
 		else
@@ -152,13 +148,13 @@ bool Audio::PlayMusic(const char* path, float fade_time)
 			if (Mix_PlayMusic(music, -1) < 0)
 			{
 				LOG("Cannot play in music %s. Mix_GetError(): %s", path, Mix_GetError());
-				ret = false;
+				return false;
 			}
 		}
 	}
 
 	LOG("Successfully playing %s", path);
-	return ret;
+	return true;
 }
 
 uint Audio::LoadFx(const char* path)
@@ -200,8 +196,6 @@ bool Audio::UnloadFx(uint index)
 
 bool Audio::PlayFx(uint id, int repeat)
 {
-	bool ret = false;
-
 	if (!active)
 	{
 		return false;
@@ -212,7 +206,7 @@ bool Audio::PlayFx(uint id, int repeat)
 		Mix_PlayChannel(-1, fx[id - 1], repeat);
 	}
 
-	return ret;
+	return true;
 }
 
 bool Audio::SetFxVolume(uint index)

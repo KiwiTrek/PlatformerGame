@@ -1,9 +1,9 @@
 #include "Window.h"
+
 #include "App.h"
 
 #include "Defs.h"
 #include "Log.h"
-
 #include "SDL.h"
 
 Window::Window() : Module()
@@ -19,12 +19,11 @@ Window::~Window()
 bool Window::Awake(pugi::xml_node& config)
 {
 	LOG("Init SDL window & surface");
-	bool ret = true;
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		LOG("SDL_VIDEO could not initialize! SDL_Error: %s\n", SDL_GetError());
-		ret = false;
+		return false;
 	}
 	else
 	{
@@ -64,7 +63,7 @@ bool Window::Awake(pugi::xml_node& config)
 		if (window == NULL)
 		{
 			LOG("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-			ret = false;
+			return false;
 		}
 		else
 		{
@@ -73,7 +72,7 @@ bool Window::Awake(pugi::xml_node& config)
 		}
 	}
 
-	return ret;
+	return true;
 }
 
 bool Window::CleanUp()

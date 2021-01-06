@@ -14,9 +14,6 @@
 #include "Defs.h"
 #include "Log.h"
 
-#define TITLE_FONT_SIZE 36
-#define TITLE_FONT_SMALL_SIZE TITLE_FONT_SIZE/2
-
 TitleScene::TitleScene() : Module()
 {
 	name.Create("titleScene");
@@ -33,7 +30,7 @@ void TitleScene::Init()
 bool TitleScene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
-	bool ret = true;
+
 	folderTexture.Create(config.child("folderTexture").child_value());
 	folderAudioMusic.Create(config.child("folderAudioMusic").child_value());
 
@@ -51,27 +48,29 @@ bool TitleScene::Awake(pugi::xml_node& config)
 	licenceText5.Create(creditsNode.child("line5").child_value());
 	licenceText6.Create(creditsNode.child("line6").child_value());
 
-	return ret;
+	return true;
 }
 
 bool TitleScene::Start()
 {
 	app->render->SetBackgroundColor({ 0,0,0,0 });
+
 	SString tmp("%s%s", folderTexture.GetString(), "title_screen.png");
 	titleScreen = app->tex->Load(tmp.GetString());
+
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioMusic.GetString(), "title_screen.ogg");
 	app->audio->PlayMusic(tmp.GetString(), 0.0f);
 
 	app->gui->Enable();
 
-	exitRequest = false;
-
 	credits = false;
+	exitRequest = false;
+	loadRequest = false;
+
 	titleFont = app->gui->titleFont;
 	titleFontSmall = app->gui->titleFontSmall;
 	btnBack = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 6, { 976, 553, 217, 109 }, "BACK", this);
-
 	btnPlay = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 1, { 84, 553, 217, 109 }, "PLAY", this);
 	btnContinue = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 2, { 307, 553, 217, 109 }, "CONTINUE", this);
 	btnSettings = (GuiButton*)app->gui->CreateGuiControl(GuiControlType::BUTTON, 3, { 530, 553, 217, 109 }, "SETTINGS", this);
@@ -100,8 +99,6 @@ bool TitleScene::Start()
 	chckFullscreen->checked = app->win->fullscreenWindow;
 	chckVsync = (GuiCheckBox*)app->gui->CreateGuiControl(GuiControlType::CHECKBOX, 104, { (1280 / 4) + 132,440,54,54 }, "VSync", this);
 	chckVsync->checked = app->vsync;
-
-	loadRequest = false;
 
 	return true;
 }
@@ -141,11 +138,9 @@ bool TitleScene::Update(float dt)
 
 bool TitleScene::PostUpdate()
 {
-	bool ret = true;
-
 	if (exitRequest)
 	{
-		ret = false;
+		return false;
 	}
 
 	app->render->DrawTexture(titleScreen, NULL, NULL, true);
@@ -201,7 +196,7 @@ bool TitleScene::PostUpdate()
 		btnBack->Draw();
 	}
 
-	return ret;
+	return true;
 }
 
 bool TitleScene::CleanUp()
@@ -209,58 +204,6 @@ bool TitleScene::CleanUp()
 	LOG("Freeing scene");
 
 	app->tex->UnLoad(titleScreen);
-
-	/*if (btnPlay != nullptr)
-	{
-		app->gui->DestroyGuiControl(btnPlay);
-		btnPlay = nullptr;
-	}
-	if (btnContinue != nullptr)
-	{
-		app->gui->DestroyGuiControl(btnContinue);
-		btnContinue = nullptr;
-	}
-	if (btnSettings != nullptr)
-	{
-		app->gui->DestroyGuiControl(btnSettings);
-		btnSettings = nullptr;
-	}
-	if (btnCredits != nullptr)
-	{
-		app->gui->DestroyGuiControl(btnCredits);
-		btnCredits = nullptr;
-	}
-	if (btnExit != nullptr)
-	{
-		app->gui->DestroyGuiControl(btnExit);
-		btnExit = nullptr;
-	}
-	if (btnBack != nullptr)
-	{
-		app->gui->DestroyGuiControl(btnBack);
-		btnBack = nullptr;
-	}
-
-	if (sldrMusic != nullptr)
-	{
-		app->gui->DestroyGuiControl(sldrMusic);
-		sldrMusic = nullptr;
-	}
-	if (sldrFx != nullptr)
-	{
-		app->gui->DestroyGuiControl(sldrFx);
-		sldrFx = nullptr;
-	}
-	if (chckFullscreen != nullptr)
-	{
-		app->gui->DestroyGuiControl(chckFullscreen);
-		chckFullscreen = nullptr;
-	}
-	if (chckVsync != nullptr)
-	{
-		app->gui->DestroyGuiControl(chckVsync);
-		chckVsync = nullptr;
-	}*/
 
 	if (app->gui->active)
 	{
@@ -274,63 +217,63 @@ bool TitleScene::OnGuiMouseClickEvent(GuiControl* control)
 {
 	switch (control->id)
 	{
-		case 1:	//Play
-		{
-			app->transition->FadeEffect(this, (Module*)app->scene, false, floor(1200.0f * dtTmp));
-			break;
-		}
-		case 2: //Continue
-		{
-			app->transition->FadeEffect(this, (Module*)app->scene, false, floor(1200.0f * dtTmp));
-			loadRequest = true;
-			break;
-		}
-		case 3: //Settings
-		{
-			settings = true;
-			break;
-		}
-		case 4: //Credits
-		{
-			credits = true;
-			break;
-		}
-		case 5:	//Exit
-		{
-			exitRequest = true;
-			break;
-		}
-		case 6: //Back
-		{
-			credits = false;
-			settings = false;
-			break;
-		}
-		case 101: // MUSIC
-		{
-			app->audio->SetMusicVolume(sldrMusic->value);
-			break;
-		}
-		case 102: // FX
-		{
-			app->audio->SetFxVolumeValue(sldrFx->value);
-			break;
-		}
-		case 103: // FULLSCREEN
-		{
-			app->win->ToggleFullscreen(chckFullscreen->checked);
-			break;
-		}
-		case 104: // VSYNC
-		{
-			app->win->ToggleFullscreen(false);
-			app->render->ToggleVsync(chckVsync->checked, (Module*)this);
-			break;
-		}
-		default:
-		{
-			break;
-		}
+	case 1: // Play
+	{
+		app->transition->FadeEffect(this, (Module*)app->scene, false, floor(1200.0f * dtTmp));
+		break;
+	}
+	case 2: // Continue
+	{
+		app->transition->FadeEffect(this, (Module*)app->scene, false, floor(1200.0f * dtTmp));
+		loadRequest = true;
+		break;
+	}
+	case 3: // Settings
+	{
+		settings = true;
+		break;
+	}
+	case 4: // Credits
+	{
+		credits = true;
+		break;
+	}
+	case 5: // Exit
+	{
+		exitRequest = true;
+		break;
+	}
+	case 6: // Back
+	{
+		credits = false;
+		settings = false;
+		break;
+	}
+	case 101: // Music
+	{
+		app->audio->SetMusicVolume(sldrMusic->value);
+		break;
+	}
+	case 102: // Fx
+	{
+		app->audio->SetFxVolumeValue(sldrFx->value);
+		break;
+	}
+	case 103: // Fullscreen
+	{
+		app->win->ToggleFullscreen(chckFullscreen->checked);
+		break;
+	}
+	case 104: // Vsync
+	{
+		app->win->ToggleFullscreen(false);
+		app->render->ToggleVsync(chckVsync->checked, (Module*)this);
+		break;
+	}
+	default:
+	{
+		break;
+	}
 	}
 
 	return true;

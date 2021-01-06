@@ -3,10 +3,11 @@
 #include "App.h"
 #include "Textures.h"
 #include "Fonts.h"
-
 #include "GuiButton.h"
 #include "GuiCheckBox.h"
 #include "GuiSlider.h"
+
+#include "Log.h"
 
 GuiManager::GuiManager() : Module()
 {
@@ -23,47 +24,64 @@ void GuiManager::Init()
 
 bool GuiManager::Awake(pugi::xml_node& config)
 {
-	bool ret = true;
+	LOG("Loading Gui Manager");
 
 	folderTexture.Create(config.child("folderTexture").child_value());
 
-	return ret;
+	return true;
 }
 
 bool GuiManager::Start()
 {
+	// Atlas
 	SString tmp("%s%s", folderTexture.GetString(), "button_atlas.png");
 	atlas = app->tex->Load(tmp.GetString());
+
+	// Default
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "default_label.png");
 	defaultFont = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "default_label_small.png");
 	defaultFontSmall = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+
+	// Disabled
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "disabled_label.png");
 	disabledFont = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "disabled_label_small.png");
 	disabledFontSmall = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+
+	// Hover
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "hover_label.png");
 	hoverFont = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "hover_label_small.png");
 	hoverFontSmall = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+
+	// Pressed
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "pressed_label.png");
 	pressedFont = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "pressed_label_small.png");
 	pressedFontSmall = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+
+	// Title
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "title_label.png");
 	titleFont = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "title_label_medium.png");
 	titleFontMedium = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
+
 	tmp.Clear();
 	tmp.Create("%s%s", folderTexture.GetString(), "title_label_small.png");
 	titleFontSmall = app->fonts->Load(tmp.GetString(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,_-@#*^()[]<>: ", 3);
@@ -113,8 +131,11 @@ GuiControl* GuiManager::CreateGuiControl(GuiControlType type, uint32 id, SDL_Rec
 		control->SetFonts(defaultFont, titleFontMedium, hoverFont, pressedFont, disabledFont);
 	}
 
-	// Created entities are added to the list
-	if (control != nullptr) controls.Add(control);
+	// Adds the created entity to the list
+	if (control != nullptr)
+	{
+		controls.Add(control);
+	}
 
 	return control;
 }

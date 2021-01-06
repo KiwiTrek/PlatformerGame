@@ -1,14 +1,11 @@
 #include "Coin.h"
 
 #include "App.h"
-
 #include "Audio.h"
 #include "Render.h"
 #include "Scene.h"
 #include "EntityManager.h"
 #include "Animation.h"
-
-#include "Log.h"
 
 Coin::Coin(int x, int y) : Entity(x, y, EntityType::COIN)
 {
@@ -26,6 +23,7 @@ Coin::Coin(int x, int y) : Entity(x, y, EntityType::COIN)
 	// Fx
 	coinFx = app->entities->coinFx;
 
+	// Animation
 	for (int i = 0; i != 6; ++i)
 	{
 		rotating.PushBack({ (i * 64) + 384,0, 64, 64 });

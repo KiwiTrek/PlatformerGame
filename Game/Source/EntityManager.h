@@ -2,11 +2,12 @@
 #define __MODULE_ENTITY_MANAGER_H__
 
 #include "Module.h"
+
 #include "Entity.h"
-#include "List.h"
 #include "GuiButton.h"
 #include "GuiCheckBox.h"
 #include "GuiSlider.h"
+#include "List.h"
 
 #define MAX_ENTITIES 100
 
@@ -15,7 +16,7 @@ class Entity;
 class EntityManager : public Module
 {
 public:
-
+	// Constructor
 	EntityManager();
 
 	// Destructor
@@ -31,30 +32,33 @@ public:
 	// Loads the necessary textures for the entities
 	bool Start();
 
+	// Called each loop iteration
 	bool Update(float dt);
 
+	// Called after all Updates
 	bool PostUpdate();
 
 	// Called before quitting
 	bool CleanUp();
 
-	// Additional methods
+	// Create/Destroy entity
 	Entity* CreateEntity(int x, int y, EntityType type, Entity* playerPointer = nullptr, EnemyType eType = EnemyType::NO_TYPE);
 	void DestroyEntity(Entity* entity);
 
+	// Calls Update for every entity
 	bool UpdateAll(float dt, bool doLogic);
 
 	// Collision response
 	void OnCollision(Collider* c1, Collider* c2);
 
-	// Declare on mouse click event
+	// On mouse click response
 	bool OnGuiMouseClickEvent(GuiControl* control);
 
+	// Load/Save
 	bool Load(pugi::xml_node&);
 	bool Save(pugi::xml_node&);
 
 public:
-
 	List<Entity*> entities;
 
 	bool doLogic = false;
@@ -63,7 +67,7 @@ public:
 	SString folderAudioFx;
 	SString folderMap;
 
-	// The audio fx for destroying an enemy
+	// Fx
 	int enemyDestroyedFx = 0;
 	uint deadFx;
 	uint jumpFx;
@@ -74,6 +78,7 @@ public:
 	uint checkpointFx;
 	uint coinFx;
 
+	// Tex
 	SDL_Texture* playerTex;
 	SDL_Texture* playerHeart;
 	SDL_Texture* ground;
@@ -81,7 +86,7 @@ public:
 	SDL_Texture* coin;
 	SDL_Texture* fruit;
 
-	// Pause menu
+	// Gui
 	bool pause;
 	iPoint cameraPos;
 	iPoint cameraSize;

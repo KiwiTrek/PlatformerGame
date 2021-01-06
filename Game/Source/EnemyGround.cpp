@@ -8,8 +8,6 @@
 #include "Audio.h"
 #include "Render.h"
 
-#include "Log.h"
-
 EnemyGround::EnemyGround(int x, int y, EnemyType typeOfEnemy, Entity* playerPointer) : Enemy(x, y, typeOfEnemy, playerPointer)
 {
 	enemySize = app->generalTileSize;
@@ -51,7 +49,6 @@ EnemyGround::EnemyGround(int x, int y, EnemyType typeOfEnemy, Entity* playerPoin
 	attack.Reset();
 
 	physics.verlet = true;
-
 	invert = true;
 }
 

@@ -14,6 +14,7 @@ public:
 
 	EnemyType type;
 private:
+	// Animation
 	Animation flying;
 	Animation hurt;
 	Animation attack;

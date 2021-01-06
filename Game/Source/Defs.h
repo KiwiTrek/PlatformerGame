@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 //  NULL just in case ----------------------
-
 #ifdef NULL
 #undef NULL
 #endif
@@ -31,11 +30,13 @@
 							  \
 	}
 
+// Useful tools
 #define IN_RANGE( value, min, max ) ( ((value) >= (min) && (value) <= (max)) ? 1 : 0 )
 #define MIN( a, b ) ( ((a) < (b)) ? (a) : (b) )
 #define MAX( a, b ) ( ((a) > (b)) ? (a) : (b) )
 #define TO_BOOL( a )  ( (a != 0) ? true : false )
 
+// Useful typedefs
 typedef unsigned int uint;
 typedef unsigned char uchar;
 typedef unsigned __int32 uint32;
