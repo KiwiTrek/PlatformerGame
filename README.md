@@ -34,6 +34,7 @@ Venture forth an incredible adventure crossing from the deepest of seas to the m
 	- F4: Kill the player
 	- F5: Save current state
 	- F6: Load current state
+	- F7: Move between the different checkpoints
 	- F8: View GUI bounds rectangles and state in different colors
 	- F9: Toggle Colliders & Paths
 	- F10: God mode
