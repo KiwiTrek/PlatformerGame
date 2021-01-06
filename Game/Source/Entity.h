@@ -29,7 +29,7 @@ class Entity
 {
 public:
 	// Constructor
-	Entity(int x, int y, EntityType type, EnemyType eType = EnemyType::NO_TYPE) : type(type), eType(eType), active(true)
+	Entity(int x, int y, EntityType type, EnemyType eType = EnemyType::NO_TYPE) : type(type), eType(eType)
 	{}
 
 	// Called each loop iteration
@@ -57,7 +57,6 @@ public:
 	uint destroyedFx;
 
 	bool pendingToDelete = false;
-	bool active = true;
 
 	// Original spawn position
 	iPoint spawnPos;
