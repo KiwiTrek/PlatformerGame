@@ -36,6 +36,9 @@ public:
 		hoverFont = -1;
 		pressedFont = -1;
 		disabledFont = -1;
+
+		hover = -1;
+		click = -1;
 	}
 
 	// Called each loop iteration
@@ -64,6 +67,12 @@ public:
 		hoverFont = hoverId;
 		pressedFont = pressedId;
 		disabledFont = disabledId;
+	}
+
+	void SetSounds(int hoverSoundId, int clickSoundId)
+	{
+		hover = hoverSoundId;
+		click = clickSoundId;
 	}
 
 	// Sets the gui control observer
@@ -97,6 +106,10 @@ public:
 	int hoverFont;
 	int pressedFont;
 	int disabledFont;
+
+	// Sounds
+	int click;
+	int hover;
 
 	// Observer module
 	Module* observer;

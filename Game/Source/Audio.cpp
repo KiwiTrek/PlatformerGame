@@ -187,8 +187,7 @@ bool Audio::UnloadFx(uint index)
 	if (s != nullptr)
 	{
 		Mix_FreeChunk(s->data);
-		fx.Del(s);
-		return true;
+		return fx.Del(s);
 	}
 
 	return false;

@@ -73,6 +73,7 @@
 
     <guiManager>
         <folderTexture>Assets/Textures/GUI/</folderTexture>
+        <folderAudio>Assets/Audio/Fx/</folderAudio>
     </guiManager>
 
     <pathfinding>

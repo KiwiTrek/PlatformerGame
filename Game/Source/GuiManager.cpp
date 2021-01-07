@@ -2,6 +2,7 @@
 
 #include "App.h"
 #include "Textures.h"
+#include "Audio.h"
 #include "Fonts.h"
 #include "GuiButton.h"
 #include "GuiCheckBox.h"
@@ -19,7 +20,7 @@ GuiManager::~GuiManager()
 
 void GuiManager::Init()
 {
-	active = true;
+	active = false;
 }
 
 bool GuiManager::Awake(pugi::xml_node& config)
@@ -27,6 +28,7 @@ bool GuiManager::Awake(pugi::xml_node& config)
 	LOG("Loading Gui Manager");
 
 	folderTexture.Create(config.child("folderTexture").child_value());
+	folderAudio.Create(config.child("folderAudio").child_value());
 
 	return true;
 }
@@ -36,6 +38,15 @@ bool GuiManager::Start()
 	// Atlas
 	SString tmp("%s%s", folderTexture.GetString(), "gui_atlas.png");
 	atlas = app->tex->Load(tmp.GetString());
+
+	// Sounds
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudio.GetString(), "mouse_click.wav");
+	clickSoundId = app->audio->LoadFx(tmp.GetString());
+
+	tmp.Clear();
+	tmp.Create("%s%s", folderAudio.GetString(), "mouse_hover.wav");
+	hoverSoundId = app->audio->LoadFx(tmp.GetString());
 
 	// Default
 	tmp.Clear();
@@ -120,6 +131,7 @@ GuiControl* GuiManager::CreateGuiControl(GuiControlType type, uint32 id, SDL_Rec
 	default: break;
 	}
 
+	control->SetSounds(hoverSoundId, clickSoundId);
 	control->SetObserver(observer);
 	control->SetTexture(atlas);
 	if (secondText)
@@ -170,6 +182,9 @@ bool GuiManager::CleanUp()
 	app->fonts->Unload(pressedFontSmall);
 	app->fonts->Unload(titleFontMedium);
 	app->fonts->Unload(titleFontSmall);
+
+	app->audio->UnloadFx(hoverSoundId);
+	app->audio->UnloadFx(clickSoundId);
 
 	return true;
 }

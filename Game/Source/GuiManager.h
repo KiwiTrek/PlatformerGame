@@ -32,6 +32,7 @@ public:
 
 public:
 	SString folderTexture;
+	SString folderAudio;
 
 	SDL_Texture* atlas;
 
@@ -46,6 +47,9 @@ public:
 	int pressedFontSmall = -1;
 	int disabledFont = -1;
 	int disabledFontSmall = -1;
+
+	int clickSoundId = -1;
+	int hoverSoundId = -1;
 
 	List<GuiControl*> controls;
 

@@ -2,6 +2,7 @@
 
 #include "App.h"
 #include "Input.h"
+#include "Audio.h"
 #include "Render.h"
 #include "Fonts.h"
 
@@ -48,13 +49,24 @@ bool GuiSlider::Update(float dt)
 		app->input->GetMouseMotion(motionX, motionY);
 
 		// Check collision between mouse and button bounds
-		if ((mouseX > bounds.x) && (mouseX < (bounds.x + bounds.w))
-			&& (mouseY > bounds.y) && (mouseY < (bounds.y + bounds.h)))
+		if ((mouseX > bounds.x) && (mouseX < (bounds.x + bounds.w)) && (mouseY > bounds.y) && (mouseY < (bounds.y + bounds.h)))
 		{
-			state = GuiControlState::FOCUSED;
+			if (state == GuiControlState::NORMAL)
+			{
+				app->audio->PlayFx(hover);
+			}
+
+			if (state != GuiControlState::PRESSED)
+			{
+				state = GuiControlState::FOCUSED;
+			}
 
 			if (app->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KeyState::KEY_REPEAT)
 			{
+				if (state == GuiControlState::FOCUSED)
+				{
+					app->audio->PlayFx(click);
+				}
 				state = GuiControlState::PRESSED;
 			}
 		}
