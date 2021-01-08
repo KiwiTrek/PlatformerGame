@@ -44,7 +44,7 @@ bool Coin::Update(float dt)
 
 bool Coin::Draw()
 {
-	app->render->DrawTexture(app->entities->coin, entityRect.x, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
+	app->render->DrawTexture(app->entities->tileSetTex, entityRect.x, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
 
 	if (app->render->drawAll)
 	{

@@ -83,8 +83,7 @@ public:
 	SDL_Texture* playerHeart;
 	SDL_Texture* ground;
 	SDL_Texture* flying;
-	SDL_Texture* coin;
-	SDL_Texture* fruit;
+	SDL_Texture* tileSetTex;
 
 	// GUI
 	bool pause;

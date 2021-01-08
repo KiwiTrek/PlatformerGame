@@ -168,6 +168,7 @@ bool GuiManager::CleanUp()
 		DestroyGuiControl(e->data);
 		e = eNext;
 	}
+	controls.Clear();
 
 	app->tex->UnLoad(atlas);
 

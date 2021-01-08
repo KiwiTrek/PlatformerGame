@@ -83,10 +83,6 @@ bool EntityManager::Start()
 	checkpointFx = app->audio->LoadFx(tmp.GetString());
 
 	tmp.Clear();
-	tmp.Create("%s%s", folderAudioFx.GetString(), "enemy_death.wav");
-	enemyDestroyedFx = app->audio->LoadFx(tmp.GetString());
-
-	tmp.Clear();
 	tmp.Create("%s%s", folderAudioFx.GetString(), "coin.wav");
 	coinFx = app->audio->LoadFx(tmp.GetString());
 
@@ -119,11 +115,7 @@ bool EntityManager::Start()
 
 	tmp.Clear();
 	tmp.Create("%s%s", folderMap.GetString(), "level_1_tileset.png");
-	coin = app->tex->Load(tmp.GetString());
-
-	tmp.Clear();
-	tmp.Create("%s%s", folderMap.GetString(), "level_1_tileset.png");
-	fruit = app->tex->Load(tmp.GetString());
+	tileSetTex = app->tex->Load(tmp.GetString());
 
 	app->gui->Enable();
 
@@ -190,9 +182,10 @@ bool EntityManager::CleanUp()
 
 	// Unload textures
 	app->tex->UnLoad(playerTex);
+	app->tex->UnLoad(playerHeart);
 	app->tex->UnLoad(ground);
 	app->tex->UnLoad(flying);
-	app->tex->UnLoad(coin);
+	app->tex->UnLoad(tileSetTex);
 
 	// Unload fx
 	app->audio->UnloadFx(deadFx);

@@ -27,7 +27,7 @@ Fruit::Fruit(int x, int y) : Entity(x, y, EntityType::FRUIT)
 
 bool Fruit::Draw()
 {
-	app->render->DrawTexture(app->entities->fruit, entityRect.x, entityRect.y, false, &fruitSect, invert);
+	app->render->DrawTexture(app->entities->tileSetTex, entityRect.x, entityRect.y, false, &fruitSect, invert);
 
 	if (app->render->drawAll)
 	{
