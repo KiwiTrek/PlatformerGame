@@ -85,6 +85,10 @@ bool Scene::Start()
 	app->collisions->Enable();
 	app->entities->Enable();
 
+	if (player != nullptr)
+	{
+		player = nullptr;
+	}
 	player = app->entities->CreateEntity(-1, -1, EntityType::PLAYER);
 	app->entities->CreateEntity(app->map->data.tileWidth * 103, app->map->data.tileHeight * 3, EntityType::ENEMY, player, EnemyType::FLYING);
 	app->entities->CreateEntity(app->map->data.tileWidth * 36, app->map->data.tileHeight * 8, EntityType::ENEMY, player, EnemyType::GROUND);
@@ -506,6 +510,7 @@ bool Scene::CleanUp()
 	app->fonts->Unload(font);
 
 	app->entities->Disable();
+	app->collisions->Disable();
 	app->map->Disable();
 
 	return true;

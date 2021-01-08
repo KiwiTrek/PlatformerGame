@@ -16,11 +16,12 @@
 
 Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 {
+	this->entityRect = { 0,0,64,64 };
 	// Spawning position of the player
 	if (x == -1 && y == -1)
 	{
 		spawnPos = GetSpawnPoint();
-		entityRect = { spawnPos.x, spawnPos.y, app->generalTileSize, app->generalTileSize };
+		this->entityRect = { spawnPos.x, spawnPos.y, app->generalTileSize, app->generalTileSize };
 	}
 	else
 	{
@@ -28,12 +29,16 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 		{
 			spawnPos = { 77 * app->generalTileSize, 3 * app->generalTileSize };
 		}
-		entityRect = { x, y, app->generalTileSize, app->generalTileSize };
+		this->entityRect = { x, y, app->generalTileSize, app->generalTileSize };
 		updateCamera = true;
 	}
 
 	pendingToDelete = false;
-	collider = app->collisions->AddCollider(entityRect, Collider::Type::PLAYER, (Module*)app->entities);
+	collider = app->collisions->AddCollider(this->entityRect, Collider::Type::PLAYER, (Module*)app->entities);
+	if (hurtBox != nullptr)
+	{
+		hurtBox->pendingToDelete = true;
+	}
 
 	playerSize = 128;
 	jumpCounter = 2;

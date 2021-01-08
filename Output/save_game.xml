@@ -14,14 +14,14 @@
 		<score value="150" />
 		<coin value="3" />
 		<fruit value="0" />
-		<timer value="490.686981" />
+		<timer value="495.394775" />
 	</scene>
 	<map />
 	<fonts />
 	<guiManager />
 	<entityManager>
 		<entity>
-			<coordinates x="5612" y="640" />
+			<coordinates x="977" y="640" />
 			<lives value="3" />
 			<checkpoint value="true" />
 			<type value="0" />
@@ -114,6 +114,21 @@
 		</entity>
 		<entity>
 			<coordinates x="4736" y="256" />
+			<type value="2" />
+			<eType value="0" />
+		</entity>
+		<entity>
+			<coordinates x="5504" y="256" />
+			<type value="2" />
+			<eType value="0" />
+		</entity>
+		<entity>
+			<coordinates x="5568" y="256" />
+			<type value="2" />
+			<eType value="0" />
+		</entity>
+		<entity>
+			<coordinates x="5632" y="256" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>
@@ -274,21 +289,6 @@
 		</entity>
 		<entity>
 			<coordinates x="6016" y="640" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="576" y="704" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="640" y="704" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="704" y="704" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>

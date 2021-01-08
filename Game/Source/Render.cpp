@@ -60,6 +60,9 @@ bool Render::Start()
 	drawAll = false;
 	drawAllGui = false;
 
+	camera.x = 0;
+	camera.y = 0;
+
 	return true;
 }
 
