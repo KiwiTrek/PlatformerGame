@@ -21,9 +21,6 @@
 #include "Defs.h"
 #include "Log.h"
 
-#include "optick.h"
-#include "optick.config.h"
-
 #include <iostream>
 #include <sstream>
 
@@ -178,19 +175,16 @@ bool App::Update()
 
 	if (ret == true)
 	{
-		OPTICK_CATEGORY("PreUpdate", Optick::Category::Input);
 		ret = PreUpdate();
 	}
 
 	if (ret == true)
 	{
-		OPTICK_CATEGORY("Update", Optick::Category::GameLogic);
 		ret = DoUpdate();
 	}
 
 	if (ret == true)
 	{
-		OPTICK_CATEGORY("PostUpdate", Optick::Category::Rendering);
 		ret = PostUpdate();
 	}
 
@@ -217,7 +211,6 @@ pugi::xml_node App::LoadConfig(pugi::xml_document& configFile) const
 
 void App::PrepareUpdate()
 {
-	OPTICK_CATEGORY("PrepareUpdate", Optick::Category::Debug);
 	frameCount++;
 	lastSecFrameCount++;
 
@@ -230,7 +223,6 @@ void App::PrepareUpdate()
 
 void App::FinishUpdate()
 {
-	OPTICK_CATEGORY("FinishUpdate", Optick::Category::Wait);
 	if (loadRequest)
 	{
 		loadRequest = !loadRequest;
