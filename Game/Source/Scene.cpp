@@ -328,7 +328,7 @@ bool Scene::Start()
 		}
 		app->entities->CreateEntity(app->map->data.tileWidth * (9 + tmp), app->map->data.tileHeight * 11, EntityType::COIN);
 	}
-	for (int i = 0; i != 7; i++)
+	for (int i = 0; i != 3; i++)
 	{
 		int tmp = 0;
 		switch (i)
@@ -347,9 +347,6 @@ bool Scene::Start()
 		}
 		app->entities->CreateEntity(app->map->data.tileWidth * (108 + tmp), app->map->data.tileHeight * 12, EntityType::COIN);
 	}
-
-	app->render->camera.x = -(player->spawnPos.x - app->render->camera.w / 2);
-	app->render->camera.y = -(player->spawnPos.y - app->render->camera.h / 2 - 64);
 
 	tmp.Clear();
 	tmp.Create("%s%s", folderAudioMusic.GetString(), "level_1.ogg");
@@ -413,21 +410,24 @@ bool Scene::Update(float dt)
 	}
 
 	// Player camera restraint
-	if ((app->render->camera.x + player->entityRect.x) < (app->map->data.tileWidth * 6))
+	if (player != nullptr)
 	{
-		app->render->camera.x += (250.0f * dt);
-	}
-	if ((player->entityRect.w + app->render->camera.x + player->entityRect.x) > (app->render->camera.w - app->map->data.tileWidth * 10))
-	{
-		app->render->camera.x -= (250.0f * dt);
-	}
-	if ((app->render->camera.y + player->entityRect.y) < (app->map->data.tileHeight * 6))
-	{
-		app->render->camera.y += floor(250.0f * dt);
-	}
-	if ((player->entityRect.h + app->render->camera.y + player->entityRect.y) > (app->render->camera.h - app->map->data.tileHeight * 6))
-	{
-		app->render->camera.y -= floor(250.0f * dt);
+		if ((app->render->camera.x + player->entityRect.x) < (app->map->data.tileWidth * 6))
+		{
+			app->render->camera.x += (250.0f * dt);
+		}
+		if ((player->entityRect.w + app->render->camera.x + player->entityRect.x) > (app->render->camera.w - app->map->data.tileWidth * 10))
+		{
+			app->render->camera.x -= (250.0f * dt);
+		}
+		if ((app->render->camera.y + player->entityRect.y) < (app->map->data.tileHeight * 6))
+		{
+			app->render->camera.y += floor(250.0f * dt);
+		}
+		if ((player->entityRect.h + app->render->camera.y + player->entityRect.y) > (app->render->camera.h - app->map->data.tileHeight * 6))
+		{
+			app->render->camera.y -= floor(250.0f * dt);
+		}
 	}
 
 	// Map borders

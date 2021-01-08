@@ -320,7 +320,7 @@ bool Player::Update(float dt)
 			}
 		}
 
-		if (app->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)
+		if (app->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN && currentAnim != &wallJump)
 		{
 			if (currentAnim != &attack)
 			{
@@ -546,7 +546,7 @@ bool Player::Draw()
 {
 	if (invert)
 	{
-		if (isAttacking)
+		if (isAttacking && currentAnim != &wallJump)
 		{
 			app->render->DrawTexture(app->entities->playerTex, entityRect.x - 40, entityRect.y, false, &currentAnim->GetCurrentFrame(), invert);
 		}
@@ -663,8 +663,11 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 		else
 		{
 			app->audio->PlayFx(hitFx);
-			currentAnim = &hit;
-			isHit = true;
+			if (currentAnim != &wallJump)
+			{
+				currentAnim = &hit;
+				isHit = true;
+			}
 		}
 	}
 	else if (c2->type == Collider::Type::FRUIT)
