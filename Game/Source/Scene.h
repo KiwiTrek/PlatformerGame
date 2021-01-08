@@ -44,9 +44,9 @@ public:
 	int scoreValue = 0;
 	int coinCounter = 0;
 	int fruitCounter = 0;
+	Entity* player = nullptr;
 
 private:
-	Entity* player = nullptr;
 	iPoint cameraPos;
 	iPoint cameraSize;
 

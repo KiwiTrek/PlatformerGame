@@ -504,6 +504,7 @@ bool EntityManager::Load(pugi::xml_node& save)
 			pp = (Player*)CreateEntity(x, y, type, nullptr, eType);
 			pp->lives = entity.child("lives").attribute("value").as_int(3);
 			pp->firstCheckpoint = entity.child("checkpoint").attribute("value").as_bool();
+			app->scene->player = pp;
 		}
 		else
 		{

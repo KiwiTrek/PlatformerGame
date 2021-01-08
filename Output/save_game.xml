@@ -11,19 +11,19 @@
 	<titleScene />
 	<deathScene />
 	<scene>
-		<score value="150" />
-		<coin value="3" />
-		<fruit value="0" />
-		<timer value="495.394775" />
+		<score value="600" />
+		<coin value="10" />
+		<fruit value="1" />
+		<timer value="474.164917" />
 	</scene>
 	<map />
 	<fonts />
 	<guiManager />
 	<entityManager>
 		<entity>
-			<coordinates x="977" y="640" />
-			<lives value="3" />
-			<checkpoint value="true" />
+			<coordinates x="927" y="640" />
+			<lives value="1" />
+			<checkpoint value="false" />
 			<type value="0" />
 			<eType value="0" />
 		</entity>
@@ -31,16 +31,6 @@
 			<coordinates x="6592" y="192" />
 			<type value="1" />
 			<eType value="2" />
-		</entity>
-		<entity>
-			<coordinates x="2304" y="512" />
-			<type value="1" />
-			<eType value="1" />
-		</entity>
-		<entity>
-			<coordinates x="1856" y="832" />
-			<type value="3" />
-			<eType value="0" />
 		</entity>
 		<entity>
 			<coordinates x="4032" y="64" />
@@ -114,21 +104,6 @@
 		</entity>
 		<entity>
 			<coordinates x="4736" y="256" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="5504" y="256" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="5568" y="256" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="5632" y="256" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>
@@ -218,11 +193,6 @@
 			<eType value="0" />
 		</entity>
 		<entity>
-			<coordinates x="1792" y="448" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
 			<coordinates x="2240" y="448" />
 			<type value="2" />
 			<eType value="0" />
@@ -253,22 +223,7 @@
 			<eType value="0" />
 		</entity>
 		<entity>
-			<coordinates x="1152" y="512" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="1216" y="512" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
 			<coordinates x="4736" y="512" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="1088" y="576" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>
