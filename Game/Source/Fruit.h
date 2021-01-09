@@ -19,9 +19,6 @@ public:
 
 private:
 	SDL_Rect fruitSect;
-
-	// Fx
-	uint fruitFx;
 };
 
 #endif // !__FRUIT_H__

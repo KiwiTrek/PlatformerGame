@@ -20,9 +20,6 @@ Coin::Coin(int x, int y) : Entity(x, y, EntityType::COIN)
 	physics.positiveSpeedY = false;
 	physics.verlet = false;
 
-	// Fx
-	coinFx = app->entities->coinFx;
-
 	// Animation
 	for (int i = 0; i != 6; ++i)
 	{
@@ -57,7 +54,7 @@ void Coin::OnCollision(Collider* c1, Collider* c2)
 {
 	app->scene->coinCounter++;
 	app->scene->scoreValue += 50;
-	app->audio->PlayFx(coinFx);
+	app->audio->PlayFx(app->entities->coinFx);
 	this->pendingToDelete = true;
 	this->collider->pendingToDelete = true;
 }

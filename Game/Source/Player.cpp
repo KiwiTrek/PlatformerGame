@@ -65,12 +65,6 @@ Player::Player(int x, int y) : Entity(x, y, EntityType::PLAYER)
 
 	// Fx
 	destroyedFx = app->entities->deadFx;
-	jumpFx = app->entities->jumpFx;
-	doubleJumpFx = app->entities->doubleJumpFx;
-	fruitFx = app->entities->fruitFx;
-	hitFx = app->entities->hitFx;
-	slashFx = app->entities->slashFx;
-	checkpointFx = app->entities->checkpointFx;
 
 	// Animation
 	for (int i = 0; i != 9; ++i)
@@ -279,11 +273,11 @@ bool Player::Update(float dt)
 					isJumping = true;
 					if (jumpCounter == 2)
 					{
-						app->audio->PlayFx(jumpFx);
+						app->audio->PlayFx(app->entities->jumpFx);
 					}
 					if (jumpCounter == 1)
 					{
-						app->audio->PlayFx(doubleJumpFx);
+						app->audio->PlayFx(app->entities->doubleJumpFx);
 					}
 					--jumpCounter;
 					physics.speed.y = -400.0f;
@@ -329,7 +323,7 @@ bool Player::Update(float dt)
 		{
 			if (currentAnim != &attack)
 			{
-				app->audio->PlayFx(slashFx);
+				app->audio->PlayFx(app->entities->slashFx);
 			}
 			currentAnim = &attack;
 			hurtBox = app->collisions->AddCollider(currentAnim->GetCurrentFrame(), Collider::Type::ATTACK, (Module*)app->entities);
@@ -464,7 +458,7 @@ bool Player::Update(float dt)
 			{
 				spawnPos.x = entityRect.x;
 				spawnPos.y = entityRect.y;
-				app->audio->PlayFx(checkpointFx);
+				app->audio->PlayFx(app->entities->checkpointFx);
 				onceCheckpoint = false;
 				firstCheckpoint = true;
 			}
@@ -506,7 +500,7 @@ bool Player::Update(float dt)
 
 				physics.speed.x = 0.0f;
 				physics.speed.y = 0.0f;
-				app->audio->PlayFx(hitFx);
+				app->audio->PlayFx(app->entities->hitFx);
 				currentAnim = &hit;
 				isHit = true;
 			}
@@ -667,7 +661,7 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 		}
 		else
 		{
-			app->audio->PlayFx(hitFx);
+			app->audio->PlayFx(app->entities->hitFx);
 			if (currentAnim != &wallJump)
 			{
 				currentAnim = &hit;

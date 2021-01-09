@@ -64,14 +64,6 @@ private:
 	Animation hit;
 	Animation death;
 	Animation wallJump;
-
-	// Fx
-	uint jumpFx;
-	uint doubleJumpFx;
-	uint fruitFx;
-	uint hitFx;
-	uint slashFx;
-	uint checkpointFx;
 };
 
 #endif // !__PLAYER_H__

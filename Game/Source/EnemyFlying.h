@@ -12,7 +12,6 @@ public:
 	// Called each loop iteration
 	bool Update(float dt);
 
-	EnemyType type;
 private:
 	// Animation
 	Animation flying;

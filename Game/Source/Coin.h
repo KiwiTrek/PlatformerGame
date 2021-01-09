@@ -21,13 +21,8 @@ public:
 	void OnCollision(Collider* c1, Collider* c2);
 
 private:
-	SDL_Texture* coinTex;
-
 	// Animation
 	Animation rotating;
-
-	// Fx
-	uint coinFx;
 };
 
 #endif // !__COIN_H__

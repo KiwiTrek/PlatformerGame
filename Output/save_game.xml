@@ -11,17 +11,17 @@
 	<titleScene />
 	<deathScene />
 	<scene>
-		<score value="0" />
-		<coin value="0" />
+		<score value="150" />
+		<coin value="3" />
 		<fruit value="0" />
-		<timer value="488.018311" />
+		<timer value="487.049683" />
 	</scene>
 	<map />
 	<fonts />
 	<guiManager />
 	<entityManager>
 		<entity>
-			<coordinates x="5602" y="640" />
+			<coordinates x="5590" y="640" />
 			<lives value="3" />
 			<checkpoint value="true" />
 			<type value="0" />
@@ -114,21 +114,6 @@
 		</entity>
 		<entity>
 			<coordinates x="4736" y="256" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="5504" y="256" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="5568" y="256" />
-			<type value="2" />
-			<eType value="0" />
-		</entity>
-		<entity>
-			<coordinates x="5632" y="256" />
 			<type value="2" />
 			<eType value="0" />
 		</entity>

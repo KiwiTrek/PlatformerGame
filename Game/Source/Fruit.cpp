@@ -20,9 +20,6 @@ Fruit::Fruit(int x, int y) : Entity(x, y, EntityType::FRUIT)
 	physics.axisY = false;
 	physics.positiveSpeedY = false;
 	physics.verlet = false;
-
-	// Fx
-	fruitFx = app->entities->fruitFx;
 }
 
 bool Fruit::Draw()
@@ -40,7 +37,7 @@ void Fruit::OnCollision(Collider* c1, Collider* c2)
 {
 	app->scene->fruitCounter++;
 	app->scene->scoreValue += 100;
-	app->audio->PlayFx(fruitFx);
+	app->audio->PlayFx(app->entities->fruitFx);
 	pendingToDelete = true;
 	this->collider->pendingToDelete = true;
 }
